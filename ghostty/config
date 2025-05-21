@@ -6,14 +6,14 @@ cursor-color = c8c093
 selection-background = 2d4f67
 selection-foreground = c8c093
 
-font-size = 18 
+font-size = 16
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 window-decoration = true
 keybind = global:cmd+/=toggle_quick_terminal
 macos-option-as-alt = true
-background-opacity = 0.9
-background-blur-radius = 50
+background-opacity = 0.80
+background-blur-radius = 20
 
 cursor-style = block
 cursor-style-blink = false

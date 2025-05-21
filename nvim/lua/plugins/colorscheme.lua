@@ -8,7 +8,7 @@ return {
       require("catppuccin").setup({
         flavour = "mocha", -- Use mocha flavor
         transparent_background = true, -- Enable transparency
-        show_end_of_buffer = true, -- Hide the '~' characters after the end of buffers
+        show_end_of_buffer = false, -- Hide the '~' characters after the end of buffers
         term_colors = true, -- Enable terminal colors
         dim_inactive = {
           enabled = false, -- Don't dim inactive windows
