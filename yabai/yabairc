@@ -32,10 +32,6 @@ yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^FaceTime$" manage=off
 yabai -m rule --add app="^Finder$" manage=off
-yabai -m rule --add app="^Spotify$" manage=off
 yabai -m rule --add app="^Slack$" manage=off
 yabai -m rule --add app="^Messages$" manage=off
 yabai -m rule --add app="^Mail$" manage=off
-
-
-yabai -m rule --add app="^orbgen$" manage=off
