@@ -1,3 +1,19 @@
 StardewValley
-
 github-copilot
+
+.DS_Store
+
+# Auto-generated backups and cache
+karabiner/automatic_backups/
+**/configstore/
+**/__pycache__/
+
+# Lock files and auto-generated state
+nvim/lazy-lock.json
+nvim/lazyvim.json
+fish/fish_variables
+flutter/tool_state
+avante.nvim/config.json
+
+# Backup files
+*.bak
