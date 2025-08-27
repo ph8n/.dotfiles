@@ -34,6 +34,10 @@ return {
         },
       },
     },
+    web_search_engine = {
+      provider = "tavily", -- tavily, serpapi, google, kagi, brave, or searxng
+      proxy = nil, -- e.g., http://127.0.0.1:7890
+    },
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
