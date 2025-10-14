@@ -2,7 +2,7 @@ theme = mellow
 
 background = 151515
 
-font-size = 16
+font-size = 14
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 window-decoration = true

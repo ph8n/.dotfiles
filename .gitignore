@@ -1,7 +1,9 @@
 StardewValley
 github-copilot
 
+*.
 .DS_Store
+jira-cli/
 
 # Auto-generated backups and cache
 karabiner/automatic_backups/
@@ -17,3 +19,37 @@ avante.nvim/config.json
 
 # Backup files
 *.bak
+
+# Sensitive data - credentials, keys, tokens
+*.env
+*.pem
+*.key
+*.token
+*secret*
+*credentials*
+*password*
+
+# Jira configuration (contains email and server URL)
+.jira/
+jira/
+
+# Database files
+*.mdb
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+
+# SSH keys
+*.pub
+id_rsa
+id_ed25519
+id_ecdsa
+
+# API keys and tokens
+*api_key*
+*api-key*
+*apikey*
+
