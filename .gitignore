@@ -33,7 +33,13 @@ avante.nvim/config.json
 .jira/
 jira/
 
+# CLI credentials and API tokens
+gh/
+litellm/
+raycast/
+
 # Database files
+
 *.mdb
 *.db
 *.sqlite
