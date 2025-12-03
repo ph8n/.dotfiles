@@ -1,6 +1,6 @@
 {
   "permission": {
-    "edit": "allow",
+    "edit": "ask",
     "bash": "allow",
     "webfetch": "allow"
   },
