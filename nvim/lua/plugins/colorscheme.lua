@@ -8,8 +8,6 @@ return {
       require("nordic").setup({
         -- This callback can be used to override highlights before they are applied.
         on_highlight = function(highlights, palette)
-          -- The 'highlights' table contains all the highlight groups.
-          -- You can directly modify them here.
           highlights.Pmenu.bg = "#191D24"
           highlights.NormalFloat.bg = "#151515"
         end,
