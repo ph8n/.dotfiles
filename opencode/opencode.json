@@ -1,26 +1,10 @@
 {
     "permission": {
-        "edit": "ask",
+        "edit": "allow",
         "bash": "allow",
         "webfetch": "allow"
     },
     "$schema": "https://opencode.ai/config.json",
     "model": "github-copilot/claude-opus-4.5",
     "theme": "mellow",
-    "mcp": {
-        "exa": {
-            "type": "remote",
-            "url": "https://mcp.exa.ai/mcp",
-        },
-        "morph": {
-            "type": "local",
-            "command": [
-                "bunx",
-                "@morphllm/morphmcp"
-            ],
-            "environment": {
-                "ENABLED_TOOLS": "warp_grep",
-            },
-        },
-    },
 }
