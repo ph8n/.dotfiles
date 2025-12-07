@@ -31,7 +31,7 @@ return {
         "tinymist",
         "bashls",
         "svelte",
-        "tailwind-language-server"
+        "tailwindcss"
       },
       automatic_installation = true,
     },
@@ -112,7 +112,7 @@ return {
         "tinymist",
         "bashls",
         "svelte",
-        "tailwind-language-server"
+        "tailwindcss"
       })
     end,
   },
