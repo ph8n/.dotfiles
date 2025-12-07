@@ -30,6 +30,7 @@ return {
         "texlab",
         "tinymist",
         "bashls",
+        "svelte",
       },
       automatic_installation = true,
     },
@@ -89,6 +90,8 @@ return {
         },
       })
 
+      vim.lsp.config("svelte", {})
+
       -- Enable servers (clangd handled by clangd_extensions)
       vim.lsp.enable({
         "lua_ls",
@@ -104,6 +107,7 @@ return {
         "texlab",
         "tinymist",
         "bashls",
+        "svelte",
       })
     end,
   },

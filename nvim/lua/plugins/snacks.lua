@@ -13,7 +13,6 @@ return {
     quickfile = { enabled = true },
 
     -- UI
-    explorer = { enabled = true },
     indent = { enabled = true },
     scope = { enabled = true },
     zen = { enabled = true },
@@ -55,9 +54,6 @@ return {
     { "<leader>cs", function() Snacks.picker.lsp_symbols() end, desc = "Document Symbols" },
     { "<leader>cS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "Workspace Symbols" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
-
-    -- Explorer
-    { "<leader>e", function() Snacks.explorer() end, desc = "Explorer" },
 
     -- Buffer
     { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },

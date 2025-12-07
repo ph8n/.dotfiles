@@ -12,7 +12,7 @@ return {
       vim.g.mkdp_filetypes = { "markdown" }
     end,
     keys = {
-      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview" },
+      { "<leader>um", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview" },
     },
   },
 
@@ -26,10 +26,9 @@ return {
       vim.g.vimtex_quickfix_mode = 0
     end,
     keys = {
-      { "<leader>ll", "<cmd>VimtexCompile<cr>", desc = "LaTeX Compile" },
-      { "<leader>lv", "<cmd>VimtexView<cr>", desc = "LaTeX View" },
-      { "<leader>lc", "<cmd>VimtexClean<cr>", desc = "LaTeX Clean" },
-      { "<leader>lt", "<cmd>VimtexTocToggle<cr>", desc = "LaTeX TOC" },
+      { "<leader>uc", "<cmd>VimtexCompile<cr>", desc = "LaTeX Compile" },
+      { "<leader>ul", "<cmd>VimtexView<cr>", desc = "LaTeX View" },
+      { "<leader>ux", "<cmd>VimtexClean<cr>", desc = "LaTeX Clean" },
     },
   },
 
@@ -42,8 +41,8 @@ return {
       require("typst-preview").update()
     end,
     keys = {
-      { "<leader>tp", "<cmd>TypstPreview<cr>", desc = "Typst Preview" },
-      { "<leader>ts", "<cmd>TypstPreviewStop<cr>", desc = "Typst Preview Stop" },
+      { "<leader>ut", "<cmd>TypstPreview<cr>", desc = "Typst Preview" },
+      { "<leader>us", "<cmd>TypstPreviewStop<cr>", desc = "Typst Preview Stop" },
     },
   },
 }
