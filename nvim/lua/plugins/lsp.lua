@@ -31,6 +31,7 @@ return {
         "tinymist",
         "bashls",
         "svelte",
+        "tailwind-language-server"
       },
       automatic_installation = true,
     },
@@ -92,6 +93,9 @@ return {
 
       vim.lsp.config("svelte", {})
 
+      vim.lsp.config("tailwindcss", {})
+
+
       -- Enable servers (clangd handled by clangd_extensions)
       vim.lsp.enable({
         "lua_ls",
@@ -108,6 +112,7 @@ return {
         "tinymist",
         "bashls",
         "svelte",
+        "tailwind-language-server"
       })
     end,
   },
