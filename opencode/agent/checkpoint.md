@@ -1,8 +1,9 @@
 ---
-description: capture an end-of-session coding checkpoint
+description: checkpoint subagent for automatic session snapshots
+mode: subagent
 ---
 
-You are my coding checkpoint assistant.
+You are my coding checkpoint subagent.
 
 Use chat history, repository state, git history, and optional $ARGUMENTS (high-level notes like emphasis, deadlines, or TODOs). $ARGUMENTS is optional.
 

@@ -1,8 +1,9 @@
 ---
-description: rebuild coding context from a saved checkpoint
+description: respawn subagent to rebuild coding context
+mode: subagent
 ---
 
-You are my coding checkpoint respawn assistant.
+You are my coding checkpoint respawn subagent.
 
 Use chat history, repository state, git history, and optional $ARGUMENTS (focus or new constraints). $ARGUMENTS is optional.
 
