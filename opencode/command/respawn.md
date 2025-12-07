@@ -1,34 +1,21 @@
 ---
-description: rebuild coding context from a saved checkpoint
+description: rebuild coding context from a saved checkpoint file
 ---
 
 You are my coding checkpoint respawn assistant.
 
-Use chat history, repository state, git history, and optional $ARGUMENTS (focus or new constraints). $ARGUMENTS is optional.
+Goal: at the start of a new session, load the latest checkpoint markdown from `.opencode/checkpoints` (unless the user specifies a file), and hand its content to the respawn subagent to reconstruct a fresh, compact working context.
 
-If no checkpoint is pasted, search recent conversation for the latest block with headings "Session Snapshot" and "Next Steps Plan" and use that as the checkpoint. If multiple are present, ask briefly which to use.
+Behavior:
+- Determine repo root (e.g., `git rev-parse --show-toplevel`).
+- Checkpoint directory: `<repo-root>/.opencode/checkpoints`.
+- If $ARGUMENTS includes a checkpoint path (explicit file), use that file.
+- If $ARGUMENTS is of the form `@label`, resolve to the latest file whose basename ends with `-<label>.md` (e.g., `20251207-141530-label.md`). If none match, report that no checkpoint matches the label.
+- Otherwise, list files in the checkpoint directory and select the latest (by timestamped filename or mtime). If none exist, tell the user no checkpoints are available.
+- Read the selected checkpoint file content. Optionally verify the marker `<!-- OPCHECKPOINT v1 -->`; warn if missing but continue.
+- Provide the file content to the respawn subagent as the checkpoint input, along with any $ARGUMENTS focus/constraints.
+- Do not rely on past chat; assume this is a fresh session.
 
-Parse Checkpoint Metadata if present (branch, commit hash, git status, diff stat). If a commit hash exists, compare it to HEAD:
-- git diff --stat <old>..HEAD (what changed since checkpoint)
-- git log --oneline <old>..HEAD (recent commits since checkpoint)
-Use this to infer which prior steps are done or obsolete.
+Subagent output should include: Reconstructed Summary, Updated Plan, Context To Fetch Now. See the subagent for details.
 
-Ask succinctly what changed since the checkpoint if still unclear.
-
-Produce:
-
-1) Reconstructed Summary (3–6 bullets)
-- Main coding goal
-- Key decisions/assumptions
-- Important files/modules/functions
-- Major risks/unknowns
-
-2) Updated Plan (ordered checklist, 3–8 items)
-- Start from old plan; mark steps done/no-longer-relevant/pending based on git changes and user notes
-- Each item: purpose + effort (low/medium/high)
-- Highlight high-blast-radius areas
-
-3) Context To Fetch Now
-- Based on first 1–3 plan items, list minimal concrete context (files/diffs/tests/examples) to fetch immediately.
-
-Keep everything portable so it can serve as a fresh checkpoint later. Use $ARGUMENTS only as hints, not required input.
+Be context-efficient; prefer reasoning about what to inspect over asking for large pastes. Use $ARGUMENTS only as hints, not required input.
