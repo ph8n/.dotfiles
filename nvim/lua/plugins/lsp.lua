@@ -16,6 +16,7 @@ return {
     dependencies = { "mason.nvim" },
     opts = {
       ensure_installed = {
+        "copilot-language-server",
         "clangd",
         "lua_ls",
         "rust_analyzer",
