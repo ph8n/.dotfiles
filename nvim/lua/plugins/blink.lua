@@ -5,7 +5,6 @@ return {
     event = "InsertEnter",
     dependencies = {
       "rafamadriz/friendly-snippets",
-      "fang2hou/blink-copilot",
     },
     opts = {
       keymap = { preset = "enter" },
@@ -16,7 +15,7 @@ return {
         documentation = { auto_show = true },
       },
       sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+        default = { "lsp", "path", "snippets", "buffer"},
       },
       fuzzy = { implementation = "prefer_rust_with_warning" },
     },

@@ -16,7 +16,6 @@ return {
     dependencies = { "mason.nvim" },
     opts = {
       ensure_installed = {
-        "copilot-language-server",
         "clangd",
         "lua_ls",
         "rust_analyzer",
@@ -32,7 +31,8 @@ return {
         "tinymist",
         "bashls",
         "svelte",
-        "tailwindcss"
+        "tailwindcss",
+        "copilot",
       },
       automatic_installation = true,
     },
@@ -96,6 +96,7 @@ return {
 
       vim.lsp.config("tailwindcss", {})
 
+      vim.lsp.config("copilot", {})
 
       -- Enable servers (clangd handled by clangd_extensions)
       vim.lsp.enable({
@@ -113,7 +114,8 @@ return {
         "tinymist",
         "bashls",
         "svelte",
-        "tailwindcss"
+        "tailwindcss",
+        "copilot",
       })
     end,
   },

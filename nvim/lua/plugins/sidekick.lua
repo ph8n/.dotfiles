@@ -1,7 +1,7 @@
 return {
   "folke/sidekick.nvim",
+  lazy = false, -- Ensure it loads eagerly
   opts = {
-    -- add any options here
     cli = {
       mux = {
         backend = "tmux",
