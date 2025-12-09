@@ -33,6 +33,7 @@ return {
         "svelte",
         "tailwindcss",
         "copilot",
+        "html",
       },
       automatic_installation = true,
     },
@@ -97,6 +98,7 @@ return {
       vim.lsp.config("tailwindcss", {})
 
       vim.lsp.config("copilot", {})
+      vim.lsp.config("html", {})
 
       -- Enable servers (clangd handled by clangd_extensions)
       vim.lsp.enable({
@@ -116,6 +118,7 @@ return {
         "svelte",
         "tailwindcss",
         "copilot",
+        "html",
       })
     end,
   },
