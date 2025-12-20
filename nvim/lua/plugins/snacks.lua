@@ -1,3 +1,45 @@
+local function preview_cmd(cmd)
+  local ok = pcall(vim.cmd, cmd)
+  if not ok then
+    vim.notify("Preview command not available: " .. cmd, vim.log.levels.WARN)
+  end
+end
+
+local function preview_primary()
+  local ft = vim.bo.filetype
+  if ft == "markdown" then
+    preview_cmd("MarkdownPreviewToggle")
+  elseif ft == "typst" then
+    preview_cmd("TypstPreview")
+  elseif ft == "tex" then
+    preview_cmd("VimtexView")
+  else
+    vim.notify("No preview action for filetype: " .. ft, vim.log.levels.INFO)
+  end
+end
+
+local function preview_stop()
+  local ft = vim.bo.filetype
+  if ft == "markdown" then
+    preview_cmd("MarkdownPreviewStop")
+  elseif ft == "typst" then
+    preview_cmd("TypstPreviewStop")
+  elseif ft == "tex" then
+    preview_cmd("VimtexClean")
+  else
+    vim.notify("No preview action for filetype: " .. ft, vim.log.levels.INFO)
+  end
+end
+
+local function preview_compile()
+  local ft = vim.bo.filetype
+  if ft == "tex" then
+    preview_cmd("VimtexCompile")
+  else
+    vim.notify("LaTeX compile only applies to tex buffers", vim.log.levels.INFO)
+  end
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -61,6 +103,15 @@ return {
     -- Zen
     { "<leader>z", function() Snacks.zen() end, desc = "Zen Mode" },
     { "<leader>Z", function() Snacks.zen.zoom() end, desc = "Zoom" },
+
+    -- Preview (Markdown/Typst/LaTeX/Diff)
+    { "<leader>pp", preview_primary, desc = "Preview Toggle/View" },
+    { "<leader>ps", preview_stop, desc = "Preview Stop/Clean" },
+    { "<leader>pc", preview_compile, desc = "LaTeX Compile" },
+    { "<leader>.", "<cmd>CodeDiff<cr>", desc = "Diff Explorer" },
+    { "<leader>p.", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff File vs HEAD" },
+    { "<leader>gd", "<cmd>CodeDiff<cr>", desc = "Diff Explorer" },
+    { "<leader>gD", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff File vs HEAD" },
   },
   init = function()
     vim.api.nvim_create_autocmd("User", {

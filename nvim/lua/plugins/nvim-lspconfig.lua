@@ -10,10 +10,13 @@ return {
     inlay_hints = { enabled = true },
   },
   config = function()
+    vim.api.nvim_set_hl(0, "LspInlayHint", { link = "Comment" })
+
     -- LSP keymaps on attach
     vim.api.nvim_create_autocmd("LspAttach", {
       callback = function(args)
         local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
         local map = function(mode, lhs, rhs, desc)
           vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
         end
@@ -24,6 +27,18 @@ return {
         map("i", "<C-k>", vim.lsp.buf.signature_help, "Signature Help")
         map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
         map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
+
+        if client and client.supports_method("textDocument/inlayHint") then
+          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+        end
+
+        if client and client.name == "clangd" then
+          map("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", "Clangd Switch Source/Header")
+          map("n", "<leader>cA", "<cmd>ClangdAST<cr>", "Clangd AST")
+          map("n", "<leader>ct", "<cmd>ClangdTypeHierarchy<cr>", "Clangd Type Hierarchy")
+          map("n", "<leader>cs", "<cmd>ClangdSymbolInfo<cr>", "Clangd Symbol Info")
+          map("n", "<leader>cm", "<cmd>ClangdMemoryUsage<cr>", "Clangd Memory Usage")
+        end
       end,
     })
 
