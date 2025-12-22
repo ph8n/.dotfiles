@@ -27,6 +27,7 @@ return {
         map("i", "<C-k>", vim.lsp.buf.signature_help, "Signature Help")
         map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
         map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
+        map("n", "<leader>cf", function() vim.lsp.buf.format({ async = true }) end, "Format")
 
         if client and client.supports_method("textDocument/inlayHint") then
           vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
