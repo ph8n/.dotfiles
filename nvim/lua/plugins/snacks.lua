@@ -108,10 +108,6 @@ return {
     { "<leader>pp", preview_primary, desc = "Preview Toggle/View" },
     { "<leader>ps", preview_stop, desc = "Preview Stop/Clean" },
     { "<leader>pc", preview_compile, desc = "LaTeX Compile" },
-    { "<leader>.", "<cmd>CodeDiff<cr>", desc = "Diff Explorer" },
-    { "<leader>p.", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff File vs HEAD" },
-    { "<leader>gd", "<cmd>CodeDiff<cr>", desc = "Diff Explorer" },
-    { "<leader>gD", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff File vs HEAD" },
   },
   init = function()
     vim.api.nvim_create_autocmd("User", {
