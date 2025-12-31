@@ -1,44 +1,44 @@
 return {
   "mfussenegger/nvim-lint",
-  event = { "BufReadPost", "BufNewFile" },
+  event = { "BufReadPost", "BufNewFile", "BufWritePost" }, -- add BufWritePost for consistency
   config = function()
     local lint = require("lint")
 
-    local by_ft = {}
-    local function add(filetypes, linters)
-      for _, filetype in ipairs(filetypes) do
-        by_ft[filetype] = linters
-      end
-    end
-
-    add({ "javascript", "javascriptreact", "typescript", "typescriptreact", "svelte" }, { "eslint_d" })
-    add({ "python" }, { "ruff" })
-    add({ "lua" }, { "luacheck" })
-    add({ "c", "cpp", "objc", "objcpp" }, { "clangtidy" })
-    add({ "rust" }, { "clippy" })
-    add({ "go" }, { "golangcilint" })
-    add({ "zig" }, { "zig" })
-    add({ "json" }, { "jsonlint" })
-    add({ "yaml" }, { "yamllint" })
-    add({ "toml" }, { "tombi" })
-    add({ "markdown" }, { "markdownlint" })
-    add({ "tex", "plaintex" }, { "chktex" })
-    add({ "typst" }, { "typos" })
-    add({ "sh", "bash", "zsh" }, { "shellcheck" })
-    add({ "html" }, { "htmlhint" })
-
-    lint.linters_by_ft = by_ft
+    lint.linters_by_ft = {
+      lua = { "luacheck" },
+      python = { "ruff" },
+      rust = { "clippy" },
+      go = { "golangcilint" },
+      c = { "clangtidy" },
+      cpp = { "clangtidy" },
+      objc = { "clangtidy" },
+      objcpp = { "clangtidy" },
+      json = { "jsonlint" },
+      yaml = { "yamllint" },
+      toml = { "tombi" },
+      markdown = { "markdownlint" },
+      tex = { "chktex" },
+      plaintex = { "chktex" },
+      typst = { "typos" },
+      sh = { "shellcheck" },
+      bash = { "shellcheck" },
+      zsh = { "shellcheck" },
+      html = { "htmlhint" },
+    }
 
     local lint_augroup = vim.api.nvim_create_augroup("Lint", { clear = true })
-    vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
+    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
       group = lint_augroup,
       callback = function()
-        lint.try_lint()
+        -- defer to avoid blocking UI
+        vim.defer_fn(function()
+          lint.try_lint(nil, { ignore_errors = true })
+        end, 1)
       end,
     })
 
     vim.keymap.set("n", "<leader>cl", function()
-      lint.try_lint()
+      lint.try_lint(nil, { ignore_errors = true })
     end, { desc = "Lint" })
   end,
 }
