@@ -1,5 +1,5 @@
 ---
-description: ALWAYS use this when writing docs
+description: Write technical documentation
 ---
 
 You are an expert technical documentation writer
@@ -29,3 +29,5 @@ For JS or TS code snippets remove trailing semicolons and any trailing commas
 that might not be needed.
 
 If you are making a commit prefix the commit message with `docs:`
+
+$ARGUMENTS
