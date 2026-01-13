@@ -1,0 +1,27 @@
+return {
+  "williamboman/mason-lspconfig.nvim",
+  dependencies = { "mason.nvim" },
+  opts = {
+    ensure_installed = {
+      "clangd",
+      "lua_ls",
+      "rust_analyzer",
+      "basedpyright",
+      "ruff",
+      "gopls",
+      "zls",
+      "jsonls",
+      "yamlls",
+      "taplo",
+      "marksman",
+      "texlab",
+      "tinymist",
+      "bashls",
+      "svelte",
+      "tailwindcss",
+      "copilot",
+      "html",
+    },
+    automatic_installation = true,
+  },
+}

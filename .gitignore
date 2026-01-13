@@ -1,0 +1,25 @@
+*.
+.DS_Store
+
+github-copilot
+
+# Backup files
+*.bak
+
+# Sensitive data - credentials, keys, tokens
+*.env
+*.pem
+*.key
+*.token
+*secret*
+*credentials*
+*password*
+
+# Database files
+*.mdb
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
