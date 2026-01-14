@@ -3,6 +3,7 @@ return {
   dependencies = { "mason.nvim" },
   opts = {
     ensure_installed = {
+      "ast_grep",
       "clangd",
       "lua_ls",
       "rust_analyzer",
