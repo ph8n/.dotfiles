@@ -1,7 +1,11 @@
 [tools]
 bun = "latest"
+conan = "latest"
 deno = "latest"
 go = "latest"
 node = "latest"
+ocaml = "latest"
+opam = "latest"
 python = "latest"
+uv = "latest"
 zig = "latest"
