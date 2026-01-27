@@ -37,6 +37,6 @@ require("gitsigns").setup({
     vim.keymap.set("n", "]h", gs.next_hunk, { buffer = bufnr })
     vim.keymap.set("n", "[h", gs.prev_hunk, { buffer = bufnr })
 
-    vim.keymap.set("n", "<leader>hp", gs.preview_hunk, { buffer = bufnr })
+    vim.keymap.set("n", "<leader>g", gs.preview_hunk, { buffer = bufnr })
   end,
 })
