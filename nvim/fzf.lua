@@ -13,5 +13,5 @@ fzf.setup({
 
 -- keymaps
 vim.keymap.set("n", "<leader>f", fzf.files)
-vim.keymap.set("n", "<leader>g", fzf.live_grep)
+vim.keymap.set("n", "<leader>/", fzf.live_grep)
 vim.keymap.set("n", "<leader>,", fzf.buffers)

@@ -58,5 +58,13 @@ vim.o.relativenumber = true
 vim.o.signcolumn = "yes"
 vim.o.updatetime = 200
 vim.o.wrap = false
-vim.opt.clipboard = "unnamedplus"
-
+vim.o.clipboard = "unnamedplus"
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
+vim.o.expandtab = false
+vim.o.smarttab = true
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.cursorline = true
+vim.o.breakindent = true
