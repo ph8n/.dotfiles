@@ -38,6 +38,14 @@ require("lazy").setup({
     end,
   },
   {
+    "mason-org/mason-lspconfig.nvim",
+    opts = {},
+    dependencies = {
+      { "mason-org/mason.nvim", opts = {} },
+      "neovim/nvim-lspconfig",
+    },
+  },
+  {
 	  "lewis6991/gitsigns.nvim",
 	  config = function()
 	    dofile(vim.fn.stdpath("config") .. "/git.lua")

@@ -1,12 +1,34 @@
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local o = { buffer = ev.buf, silent = true }
+
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, o)
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, o)
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, o)
+    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, o)
+    vim.keymap.set("n", "K",  vim.lsp.buf.hover, o)
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, o)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, o)
+    vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, o)
+    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, o)
+    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, o)
+  end,
+})
+
 vim.lsp.config("clangd", {
   cmd = {
     "clangd",
     "--background-index",
     "--clang-tidy",
-    "--completion-style=none",
     "--header-insertion=never",
+		"--completion-style=detailed",
+  },
+  root_markers = {
+    "compile_commands.json",
+    ".git",
   },
 })
+
 vim.lsp.enable("clangd")
 
 vim.lsp.config("rust_analyzer", {
@@ -14,38 +36,8 @@ vim.lsp.config("rust_analyzer", {
     ["rust-analyzer"] = {
       cargo = { allFeatures = true },
       checkOnSave = false,
+      procMacro = { enable = true },
     },
   },
 })
 vim.lsp.enable("rust_analyzer")
-
-vim.lsp.config("zls", {})
-vim.lsp.enable("zls")
-
-vim.lsp.config("pyright", {
-  settings = {
-    python = {
-      analysis = {
-        typeCheckingMode = "basic",
-        autoSearchPaths = true,
-      },
-    },
-  },
-})
-vim.lsp.enable("pyright")
-
-vim.lsp.config("tsserver", {
-  init_options = {
-    preferences = {
-      includeCompletionsForModuleExports = false,
-    },
-  },
-})
-vim.lsp.enable("tsserver")
-
--- navigation-only keymaps
-vim.keymap.set("n", "gd", vim.lsp.buf.definition)
-vim.keymap.set("n", "gr", vim.lsp.buf.references)
-vim.keymap.set("n", "gi", vim.lsp.buf.implementation)
-vim.keymap.set("n", "K",  vim.lsp.buf.hover)
-vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename)
