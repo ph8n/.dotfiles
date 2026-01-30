@@ -87,7 +87,8 @@ require("lazy").setup({
     build = ":TSUpdate",
     lazy = false,
     config = function()
-      local ensure_installed = {
+      local ts = require("nvim-treesitter")
+      local parsers = {
         "c",
         "cpp",
         "rust",
@@ -108,15 +109,17 @@ require("lazy").setup({
         "asm",
         "csv",
       }
-
-      require("nvim-treesitter").setup({
-        ensure_installed = ensure_installed,
-        highlight = { enable = true },
-        indent = { enable = false },
+      ts.install(parsers, { summary = false }):wait(30000)
+      -- Enable treesitter highlighting for all filetypes
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "*",
+        callback = function(args)
+          local lang = args.match
+          pcall(vim.treesitter.start, args.buf, lang)
+        end,
       })
-
       vim.api.nvim_create_user_command("TSInstallAll", function()
-        require("nvim-treesitter").install(ensure_installed)
+        ts.install(parsers):wait(60000)
       end, { desc = "Install configured treesitter parsers" })
     end,
   },
