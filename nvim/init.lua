@@ -2,7 +2,24 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.o.termguicolors = true
 
-local mason_servers = {
+-- Core options
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.signcolumn = "yes"
+vim.o.updatetime = 200
+vim.o.wrap = false
+vim.o.clipboard = "unnamedplus"
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
+vim.o.expandtab = false
+vim.o.smarttab = true
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.cursorline = true
+
+-- Mason-managed servers (auto-installed)
+vim.g.mason_servers = {
   "asm_lsp",
   "ast_grep",
   "astro",
@@ -19,29 +36,16 @@ local mason_servers = {
   "zls",
 }
 
-vim.g.lsp_servers = {
+-- Native LSP servers (manually installed)
+vim.g.native_servers = {
   "clangd",
-  "rust_analyzer",
-  "zls",
-  "pyright",
-  "ruff",
-  "ts_ls",
-  "tailwindcss",
-  "cssls",
-  "bashls",
-  "jsonls",
-  "yamlls",
-  "lua_ls",
-  "ast_grep",
-  "astro",
-  "svelte",
   "mlir_lsp_server",
-  "asm_lsp",
+  "rust_analyzer",
 }
 
 -- lazy.nvim bootstrap
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
@@ -81,8 +85,9 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    opts = {
-      ensure_installed = {
+    lazy = false,
+    config = function()
+      local ensure_installed = {
         "c",
         "cpp",
         "rust",
@@ -97,15 +102,23 @@ require("lazy").setup({
         "astro",
         "llvm",
         "mlir",
-				"json",
-				"yaml",
-				"toml",
-				"asm",
-				"csv",
-      },
-      highlight = { enable = true },
-      indent = { enable = false },
-    },
+        "json",
+        "yaml",
+        "toml",
+        "asm",
+        "csv",
+      }
+
+      require("nvim-treesitter").setup({
+        ensure_installed = ensure_installed,
+        highlight = { enable = true },
+        indent = { enable = false },
+      })
+
+      vim.api.nvim_create_user_command("TSInstallAll", function()
+        require("nvim-treesitter").install(ensure_installed)
+      end, { desc = "Install configured treesitter parsers" })
+    end,
   },
   {
     "ibhagwan/fzf-lua",
@@ -133,7 +146,7 @@ require("lazy").setup({
   {
     "mason-org/mason-lspconfig.nvim",
     opts = {
-      ensure_installed = mason_servers,
+      ensure_installed = vim.g.mason_servers,
     },
     dependencies = {
       { "mason-org/mason.nvim", opts = {} },
@@ -201,8 +214,8 @@ require("lazy").setup({
           vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, o)
           vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, o)
           vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, o)
-          vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, o)
-          vim.keymap.set("n", "]d", vim.diagnostic.goto_next, o)
+          vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, o)
+          vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, o)
         end,
       })
 
@@ -226,27 +239,25 @@ require("lazy").setup({
         },
       })
 
-      local servers = vim.g.lsp_servers or {
-        "clangd",
-        "rust_analyzer",
-        "zls",
-        "pyright",
-        "ruff",
-        "ts_ls",
-        "tailwindcss",
-        "cssls",
-        "bashls",
-        "jsonls",
-        "yamlls",
-        "lua_ls",
-        "ast_grep",
-        "astro",
-        "svelte",
-        "mlir_lsp_server",
-        "asm_lsp",
-      }
+      vim.lsp.config("lua_ls", {
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim" } },
+            workspace = {
+              library = vim.api.nvim_get_runtime_file("", true),
+              checkThirdParty = false,
+            },
+            telemetry = { enable = false },
+          },
+        },
+      })
 
-      for _, server in ipairs(servers) do
+      for _, server in ipairs(vim.g.mason_servers) do
+        vim.lsp.enable(server)
+      end
+
+      for _, server in ipairs(vim.g.native_servers) do
         vim.lsp.enable(server)
       end
     end,
@@ -259,19 +270,3 @@ vim.filetype.add({
     mlir = "mlir",
   },
 })
-
--- Core options
-vim.o.number = true
-vim.o.relativenumber = true
-vim.o.signcolumn = "yes"
-vim.o.updatetime = 200
-vim.o.wrap = false
-vim.o.clipboard = "unnamedplus"
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
-vim.o.softtabstop = 2
-vim.o.expandtab = false
-vim.o.smarttab = true
-vim.o.autoindent = true
-vim.o.smartindent = true
-vim.o.cursorline = true
