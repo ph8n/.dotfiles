@@ -1,6 +1,5 @@
 [tools]
 bun = "latest"
-conan = "latest"
 deno = "latest"
 go = "latest"
 node = "latest"
