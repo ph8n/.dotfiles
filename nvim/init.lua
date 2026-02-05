@@ -146,6 +146,14 @@ require("lazy").setup({
       vim.keymap.set("n", "<leader>,", fzf.buffers)
     end,
   },
+	{
+		'stevearc/oil.nvim',
+		opts = {},
+		dependencies = { { "nvim-tree/nvim-web-devicons", opts = {} } },
+		lazy = false,
+
+		vim.keymap.set("n", "-", "<CMD>Oil<CR>")
+	},
   {
     "mason-org/mason-lspconfig.nvim",
     opts = {
