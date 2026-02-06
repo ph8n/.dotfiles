@@ -229,17 +229,21 @@ require("lazy").setup({
           vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, o)
         end,
       })
-
-      vim.lsp.config("clangd", {
-        cmd = {
-          "clangd",
-          "--background-index",
-          "--clang-tidy",
-          "--header-insertion=never",
-          "--completion-style=detailed",
-        },
-      })
-
+			local sdk = vim.fn.system("xcrun --show-sdk-path"):gsub("%s+", "")
+			vim.lsp.config("clangd", {
+				cmd = {
+					"clangd",
+					"--background-index",
+					"--clang-tidy",
+					"--header-insertion=never",
+					"--completion-style=detailed",
+					"--query-driver=/nix/store/*/bin/clang*",
+					"--compile-commands-dir=.",
+				},
+				cmd_env = {
+					SDKROOT = sdk,
+				},
+			})
       vim.lsp.config("rust_analyzer", {
         settings = {
           ["rust-analyzer"] = {
