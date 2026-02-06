@@ -3,11 +3,18 @@ vim.g.maplocalleader = " "
 vim.o.termguicolors = true
 
 -- Core options
+vim.o.termguicolors = true
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = "yes"
-vim.o.updatetime = 200
+vim.o.cursorline = true
 vim.o.wrap = false
+vim.o.scrolloff = 8
+vim.o.sidescrolloff = 8
+vim.o.updatetime = 250
+vim.o.timeoutlen = 300
+vim.o.lazyredraw = true
+vim.o.synmaxcol = 240
 vim.o.clipboard = "unnamedplus"
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
@@ -16,7 +23,27 @@ vim.o.expandtab = false
 vim.o.smarttab = true
 vim.o.autoindent = true
 vim.o.smartindent = true
-vim.o.cursorline = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.incsearch = true
+vim.o.hlsearch = false
+vim.o.swapfile = false
+vim.o.backup = false
+vim.o.undofile = true
+vim.o.splitbelow = true
+vim.o.splitright = true
+vim.o.completeopt = "menu,menuone,noselect"
+vim.o.redrawtime = 1500
+vim.o.list = true
+vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
+
+-- Core keymaps
+vim.keymap.set("v", "<", "<gv", { noremap = true, silent = true })
+vim.keymap.set("v", ">", ">gv", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+vim.keymap.set("x", "<leader>p", '"_dP')
 
 -- Mason-managed servers (auto-installed)
 vim.g.mason_servers = {
