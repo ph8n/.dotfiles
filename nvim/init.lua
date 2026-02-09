@@ -19,7 +19,7 @@ vim.o.clipboard = "unnamedplus"
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
-vim.o.expandtab = false
+vim.o.expandtab = true
 vim.o.smarttab = true
 vim.o.autoindent = true
 vim.o.smartindent = true
@@ -256,21 +256,18 @@ require("lazy").setup({
           vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, o)
         end,
       })
-			local sdk = vim.fn.system("xcrun --show-sdk-path"):gsub("%s+", "")
-			vim.lsp.config("clangd", {
-				cmd = {
-					"clangd",
-					"--background-index",
-					"--clang-tidy",
-					"--header-insertion=never",
-					"--completion-style=detailed",
-					"--query-driver=/nix/store/*/bin/clang*",
-					"--compile-commands-dir=.",
-				},
-				cmd_env = {
-					SDKROOT = sdk,
-				},
-			})
+      local sdk = vim.fn.system("xcrun --show-sdk-path"):gsub("%s+", "")
+      vim.lsp.config("clangd", {
+        cmd = {
+        vim.fn.expand("$HOME/opt/llvm/main/bin/clangd"),
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=never",
+        },
+        cmd_env = {
+        SDKROOT = sdk,
+        },
+      })
       vim.lsp.config("rust_analyzer", {
         settings = {
           ["rust-analyzer"] = {
