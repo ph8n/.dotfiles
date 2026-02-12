@@ -47,7 +47,6 @@ vim.keymap.set("x", "<leader>p", '"_dP')
 
 -- Mason-managed servers (auto-installed)
 vim.g.mason_servers = {
-  "asm_lsp",
   "ast_grep",
   "astro",
   "bashls",
