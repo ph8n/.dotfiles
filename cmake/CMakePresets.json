@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "llvm",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/opt/llvm/main/bin/clang",
+        "CMAKE_CXX_COMPILER": "/opt/llvm/main/bin/clang++"
+      }
+    }
+  ]
+}
