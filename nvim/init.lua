@@ -277,16 +277,12 @@ require("lazy").setup({
           vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, o)
         end,
       })
-      local sdk = vim.fn.system("xcrun --show-sdk-path"):gsub("%s+", "")
       vim.lsp.config("clangd", {
         cmd = {
-        vim.fn.expand("$HOME/opt/llvm/main/bin/clangd"),
+        vim.fn.expand("$HOME/opt/llvm/release/bin/clangd"),
         "--background-index",
         "--clang-tidy",
         "--header-insertion=never",
-        },
-        cmd_env = {
-        SDKROOT = sdk,
         },
       })
       vim.lsp.config("rust_analyzer", {
