@@ -279,10 +279,10 @@ require("lazy").setup({
       })
       vim.lsp.config("clangd", {
         cmd = {
-        vim.fn.expand("$HOME/opt/llvm/release/bin/clangd"),
-        "--background-index",
-        "--clang-tidy",
-        "--header-insertion=never",
+          "clangd",
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=never",
         },
       })
       vim.lsp.config("rust_analyzer", {
