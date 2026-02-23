@@ -1,8 +1,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.o.termguicolors = true
 
--- Core options
 vim.o.termguicolors = true
 vim.o.number = true
 vim.o.relativenumber = true
@@ -38,35 +36,31 @@ vim.o.list = true
 vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
 
 -- Core keymaps
-vim.keymap.set("v", "<", "<gv", { noremap = true, silent = true })
-vim.keymap.set("v", ">", ">gv", { noremap = true, silent = true })
+vim.keymap.set("v", "<", "<gv", { silent = true })
+vim.keymap.set("v", ">", ">gv", { silent = true })
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("x", "<leader>p", '"_dP')
 
--- Mason-managed servers (auto-installed)
-vim.g.mason_servers = {
+-- LSP servers
+local lsp_servers = {
   "ast_grep",
   "astro",
   "bashls",
+  "clangd",
   "cssls",
   "jsonls",
   "lua_ls",
+  "mlir_lsp_server",
   "pyright",
   "ruff",
+  "rust_analyzer",
   "svelte",
   "tailwindcss",
   "ts_ls",
   "yamlls",
   "zls",
-}
-
--- Native LSP servers (manually installed)
-vim.g.native_servers = {
-  "clangd",
-  "mlir_lsp_server",
-  "rust_analyzer",
 }
 
 -- lazy.nvim bootstrap
@@ -172,22 +166,13 @@ require("lazy").setup({
       vim.keymap.set("n", "<leader>,", fzf.buffers)
     end,
   },
-	{
-		'stevearc/oil.nvim',
-		opts = {},
-		dependencies = { { "nvim-tree/nvim-web-devicons", opts = {} } },
-		lazy = false,
-
-		vim.keymap.set("n", "-", "<CMD>Oil<CR>")
-	},
   {
-    "mason-org/mason-lspconfig.nvim",
-    opts = {
-      ensure_installed = vim.g.mason_servers,
-    },
-    dependencies = {
-      { "mason-org/mason.nvim", opts = {} },
-      "neovim/nvim-lspconfig",
+    "stevearc/oil.nvim",
+    opts = {},
+    dependencies = { { "nvim-tree/nvim-web-devicons", opts = {} } },
+    lazy = false,
+    keys = {
+      { "-", "<CMD>Oil<CR>", desc = "Open parent directory" },
     },
   },
   {
@@ -264,7 +249,6 @@ require("lazy").setup({
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
           local o = { buffer = ev.buf, silent = true }
-
           vim.keymap.set("n", "gd", vim.lsp.buf.definition, o)
           vim.keymap.set("n", "gD", vim.lsp.buf.declaration, o)
           vim.keymap.set("n", "gr", vim.lsp.buf.references, o)
@@ -277,6 +261,15 @@ require("lazy").setup({
           vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, o)
         end,
       })
+      vim.lsp.config("ast_grep", {
+        cmd = { "ast-grep", "lsp" },
+      })
+      vim.lsp.config("astro", {
+        cmd = { "astro-ls", "--stdio" },
+      })
+      vim.lsp.config("bashls", {
+        cmd = { "bash-language-server", "start" },
+      })
       vim.lsp.config("clangd", {
         cmd = {
           "clangd",
@@ -285,17 +278,14 @@ require("lazy").setup({
           "--header-insertion=never",
         },
       })
-      vim.lsp.config("rust_analyzer", {
-        settings = {
-          ["rust-analyzer"] = {
-            cargo = { allFeatures = true },
-            checkOnSave = false,
-            procMacro = { enable = true },
-          },
-        },
+      vim.lsp.config("cssls", {
+        cmd = { "vscode-css-language-server", "--stdio" },
       })
-
+      vim.lsp.config("jsonls", {
+        cmd = { "vscode-json-language-server", "--stdio" },
+      })
       vim.lsp.config("lua_ls", {
+        cmd = { "lua-language-server" },
         settings = {
           Lua = {
             runtime = { version = "LuaJIT" },
@@ -308,21 +298,45 @@ require("lazy").setup({
           },
         },
       })
+      vim.lsp.config("mlir_lsp_server", {
+        cmd = { "mlir-lsp-server" },
+      })
+      vim.lsp.config("pyright", {
+        cmd = { "pyright-langserver", "--stdio" },
+      })
+      vim.lsp.config("ruff", {
+        cmd = { "ruff", "server" },
+      })
+      vim.lsp.config("rust_analyzer", {
+        cmd = { "rust-analyzer" },
+        settings = {
+          ["rust-analyzer"] = {
+            cargo = { allFeatures = true },
+            checkOnSave = false,
+            procMacro = { enable = true },
+          },
+        },
+      })
+      vim.lsp.config("svelte", {
+        cmd = { "svelteserver", "--stdio" },
+      })
+      vim.lsp.config("tailwindcss", {
+        cmd = { "tailwindcss-language-server", "--stdio" },
+      })
+      vim.lsp.config("ts_ls", {
+        cmd = { "typescript-language-server", "--stdio" },
+        init_options = { hostInfo = "neovim" },
+      })
+      vim.lsp.config("yamlls", {
+        cmd = { "yaml-language-server", "--stdio" },
+      })
+      vim.lsp.config("zls", {
+        cmd = { "zls" },
+      })
 
-      for _, server in ipairs(vim.g.mason_servers) do
-        vim.lsp.enable(server)
-      end
-
-      for _, server in ipairs(vim.g.native_servers) do
+      for _, server in ipairs(lsp_servers) do
         vim.lsp.enable(server)
       end
     end,
-  },
-})
-
-vim.filetype.add({
-  extension = {
-    ll = "llvm",
-    mlir = "mlir",
   },
 })
