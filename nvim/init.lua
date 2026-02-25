@@ -272,9 +272,11 @@ require("lazy").setup({
       })
       vim.lsp.config("clangd", {
         cmd = {
+          "xcrun",
           "clangd",
           "--background-index",
           "--clang-tidy",
+          "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang,/usr/bin/cc",
           "--header-insertion=never",
         },
       })
