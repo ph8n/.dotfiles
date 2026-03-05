@@ -122,7 +122,7 @@ alt-f = 'exec-and-forget open -b com.openai.atlas'
 alt-d = 'exec-and-forget open -b com.hnc.Discord'
 alt-s = 'exec-and-forget open -b com.tinyspeck.slackmacgap'
 alt-n = 'exec-and-forget open -b notion.id'
-alt-b = 'exec-and-forget open -b md.obsidian'
+alt-b = 'exec-and-forget open -b info.sioyek.sioyek'
 alt-a = 'exec-and-forget open -b com.spotify.client'
 alt-m = 'exec-and-forget open -b com.apple.MobileSMS'
 
