@@ -4,6 +4,5 @@
         "bash": "allow",
         "webfetch": "allow"
     },
-    "$schema": "https://opencode.ai/config.json",
-    "theme": "mellow"
+    "$schema": "https://opencode.ai/config.json"
 }
