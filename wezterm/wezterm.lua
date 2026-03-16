@@ -118,6 +118,18 @@ config.keys = {
     action = workspace_switcher.switch_workspace(),
   },
   { key = ':', mods = 'CMD|SHIFT', action = workspace_switcher.switch_to_prev_workspace() },
+  {
+    key = 'r',
+    mods = 'CMD|SHIFT',
+    action = act.PromptInputLine {
+      description = 'Rename current workspace',
+      action = wezterm.action_callback(function(window, _, line)
+        if line and line ~= '' then
+          wezterm.mux.rename_workspace(window:active_workspace(), line)
+        end
+      end),
+    },
+  },
   { key = 'y', mods = 'CMD', action = act.ActivateCopyMode },
   { key = 'd', mods = 'CMD', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
   { key = 'd', mods = 'CMD|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
