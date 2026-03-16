@@ -1,26 +1,12 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
+local workspace_switcher = wezterm.plugin.require 'https://github.com/MLFlexer/smart_workspace_switcher.wezterm'
 
 local config = wezterm.config_builder()
+workspace_switcher.zoxide_path = '/Users/dp/.nix-profile/bin/zoxide'
 
-local function switch_to_workspace(window, pane, name)
-  if not name or name == '' then
-    return
-  end
-
-  window:perform_action(act.SwitchToWorkspace { name = name }, pane)
-end
-
-local function wheel_multiplier(multiplier)
-  return wezterm.action_callback(function(window, pane)
-    for _ = 1, multiplier do
-      window:perform_action(act.ScrollByCurrentEventWheelDelta, pane)
-    end
-  end)
-end
-
-wezterm.on('update-right-status', function(window, _pane)
-  window:set_right_status(' workspace:' .. window:active_workspace() .. ' ')
+wezterm.on('update-status', function(window)
+  window:set_right_status ''
 end)
 
 config.color_schemes = {
@@ -65,6 +51,7 @@ config.send_composed_key_when_right_alt_is_pressed = false
 config.window_background_opacity = 1.0
 config.macos_window_background_blur = 20
 config.default_cursor_style = 'SteadyBlock'
+config.use_fancy_tab_bar = true
 config.window_padding = {
   left = 10,
   right = 10,
@@ -72,9 +59,41 @@ config.window_padding = {
   bottom = 10,
 }
 config.window_close_confirmation = 'NeverPrompt'
-config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
+config.window_decorations = 'NONE'
 config.show_tabs_in_tab_bar = true
+config.hide_tab_bar_if_only_one_tab = false
 config.show_new_tab_button_in_tab_bar = false
+config.window_frame = {
+  font = wezterm.font { family = 'Roboto', weight = 'Bold' },
+  font_size = 11.5,
+  active_titlebar_bg = '#151515',
+  inactive_titlebar_bg = '#151515',
+  active_titlebar_fg = '#c9c7cd',
+  inactive_titlebar_fg = '#7f7d84',
+  active_titlebar_border_bottom = '#151515',
+  inactive_titlebar_border_bottom = '#151515',
+  button_fg = '#9a98a0',
+  button_bg = '#151515',
+  button_hover_fg = '#cac9dd',
+  button_hover_bg = '#1c1c1f',
+}
+config.colors = {
+  tab_bar = {
+    inactive_tab_edge = '#151515',
+    active_tab = {
+      bg_color = '#1c1c1f',
+      fg_color = '#cac9dd',
+    },
+    inactive_tab = {
+      bg_color = '#151515',
+      fg_color = '#7f7d84',
+    },
+    inactive_tab_hover = {
+      bg_color = '#1c1c1f',
+      fg_color = '#b8b6bc',
+    },
+  },
+}
 
 config.keys = {
   { key = '1', mods = 'CMD', action = act.ActivateTab(0) },
@@ -87,21 +106,19 @@ config.keys = {
   { key = '8', mods = 'CMD', action = act.ActivateTab(7) },
   { key = '9', mods = 'CMD', action = act.ActivateTab(8) },
   { key = '0', mods = 'CMD', action = act.ActivateTab(9) },
+  { key = 'n', mods = 'CMD', action = workspace_switcher.switch_workspace() },
   {
-    key = 'n',
+    key = 'f',
     mods = 'CMD',
-    action = act.PromptInputLine {
-      description = 'Enter name for new workspace',
-      action = wezterm.action_callback(function(window, pane, line)
-        switch_to_workspace(window, pane, line)
-      end),
-    },
+    action = act.Search 'CurrentSelectionOrEmptyString',
   },
   {
-    key = 'p',
+    key = ';',
     mods = 'CMD',
-    action = act.ShowLauncherArgs { flags = 'FUZZY|WORKSPACES' },
+    action = workspace_switcher.switch_workspace(),
   },
+  { key = ':', mods = 'CMD|SHIFT', action = workspace_switcher.switch_to_prev_workspace() },
+  { key = 'y', mods = 'CMD', action = act.ActivateCopyMode },
   { key = 'd', mods = 'CMD', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
   { key = 'd', mods = 'CMD|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
   { key = 'h', mods = 'CTRL', action = act.ActivatePaneDirection 'Left' },
@@ -114,21 +131,6 @@ config.keys = {
   { key = 'l', mods = 'CTRL|SHIFT', action = act.AdjustPaneSize { 'Right', 5 } },
   { key = 'w', mods = 'SUPER', action = act.CloseCurrentTab { confirm = false } },
   { key = 'w', mods = 'SHIFT|CTRL', action = act.CloseCurrentTab { confirm = false } },
-}
-
-config.mouse_bindings = {
-  {
-    event = { Down = { streak = 1, button = { WheelUp = 1 } } },
-    mods = 'NONE',
-    alt_screen = false,
-    action = wheel_multiplier(2),
-  },
-  {
-    event = { Down = { streak = 1, button = { WheelDown = 1 } } },
-    mods = 'NONE',
-    alt_screen = false,
-    action = wheel_multiplier(2),
-  },
 }
 
 return config

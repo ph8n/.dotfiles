@@ -116,7 +116,7 @@ alt-shift-l = 'move right'
 alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
-alt-semicolon = 'exec-and-forget open -b com.cmuxterm.app'
+alt-semicolon = 'exec-and-forget open -b com.github.wez.wezterm'
 alt-a = 'exec-and-forget open -b com.openai.codex'
 alt-f = 'exec-and-forget open -b app.zen-browser.zen'
 alt-d = 'exec-and-forget open -b com.hnc.Discord'
