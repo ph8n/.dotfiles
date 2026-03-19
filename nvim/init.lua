@@ -77,29 +77,40 @@ vim.opt.rtp:prepend(lazypath)
 -- Plugins
 require("lazy").setup({
   {
-    "AlexvZyl/nordic.nvim",
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
+    lazy = false,
     priority = 1000,
     config = function()
-      local nordic = require("nordic")
-
-      nordic.setup({
-        bold_keywords = false,
-        italic_comments = true,
-        reduced_blue = true,
-        bright_border = true,
-
-        transparent = {
-          bg = true,
-          float = true,
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+          terminal_colors = true,
+          dim_inactive = false,
+          styles = {
+            comments = "italic",
+          },
         },
-
-        on_highlight = function(highlights)
-          highlights.Pmenu.bg = "#191D24"
-          highlights.NormalFloat.bg = "#151515"
-        end,
+        groups = {
+          github_dark_high_contrast = {
+            StatusLine = {
+              fg = "#c9c7cd",
+              bg = "#1c1c1f",
+              style = "NONE",
+            },
+            StatusLineNC = {
+              fg = "#7f7d84",
+              bg = "#151515",
+              style = "NONE",
+            },
+            Pmenu = { bg = "#151515" },
+            NormalFloat = { bg = "#151515" },
+            FloatBorder = { bg = "#151515" },
+          },
+        },
       })
 
-      vim.cmd.colorscheme("nordic")
+      vim.cmd.colorscheme("github_dark_high_contrast")
     end,
   },
   {
