@@ -54,6 +54,7 @@ local lsp_servers = {
   "lua_ls",
   "mlir_lsp_server",
   "pyright",
+  "racket_langserver",
   "ruff",
   "rust_analyzer",
   "svelte",
