@@ -46,10 +46,10 @@ config.show_tabs_in_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = false
 config.show_new_tab_button_in_tab_bar = false
 config.window_padding = {
-  left = 10,
-  right = 10,
-  top = 10,
-  bottom = 10,
+  left = 20,
+  right = 20,
+  top = 20,
+  bottom = 20,
 }
 config.window_close_confirmation = 'NeverPrompt'
 
