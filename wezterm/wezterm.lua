@@ -53,6 +53,15 @@ config.window_padding = {
 }
 config.window_close_confirmation = 'NeverPrompt'
 
+local rename_tab = act.PromptInputLine {
+  description = 'Rename tab',
+  action = wezterm.action_callback(function(window, _, line)
+    if line then
+      window:active_tab():set_title(line)
+    end
+  end),
+}
+
 config.keys = {
   { key = 'd', mods = 'CMD', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
   { key = 'd', mods = 'CMD|SHIFT', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
@@ -62,6 +71,7 @@ config.keys = {
   { key = 'l', mods = 'CTRL', action = act.ActivatePaneDirection 'Right' },
   { key = 'h', mods = 'CMD|SHIFT', action = act.ActivateTabRelative(-1) },
   { key = 'l', mods = 'CMD|SHIFT', action = act.ActivateTabRelative(1) },
+  { key = 'r', mods = 'CMD', action = rename_tab },
   { key = '1', mods = 'CMD', action = act.ActivateTab(0) },
   { key = '2', mods = 'CMD', action = act.ActivateTab(1) },
   { key = '3', mods = 'CMD', action = act.ActivateTab(2) },
