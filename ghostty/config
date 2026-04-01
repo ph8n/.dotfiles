@@ -14,30 +14,12 @@ background-blur-radius = 20
 cursor-style = block
 
 window-padding-balance = true
-window-padding-x = 20
-window-padding-y = 20
+window-padding-x = 10
+window-padding-y = 10
 
 clipboard-read = allow
 clipboard-write = allow
 
 confirm-close-surface = false
 
-# Minimal native tabs + split workflow
-keybind = cmd+d=new_split:right
-keybind = cmd+shift+d=new_split:down
-keybind = performable:ctrl+h=goto_split:left
-keybind = performable:ctrl+j=goto_split:down
-keybind = performable:ctrl+k=goto_split:up
-keybind = performable:ctrl+l=goto_split:right
-keybind = cmd+shift+h=previous_tab
-keybind = cmd+shift+l=next_tab
-keybind = cmd+1=goto_tab:1
-keybind = cmd+2=goto_tab:2
-keybind = cmd+3=goto_tab:3
-keybind = cmd+4=goto_tab:4
-keybind = cmd+5=goto_tab:5
-keybind = cmd+6=goto_tab:6
-keybind = cmd+7=goto_tab:7
-keybind = cmd+8=goto_tab:8
-keybind = cmd+9=goto_tab:9
-keybind = cmd+0=goto_tab:10
+shell-integration-features = sudo,ssh-terminfo,ssh-env
