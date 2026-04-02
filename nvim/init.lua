@@ -35,6 +35,19 @@ vim.o.redrawtime = 1500
 vim.o.list = true
 vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
 
+if vim.list == nil then
+  vim.list = {}
+end
+
+if vim.list.unique == nil then
+  -- nvim-treesitter main started requiring vim.list.unique before Nvim 0.12.
+  function vim.list.unique(items)
+    local deduped = vim.deepcopy(items)
+    table.sort(deduped)
+    return vim.fn.uniq(deduped)
+  end
+end
+
 -- Core keymaps
 vim.keymap.set("v", "<", "<gv", { silent = true })
 vim.keymap.set("v", ">", ">gv", { silent = true })
@@ -116,6 +129,7 @@ require("lazy").setup({
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
     build = ":TSUpdate",
     lazy = false,
     config = function()
