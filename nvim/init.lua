@@ -73,7 +73,6 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
-  gh("neovim/nvim-lspconfig"),
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
@@ -209,83 +208,6 @@ local lsp_servers = {
   "zls",
 }
 
-local lsp_configs = {
-  ast_grep = {
-    cmd = { "ast-grep", "lsp" },
-  },
-  astro = {
-    cmd = { "astro-ls", "--stdio" },
-  },
-  bashls = {
-    cmd = { "bash-language-server", "start" },
-  },
-  clangd = {
-    cmd = {
-      "xcrun",
-      "clangd",
-      "--background-index",
-      "--clang-tidy",
-      "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang,/usr/bin/cc",
-      "--header-insertion=never",
-    },
-  },
-  cssls = {
-    cmd = { "vscode-css-language-server", "--stdio" },
-  },
-  jsonls = {
-    cmd = { "vscode-json-language-server", "--stdio" },
-  },
-  lua_ls = {
-    cmd = { "lua-language-server" },
-    settings = {
-      Lua = {
-        runtime = { version = "LuaJIT" },
-        diagnostics = { globals = { "vim" } },
-        workspace = {
-          library = vim.api.nvim_get_runtime_file("", true),
-          checkThirdParty = false,
-        },
-        telemetry = { enable = false },
-      },
-    },
-  },
-  mlir_lsp_server = {
-    cmd = { "mlir-lsp-server" },
-  },
-  pyright = {
-    cmd = { "pyright-langserver", "--stdio" },
-  },
-  ruff = {
-    cmd = { "ruff", "server" },
-  },
-  rust_analyzer = {
-    cmd = { "rust-analyzer" },
-    settings = {
-      ["rust-analyzer"] = {
-        cargo = { allFeatures = true },
-        checkOnSave = false,
-        procMacro = { enable = true },
-      },
-    },
-  },
-  svelte = {
-    cmd = { "svelteserver", "--stdio" },
-  },
-  tailwindcss = {
-    cmd = { "tailwindcss-language-server", "--stdio" },
-  },
-  ts_ls = {
-    cmd = { "typescript-language-server", "--stdio" },
-    init_options = { hostInfo = "neovim" },
-  },
-  yamlls = {
-    cmd = { "yaml-language-server", "--stdio" },
-  },
-  zls = {
-    cmd = { "zls" },
-  },
-}
-
 vim.api.nvim_create_autocmd("LspAttach", {
   group = augroup("axiom_lsp", { clear = true }),
   callback = function(ev)
@@ -313,9 +235,40 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-for name, config in pairs(lsp_configs) do
-  vim.lsp.config(name, config)
-end
+vim.lsp.config("clangd", {
+  cmd = {
+    "xcrun",
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang,/usr/bin/cc",
+    "--header-insertion=never",
+  },
+})
+
+vim.lsp.config("lua_ls", {
+  settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" },
+      diagnostics = { globals = { "vim" } },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+      telemetry = { enable = false },
+    },
+  },
+})
+
+vim.lsp.config("rust_analyzer", {
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = { allFeatures = true },
+      checkOnSave = false,
+      procMacro = { enable = true },
+    },
+  },
+})
 
 for _, server in ipairs(lsp_servers) do
   vim.lsp.enable(server)
