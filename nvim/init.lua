@@ -134,10 +134,6 @@ local treesitter_parsers = {
 
 local ok_treesitter, treesitter = pcall(require, "nvim-treesitter")
 if ok_treesitter then
-  pcall(function()
-    treesitter.install(treesitter_parsers, { summary = false }):wait(30000)
-  end)
-
   vim.api.nvim_create_autocmd("FileType", {
     group = augroup("axiom_treesitter", { clear = true }),
     callback = function(args)
@@ -166,11 +162,10 @@ map("n", "<leader>f", fzf.files, { desc = "Find files" })
 map("n", "<leader>/", fzf.live_grep, { desc = "Live grep" })
 map("n", "<leader>,", fzf.buffers, { desc = "List buffers" })
 
-require("oil").setup({})
+local oil = require("oil")
+oil.setup()
 
-map("n", "-", function()
-  require("oil").open()
-end, { desc = "Open parent directory" })
+map("n", "-", oil.open, { desc = "Open parent directory" })
 
 require("gitsigns").setup({
   signs = {
@@ -180,23 +175,10 @@ require("gitsigns").setup({
     topdelete = { text = "‾" },
     changedelete = { text = "~" },
   },
-  signcolumn = true,
-  numhl = false,
-  linehl = false,
-  word_diff = false,
-  current_line_blame = false,
-  watch_gitdir = {
-    interval = 1000,
-    follow_files = true,
-  },
   update_debounce = 200,
-  max_file_length = 40000,
   preview_config = {
     border = "single",
-    style = "minimal",
-    relative = "cursor",
     row = 1,
-    col = 1,
   },
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns
@@ -227,6 +209,83 @@ local lsp_servers = {
   "zls",
 }
 
+local lsp_configs = {
+  ast_grep = {
+    cmd = { "ast-grep", "lsp" },
+  },
+  astro = {
+    cmd = { "astro-ls", "--stdio" },
+  },
+  bashls = {
+    cmd = { "bash-language-server", "start" },
+  },
+  clangd = {
+    cmd = {
+      "xcrun",
+      "clangd",
+      "--background-index",
+      "--clang-tidy",
+      "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang,/usr/bin/cc",
+      "--header-insertion=never",
+    },
+  },
+  cssls = {
+    cmd = { "vscode-css-language-server", "--stdio" },
+  },
+  jsonls = {
+    cmd = { "vscode-json-language-server", "--stdio" },
+  },
+  lua_ls = {
+    cmd = { "lua-language-server" },
+    settings = {
+      Lua = {
+        runtime = { version = "LuaJIT" },
+        diagnostics = { globals = { "vim" } },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true),
+          checkThirdParty = false,
+        },
+        telemetry = { enable = false },
+      },
+    },
+  },
+  mlir_lsp_server = {
+    cmd = { "mlir-lsp-server" },
+  },
+  pyright = {
+    cmd = { "pyright-langserver", "--stdio" },
+  },
+  ruff = {
+    cmd = { "ruff", "server" },
+  },
+  rust_analyzer = {
+    cmd = { "rust-analyzer" },
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = { allFeatures = true },
+        checkOnSave = false,
+        procMacro = { enable = true },
+      },
+    },
+  },
+  svelte = {
+    cmd = { "svelteserver", "--stdio" },
+  },
+  tailwindcss = {
+    cmd = { "tailwindcss-language-server", "--stdio" },
+  },
+  ts_ls = {
+    cmd = { "typescript-language-server", "--stdio" },
+    init_options = { hostInfo = "neovim" },
+  },
+  yamlls = {
+    cmd = { "yaml-language-server", "--stdio" },
+  },
+  zls = {
+    cmd = { "zls" },
+  },
+}
+
 vim.api.nvim_create_autocmd("LspAttach", {
   group = augroup("axiom_lsp", { clear = true }),
   callback = function(ev)
@@ -254,95 +313,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.lsp.config("ast_grep", {
-  cmd = { "ast-grep", "lsp" },
-})
-
-vim.lsp.config("astro", {
-  cmd = { "astro-ls", "--stdio" },
-})
-
-vim.lsp.config("bashls", {
-  cmd = { "bash-language-server", "start" },
-})
-
-vim.lsp.config("clangd", {
-  cmd = {
-    "xcrun",
-    "clangd",
-    "--background-index",
-    "--clang-tidy",
-    "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang,/usr/bin/cc",
-    "--header-insertion=never",
-  },
-})
-
-vim.lsp.config("cssls", {
-  cmd = { "vscode-css-language-server", "--stdio" },
-})
-
-vim.lsp.config("jsonls", {
-  cmd = { "vscode-json-language-server", "--stdio" },
-})
-
-vim.lsp.config("lua_ls", {
-  cmd = { "lua-language-server" },
-  settings = {
-    Lua = {
-      runtime = { version = "LuaJIT" },
-      diagnostics = { globals = { "vim" } },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file("", true),
-        checkThirdParty = false,
-      },
-      telemetry = { enable = false },
-    },
-  },
-})
-
-vim.lsp.config("mlir_lsp_server", {
-  cmd = { "mlir-lsp-server" },
-})
-
-vim.lsp.config("pyright", {
-  cmd = { "pyright-langserver", "--stdio" },
-})
-
-vim.lsp.config("ruff", {
-  cmd = { "ruff", "server" },
-})
-
-vim.lsp.config("rust_analyzer", {
-  cmd = { "rust-analyzer" },
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = { allFeatures = true },
-      checkOnSave = false,
-      procMacro = { enable = true },
-    },
-  },
-})
-
-vim.lsp.config("svelte", {
-  cmd = { "svelteserver", "--stdio" },
-})
-
-vim.lsp.config("tailwindcss", {
-  cmd = { "tailwindcss-language-server", "--stdio" },
-})
-
-vim.lsp.config("ts_ls", {
-  cmd = { "typescript-language-server", "--stdio" },
-  init_options = { hostInfo = "neovim" },
-})
-
-vim.lsp.config("yamlls", {
-  cmd = { "yaml-language-server", "--stdio" },
-})
-
-vim.lsp.config("zls", {
-  cmd = { "zls" },
-})
+for name, config in pairs(lsp_configs) do
+  vim.lsp.config(name, config)
+end
 
 for _, server in ipairs(lsp_servers) do
   vim.lsp.enable(server)
