@@ -117,8 +117,6 @@ alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
 alt-semicolon = 'exec-and-forget open -b com.cmuxterm.app'
-alt-c = 'exec-and-forget open -b com.openai.codex'
-alt-o = 'exec-and-forget open -b ai.opencode.desktop'
 alt-f = 'exec-and-forget open -b app.zen-browser.zen'
 alt-d = 'exec-and-forget open -b com.hnc.Discord'
 alt-s = 'exec-and-forget open -b com.tinyspeck.slackmacgap'
@@ -126,7 +124,7 @@ alt-n = 'exec-and-forget open -b notion.id'
 alt-b = 'exec-and-forget open -b info.sioyek.sioyek'
 alt-p = 'exec-and-forget open -b com.spotify.client'
 alt-m = 'exec-and-forget open -b com.apple.MobileSMS'
-alt-i = 'exec-and-forget open -b com.apple.mail'
+alt-e = 'exec-and-forget open -b com.apple.mail'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 alt-1 = 'workspace 1'
