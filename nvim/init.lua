@@ -73,6 +73,7 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
+  gh("sindrets/diffview.nvim"),
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
