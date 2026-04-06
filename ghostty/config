@@ -22,4 +22,9 @@ clipboard-write = allow
 
 confirm-close-surface = false
 
+keybind = performable:ctrl+h=goto_split:left
+keybind = performable:ctrl+j=goto_split:down
+keybind = performable:ctrl+k=goto_split:up
+keybind = performable:ctrl+l=goto_split:right
+
 shell-integration-features = sudo,ssh-terminfo,ssh-env
