@@ -1,0 +1,144 @@
+// Minimal native Zellij: tabs only, no outer pane borders, neutral UI.
+default_layout "minimal"
+simplified_ui true
+theme "minimal_gray"
+pane_frames false
+mouse_mode false
+mouse_hover_effects false
+show_startup_tips false
+show_release_notes false
+
+ui {
+    pane_frames {
+        hide_session_name true
+    }
+}
+
+themes {
+    minimal_gray {
+        text_unselected {
+            base 168 168 168
+            background 22 22 22
+            emphasis_0 168 168 168
+            emphasis_1 168 168 168
+            emphasis_2 168 168 168
+            emphasis_3 168 168 168
+        }
+        text_selected {
+            base 232 232 232
+            background 32 32 32
+            emphasis_0 232 232 232
+            emphasis_1 232 232 232
+            emphasis_2 232 232 232
+            emphasis_3 232 232 232
+        }
+        ribbon_selected {
+            base 238 238 238
+            background 46 46 46
+            emphasis_0 238 238 238
+            emphasis_1 238 238 238
+            emphasis_2 238 238 238
+            emphasis_3 238 238 238
+        }
+        ribbon_unselected {
+            base 144 144 144
+            background 22 22 22
+            emphasis_0 144 144 144
+            emphasis_1 144 144 144
+            emphasis_2 144 144 144
+            emphasis_3 144 144 144
+        }
+        table_title {
+            base 220 220 220
+            background 0
+            emphasis_0 220 220 220
+            emphasis_1 220 220 220
+            emphasis_2 220 220 220
+            emphasis_3 220 220 220
+        }
+        table_cell_selected {
+            base 232 232 232
+            background 32 32 32
+            emphasis_0 232 232 232
+            emphasis_1 232 232 232
+            emphasis_2 232 232 232
+            emphasis_3 232 232 232
+        }
+        table_cell_unselected {
+            base 168 168 168
+            background 22 22 22
+            emphasis_0 168 168 168
+            emphasis_1 168 168 168
+            emphasis_2 168 168 168
+            emphasis_3 168 168 168
+        }
+        list_selected {
+            base 232 232 232
+            background 32 32 32
+            emphasis_0 232 232 232
+            emphasis_1 232 232 232
+            emphasis_2 232 232 232
+            emphasis_3 232 232 232
+        }
+        list_unselected {
+            base 168 168 168
+            background 22 22 22
+            emphasis_0 168 168 168
+            emphasis_1 168 168 168
+            emphasis_2 168 168 168
+            emphasis_3 168 168 168
+        }
+        frame_unselected {
+            base 70 70 70
+            background 0
+            emphasis_0 70 70 70
+            emphasis_1 70 70 70
+            emphasis_2 70 70 70
+            emphasis_3 0
+        }
+        frame_selected {
+            base 112 112 112
+            background 0
+            emphasis_0 112 112 112
+            emphasis_1 112 112 112
+            emphasis_2 112 112 112
+            emphasis_3 0
+        }
+        frame_highlight {
+            base 188 188 188
+            background 0
+            emphasis_0 188 188 188
+            emphasis_1 188 188 188
+            emphasis_2 188 188 188
+            emphasis_3 188 188 188
+        }
+        exit_code_success {
+            base 168 168 168
+            background 0
+            emphasis_0 32 32 32
+            emphasis_1 32 32 32
+            emphasis_2 32 32 32
+            emphasis_3 32 32 32
+        }
+        exit_code_error {
+            base 196 120 120
+            background 0
+            emphasis_0 120 120 120
+            emphasis_1 0
+            emphasis_2 0
+            emphasis_3 0
+        }
+        multiplayer_user_colors {
+            player_1 180 180 180
+            player_2 150 150 150
+            player_3 120 120 120
+            player_4 210 210 210
+            player_5 90 90 90
+            player_6 160 160 160
+            player_7 130 130 130
+            player_8 200 200 200
+            player_9 110 110 110
+            player_10 140 140 140
+        }
+    }
+}

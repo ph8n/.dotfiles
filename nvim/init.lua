@@ -42,6 +42,15 @@ vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
 
 local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup
+local lsp_complete = "o,.,w,b,u,t"
+
+local function lsp_completion_convert(item)
+  if vim.lsp.protocol.CompletionItemKind[item.kind] then
+    return {}
+  end
+
+  return { kind = "" }
+end
 
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
@@ -230,7 +239,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end, opts)
 
     if client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+      vim.bo[ev.buf].complete = lsp_complete
+      vim.lsp.completion.enable(true, client.id, ev.buf, { convert = lsp_completion_convert })
     end
   end,
 })
