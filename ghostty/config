@@ -5,26 +5,20 @@ background = 151515
 font-size = 13
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
-macos-titlebar-style = tabs
+macos-titlebar-style = hidden
 macos-window-buttons = hidden
-window-decoration = true
+window-decoration = false
 macos-option-as-alt = true
 background-opacity = 1.0
-background-blur-radius = 20
 cursor-style = block
 
 window-padding-balance = true
-window-padding-x = 10
+window-padding-x = 20
 window-padding-y = 10
 
 clipboard-read = allow
 clipboard-write = allow
 
 confirm-close-surface = false
-
-keybind = performable:ctrl+h=goto_split:left
-keybind = performable:ctrl+j=goto_split:down
-keybind = performable:ctrl+k=goto_split:up
-keybind = performable:ctrl+l=goto_split:right
 
 shell-integration-features = sudo,ssh-terminfo,ssh-env

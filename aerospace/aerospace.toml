@@ -116,7 +116,7 @@ alt-shift-l = 'move right'
 alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
-alt-semicolon = 'exec-and-forget open -b com.cmuxterm.app'
+alt-semicolon = 'exec-and-forget open -b com.mitchellh.ghostty'
 alt-f = 'exec-and-forget open -b app.zen-browser.zen'
 alt-d = 'exec-and-forget open -b com.hnc.Discord'
 alt-s = 'exec-and-forget open -b com.tinyspeck.slackmacgap'
@@ -176,6 +176,11 @@ alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
 
 alt-shift-f = 'fullscreen'
+
+# Ghostty workaround for macOS native tabs with tiling WMs.
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'layout tiling'
 
 # Ignored Apps
 [[on-window-detected]]
