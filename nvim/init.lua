@@ -52,11 +52,33 @@ local function lsp_completion_convert(item)
   return { kind = "" }
 end
 
+local terminal = nil
+
+local function toggle_terminal()
+  if not terminal then
+    local Terminal = require("toggleterm.terminal").Terminal
+    terminal = Terminal:new({
+      direction = "float",
+      hidden = true,
+    })
+  end
+
+  terminal:toggle()
+end
+
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
 map("n", "<leader>h", function()
   vim.cmd.nohlsearch()
 end, { desc = "Clear search highlight" })
+map({ "n", "t" }, "<C-/>", function()
+  vim.cmd.stopinsert()
+  toggle_terminal()
+end, { silent = true, desc = "Toggle terminal" })
+map("n", "<leader>q", function()
+  vim.diagnostic.setqflist({ open = true })
+end, { desc = "Diagnostics to quickfix" })
+map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 map("v", "J", ":m '>+1<CR>gv=gv", { silent = true, desc = "Move selection down" })
 map("v", "K", ":m '<-2<CR>gv=gv", { silent = true, desc = "Move selection up" })
 map("x", "<leader>p", '"_dP', { desc = "Paste without yanking replaced text" })
@@ -82,6 +104,7 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
+  gh("akinsho/toggleterm.nvim"),
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
@@ -117,6 +140,68 @@ require("github-theme").setup({
 })
 
 vim.cmd.colorscheme("github_dark_high_contrast")
+
+vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e6edf3", bg = "#2d333b", bold = false })
+vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#9da7b3", bg = "#22272e", bold = false })
+vim.api.nvim_set_hl(0, "AxiomStatuslineFile", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
+vim.api.nvim_set_hl(0, "AxiomStatuslineMeta", { fg = "#e6edf3", bg = "#3b4252", bold = false })
+vim.api.nvim_set_hl(0, "AxiomStatuslinePos", { fg = "#0d1117", bg = "#f2cc60", bold = true })
+
+local statusline = {}
+
+function statusline.info()
+  local parts = {}
+  local branch = vim.b.gitsigns_head
+
+  if type(branch) == "string" and branch ~= "" then
+    parts[#parts + 1] = "git:" .. branch
+  end
+
+  local counts = vim.diagnostic.count(0)
+  local severities = vim.diagnostic.severity
+  local diagnostics = {
+    { label = "E", count = counts[severities.ERROR] or 0 },
+    { label = "W", count = counts[severities.WARN] or 0 },
+    { label = "I", count = counts[severities.INFO] or 0 },
+    { label = "H", count = counts[severities.HINT] or 0 },
+  }
+
+  local present = {}
+  for _, item in ipairs(diagnostics) do
+    if item.count > 0 then
+      present[#present + 1] = item.label .. item.count
+    end
+  end
+
+  if #present > 0 then
+    parts[#parts + 1] = table.concat(present, " ")
+  end
+
+  if #parts == 0 then
+    return ""
+  end
+
+  return " " .. table.concat(parts, "  ") .. " "
+end
+
+_G.axiom_statusline = statusline
+
+vim.o.statusline = table.concat({
+  "%#AxiomStatuslineFile# %<%t%m%r ",
+  "%#AxiomStatuslineMeta#",
+  "%{v:lua.axiom_statusline.info()}",
+  "%#StatusLine#%=",
+  "%#AxiomStatuslinePos# %l:%c %p%% ",
+})
+
+require("toggleterm").setup({
+  close_on_exit = false,
+  direction = "float",
+  persist_mode = false,
+  persist_size = true,
+  shade_terminals = false,
+  start_in_insert = true,
+})
 
 local treesitter_parsers = {
   "c",
