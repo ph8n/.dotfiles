@@ -52,29 +52,11 @@ local function lsp_completion_convert(item)
   return { kind = "" }
 end
 
-local terminal = nil
-
-local function toggle_terminal()
-  if not terminal then
-    local Terminal = require("toggleterm.terminal").Terminal
-    terminal = Terminal:new({
-      direction = "float",
-      hidden = true,
-    })
-  end
-
-  terminal:toggle()
-end
-
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
 map("n", "<leader>h", function()
   vim.cmd.nohlsearch()
 end, { desc = "Clear search highlight" })
-map({ "n", "t" }, "<C-/>", function()
-  vim.cmd.stopinsert()
-  toggle_terminal()
-end, { silent = true, desc = "Toggle terminal" })
 map("n", "<leader>q", function()
   vim.diagnostic.setqflist({ open = true })
 end, { desc = "Diagnostics to quickfix" })
@@ -104,7 +86,6 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
-  gh("akinsho/toggleterm.nvim"),
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
@@ -192,15 +173,6 @@ vim.o.statusline = table.concat({
   "%{v:lua.axiom_statusline.info()}",
   "%#StatusLine#%=",
   "%#AxiomStatuslinePos# %l:%c %p%% ",
-})
-
-require("toggleterm").setup({
-  close_on_exit = false,
-  direction = "float",
-  persist_mode = false,
-  persist_size = true,
-  shade_terminals = false,
-  start_in_insert = true,
 })
 
 local treesitter_parsers = {
