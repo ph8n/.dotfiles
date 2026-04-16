@@ -54,12 +54,13 @@ end
 
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
-map("n", "<leader>h", function()
-  vim.cmd.nohlsearch()
-end, { desc = "Clear search highlight" })
+map("n", "<leader>h", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
 map("n", "<leader>q", function()
   vim.diagnostic.setqflist({ open = true })
 end, { desc = "Diagnostics to quickfix" })
+map("n", "<leader>v", vim.cmd.vsplit, { desc = "Vertical split" })
+map("n", "<leader>s", vim.cmd.split, { desc = "Horizontal split" })
+map("n", "<leader>x", vim.cmd.close, { desc = "Close split" })
 map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 map("v", "J", ":m '>+1<CR>gv=gv", { silent = true, desc = "Move selection down" })
 map("v", "K", ":m '<-2<CR>gv=gv", { silent = true, desc = "Move selection up" })
@@ -86,11 +87,59 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
+  gh("akinsho/toggleterm.nvim"),
+  gh("christoomey/vim-tmux-navigator"),
 }, { confirm = false })
 
 vim.api.nvim_create_user_command("PackUpdate", function()
   vim.pack.update()
 end, { desc = "Update vim.pack plugins" })
+
+local ok_toggleterm, toggleterm = pcall(require, "toggleterm")
+if ok_toggleterm then
+  toggleterm.setup({
+    start_in_insert = true,
+    persist_mode = false,
+    hide_numbers = true,
+    shade_terminals = false,
+    float_opts = {
+      border = "single",
+    },
+  })
+
+  local Terminal = require("toggleterm.terminal").Terminal
+  local floating_terminal = Terminal:new({
+    count = 1,
+    hidden = true,
+    direction = "float",
+    float_opts = {
+      border = "single",
+    },
+  })
+  local bottom_terminal = Terminal:new({
+    count = 2,
+    hidden = true,
+    direction = "horizontal",
+  })
+
+  map("n", "<leader>.", function()
+    floating_terminal:toggle()
+  end, { desc = "Toggle floating terminal" })
+  map("n", "<leader>t", function()
+    bottom_terminal:toggle(12)
+  end, { desc = "Toggle bottom terminal" })
+end
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = augroup("axiom_terminal", { clear = true }),
+  callback = function()
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.cursorline = false
+    vim.opt_local.list = false
+    vim.opt_local.signcolumn = "no"
+  end,
+})
 
 require("github-theme").setup({
   options = {
@@ -129,6 +178,12 @@ vim.api.nvim_set_hl(0, "AxiomStatuslineMeta", { fg = "#e6edf3", bg = "#3b4252", 
 vim.api.nvim_set_hl(0, "AxiomStatuslinePos", { fg = "#0d1117", bg = "#f2cc60", bold = true })
 
 local statusline = {}
+local diagnostic_labels = {
+  { severity = vim.diagnostic.severity.ERROR, label = "E" },
+  { severity = vim.diagnostic.severity.WARN, label = "W" },
+  { severity = vim.diagnostic.severity.INFO, label = "I" },
+  { severity = vim.diagnostic.severity.HINT, label = "H" },
+}
 
 function statusline.info()
   local parts = {}
@@ -139,18 +194,11 @@ function statusline.info()
   end
 
   local counts = vim.diagnostic.count(0)
-  local severities = vim.diagnostic.severity
-  local diagnostics = {
-    { label = "E", count = counts[severities.ERROR] or 0 },
-    { label = "W", count = counts[severities.WARN] or 0 },
-    { label = "I", count = counts[severities.INFO] or 0 },
-    { label = "H", count = counts[severities.HINT] or 0 },
-  }
-
   local present = {}
-  for _, item in ipairs(diagnostics) do
-    if item.count > 0 then
-      present[#present + 1] = item.label .. item.count
+  for _, item in ipairs(diagnostic_labels) do
+    local count = counts[item.severity] or 0
+    if count > 0 then
+      present[#present + 1] = item.label .. count
     end
   end
 
