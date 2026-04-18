@@ -12,7 +12,9 @@ after-login-command = []
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = []
+after-startup-command = [
+  'exec-and-forget for id in $(aerospace list-windows --monitor all --app-bundle-id com.apple.FaceTime --format "%{window-id}" 2>/dev/null); do aerospace layout --window-id "$id" floating; done',
+]
 
 # Start AeroSpace at login
 start-at-login = true
@@ -183,7 +185,11 @@ alt-shift-f = 'fullscreen'
 if.app-id = 'com.mitchellh.ghostty'
 run = 'layout tiling'
 
-# Ignored Apps
+# Float apps that should stay out of tiling
 [[on-window-detected]]
 if.app-id = 'com.apple.MobileSMS'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.FaceTime'
 run = 'layout floating'
