@@ -23,3 +23,6 @@ github-copilot
 # Log files
 *.log
 .nvimlog
+
+# Stardew Valley for some reason
+StardewValley/

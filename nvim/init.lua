@@ -90,51 +90,8 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
-  gh("akinsho/toggleterm.nvim"),
   gh("christoomey/vim-tmux-navigator"),
 }, { confirm = false })
-
-vim.api.nvim_create_user_command("PackUpdate", function()
-  vim.pack.update()
-end, { desc = "Update vim.pack plugins" })
-
-local ok_toggleterm, toggleterm = pcall(require, "toggleterm")
-if ok_toggleterm then
-  toggleterm.setup({
-    start_in_insert = true,
-    persist_mode = false,
-    hide_numbers = true,
-    shade_terminals = false,
-    float_opts = {
-      border = "single",
-    },
-  })
-
-  local Terminal = require("toggleterm.terminal").Terminal
-  local floating_terminal = Terminal:new({
-    count = 1,
-    hidden = true,
-    direction = "float",
-    float_opts = {
-      border = "single",
-    },
-  })
-
-  map("n", "<leader>.", function()
-    floating_terminal:toggle()
-  end, { desc = "Toggle floating terminal" })
-end
-
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = augroup("axiom_terminal", { clear = true }),
-  callback = function()
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-    vim.opt_local.cursorline = false
-    vim.opt_local.list = false
-    vim.opt_local.signcolumn = "no"
-  end,
-})
 
 require("github-theme").setup({
   options = {
@@ -218,41 +175,12 @@ vim.o.statusline = table.concat({
   "%#AxiomStatuslinePos# %l:%c %p%% ",
 })
 
-local treesitter_parsers = {
-  "c",
-  "cpp",
-  "rust",
-  "zig",
-  "python",
-  "javascript",
-  "typescript",
-  "tsx",
-  "html",
-  "css",
-  "svelte",
-  "astro",
-  "llvm",
-  "mlir",
-  "json",
-  "yaml",
-  "toml",
-  "asm",
-  "csv",
-}
-
-local ok_treesitter, treesitter = pcall(require, "nvim-treesitter")
-if ok_treesitter then
-  vim.api.nvim_create_autocmd("FileType", {
-    group = augroup("axiom_treesitter", { clear = true }),
-    callback = function(args)
-      pcall(vim.treesitter.start, args.buf)
-    end,
-  })
-
-  vim.api.nvim_create_user_command("TSInstallAll", function()
-    treesitter.install(treesitter_parsers, { summary = false }):wait(60000)
-  end, { desc = "Install configured treesitter parsers" })
-end
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("axiom_treesitter", { clear = true }),
+  callback = function(args)
+    pcall(vim.treesitter.start, args.buf)
+  end,
+})
 
 local fzf = require("fzf-lua")
 fzf.setup({
@@ -296,26 +224,6 @@ require("gitsigns").setup({
     map("n", "<leader>g", gs.preview_hunk, { buffer = bufnr, desc = "Preview git hunk" })
   end,
 })
-
-local lsp_servers = {
-  "ast_grep",
-  "astro",
-  "bashls",
-  "clangd",
-  "cssls",
-  "jsonls",
-  "lua_ls",
-  "mlir_lsp_server",
-  "pyright",
-  "racket_langserver",
-  "ruff",
-  "rust_analyzer",
-  "svelte",
-  "tailwindcss",
-  "ts_ls",
-  "yamlls",
-  "zls",
-}
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = augroup("axiom_lsp", { clear = true }),
@@ -380,6 +288,20 @@ vim.lsp.config("rust_analyzer", {
   },
 })
 
-for _, server in ipairs(lsp_servers) do
-  vim.lsp.enable(server)
-end
+vim.lsp.enable("ast_grep")
+vim.lsp.enable("astro")
+vim.lsp.enable("bashls")
+vim.lsp.enable("clangd")
+vim.lsp.enable("cssls")
+vim.lsp.enable("jsonls")
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("mlir_lsp_server")
+vim.lsp.enable("pyright")
+vim.lsp.enable("racket_langserver")
+vim.lsp.enable("ruff")
+vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("svelte")
+vim.lsp.enable("tailwindcss")
+vim.lsp.enable("ts_ls")
+vim.lsp.enable("yamlls")
+vim.lsp.enable("zls")
