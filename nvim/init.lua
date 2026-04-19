@@ -39,7 +39,6 @@ vim.o.autocomplete = true
 vim.o.redrawtime = 1500
 vim.o.list = true
 vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
-vim.opt.exrc = true
 
 local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup
@@ -56,9 +55,12 @@ end
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
 map("n", "<leader>h", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
+map("n", "<leader>m", "<cmd>make<CR>", { desc = "Run make" })
 map("n", "<leader>q", function()
   vim.diagnostic.setqflist({ open = true })
 end, { desc = "Diagnostics to quickfix" })
+map("n", "]q", "<cmd>cnext<CR>", { desc = "Quickfix next item" })
+map("n", "[q", "<cmd>cprev<CR>", { desc = "Quickfix previous item" })
 map("n", "<leader>v", vim.cmd.vsplit, { desc = "Vertical split" })
 map("n", "<leader>s", vim.cmd.split, { desc = "Horizontal split" })
 map("n", "<leader>x", vim.cmd.close, { desc = "Close split" })
