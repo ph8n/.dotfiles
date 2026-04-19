@@ -22,3 +22,10 @@ clipboard-write = allow
 confirm-close-surface = false
 
 shell-integration-features = sudo,ssh-terminfo,ssh-env
+
+# Collapsible quick terminal panel (drop-down, like Zed/VSCode).
+keybind = global:cmd+backquote=toggle_quick_terminal
+quick-terminal-position = bottom
+quick-terminal-size = 35%
+quick-terminal-animation-duration = 0.12
+quick-terminal-autohide = true

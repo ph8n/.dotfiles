@@ -39,6 +39,7 @@ vim.o.autocomplete = true
 vim.o.redrawtime = 1500
 vim.o.list = true
 vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
+vim.opt.exrc = true
 
 local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup
@@ -116,18 +117,10 @@ if ok_toggleterm then
       border = "single",
     },
   })
-  local bottom_terminal = Terminal:new({
-    count = 2,
-    hidden = true,
-    direction = "horizontal",
-  })
 
   map("n", "<leader>.", function()
     floating_terminal:toggle()
   end, { desc = "Toggle floating terminal" })
-  map("n", "<leader>t", function()
-    bottom_terminal:toggle(12)
-  end, { desc = "Toggle bottom terminal" })
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
