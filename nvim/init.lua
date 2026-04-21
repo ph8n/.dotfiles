@@ -44,6 +44,93 @@ local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup
 local lsp_complete = "o,.,w,b,u,t"
 
+local terminal_buf
+
+local function terminal_buf_valid()
+  return terminal_buf and vim.api.nvim_buf_is_valid(terminal_buf)
+end
+
+local function find_terminal_window()
+  if not terminal_buf_valid() then
+    return
+  end
+
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == terminal_buf then
+      return win
+    end
+  end
+end
+
+local function close_terminal_window(win)
+  local tab = vim.api.nvim_win_get_tabpage(win)
+
+  if #vim.api.nvim_tabpage_list_wins(tab) == 1 then
+    if #vim.api.nvim_list_tabpages() == 1 then
+      vim.api.nvim_set_current_win(win)
+      vim.cmd.enew()
+    else
+      vim.cmd(vim.api.nvim_tabpage_get_number(tab) .. "tabclose")
+    end
+  else
+    vim.api.nvim_win_close(win, true)
+  end
+end
+
+local function show_terminal()
+  if terminal_buf_valid() then
+    vim.api.nvim_win_set_buf(0, terminal_buf)
+  else
+    vim.cmd.terminal()
+    terminal_buf = vim.api.nvim_get_current_buf()
+    vim.bo[terminal_buf].bufhidden = "hide"
+  end
+
+  vim.cmd.startinsert()
+end
+
+local function toggle_terminal()
+  local term_win = find_terminal_window()
+  local current_tab = vim.api.nvim_get_current_tabpage()
+
+  if term_win then
+    local same_tab = vim.api.nvim_win_get_tabpage(term_win) == current_tab
+    close_terminal_window(term_win)
+    if same_tab then
+      return
+    end
+  end
+
+  vim.cmd("botright 12split")
+  show_terminal()
+end
+
+local function toggle_full_terminal()
+  local term_win = find_terminal_window()
+  local current_tab = vim.api.nvim_get_current_tabpage()
+
+  if term_win then
+    local same_tab = vim.api.nvim_win_get_tabpage(term_win) == current_tab
+    local only_window = same_tab and #vim.api.nvim_tabpage_list_wins(current_tab) == 1
+    close_terminal_window(term_win)
+    if only_window then
+      return
+    end
+  end
+
+  vim.cmd.tabnew()
+  show_terminal()
+end
+
+local function toggle_quickfix()
+  local quickfix = vim.fn.getqflist({ winid = 0 })
+  if quickfix.winid ~= 0 then
+    vim.cmd.cclose()
+  else
+    vim.cmd.copen()
+  end
+end
+
 local function lsp_completion_convert(item)
   if vim.lsp.protocol.CompletionItemKind[item.kind] then
     return {}
@@ -56,21 +143,23 @@ map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
 map("n", "<leader>h", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
 map("n", "<leader>m", "<cmd>make<CR>", { desc = "Run make" })
-map("n", "<leader>q", function()
+map("n", "<leader>q", toggle_quickfix, { desc = "Toggle quickfix window" })
+map("n", "<leader>Q", function()
   vim.diagnostic.setqflist({ open = true })
 end, { desc = "Diagnostics to quickfix" })
 map("n", "]q", "<cmd>cnext<CR>", { desc = "Quickfix next item" })
 map("n", "[q", "<cmd>cprev<CR>", { desc = "Quickfix previous item" })
+map("n", "]Q", "<cmd>clast<CR>", { desc = "Quickfix last item" })
+map("n", "[Q", "<cmd>cfirst<CR>", { desc = "Quickfix first item" })
 map("n", "<leader>v", vim.cmd.vsplit, { desc = "Vertical split" })
 map("n", "<leader>s", vim.cmd.split, { desc = "Horizontal split" })
 map("n", "<leader>x", vim.cmd.close, { desc = "Close split" })
 map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+map({ "n", "i", "t" }, "<C-Space>", toggle_terminal, { desc = "Toggle terminal" })
+map({ "n", "t" }, "<leader>t", toggle_full_terminal, { desc = "Toggle full terminal" })
 map("v", "J", ":m '>+1<CR>gv=gv", { silent = true, desc = "Move selection down" })
 map("v", "K", ":m '<-2<CR>gv=gv", { silent = true, desc = "Move selection up" })
 map("x", "<leader>p", '"_dP', { desc = "Paste without yanking replaced text" })
-map("i", "<C-Space>", function()
-  vim.lsp.completion.get()
-end, { desc = "Trigger completion" })
 map("i", "<CR>", function()
   if vim.fn.pumvisible() == 1 and vim.fn.complete_info({ "selected" }).selected ~= -1 then
     return "<C-y>"
@@ -104,16 +193,6 @@ require("github-theme").setup({
   },
   groups = {
     github_dark_high_contrast = {
-      StatusLine = {
-        fg = "#c9c7cd",
-        bg = "#1c1c1f",
-        style = "NONE",
-      },
-      StatusLineNC = {
-        fg = "#7f7d84",
-        bg = "#151515",
-        style = "NONE",
-      },
       Pmenu = { bg = "#151515" },
       NormalFloat = { bg = "#151515" },
       FloatBorder = { bg = "#151515" },
@@ -128,6 +207,9 @@ vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#9da7b3", bg = "#22272e", bold = 
 vim.api.nvim_set_hl(0, "AxiomStatuslineFile", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
 vim.api.nvim_set_hl(0, "AxiomStatuslineMeta", { fg = "#e6edf3", bg = "#3b4252", bold = false })
 vim.api.nvim_set_hl(0, "AxiomStatuslinePos", { fg = "#0d1117", bg = "#f2cc60", bold = true })
+vim.api.nvim_set_hl(0, "AxiomTablineSel", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
+vim.api.nvim_set_hl(0, "AxiomTabline", { fg = "#e6edf3", bg = "#3b4252", bold = false })
+vim.api.nvim_set_hl(0, "AxiomTablineFill", { fg = "#9da7b3", bg = "#22272e", bold = false })
 
 local statusline = {}
 local diagnostic_labels = {
@@ -165,8 +247,38 @@ function statusline.info()
   return " " .. table.concat(parts, "  ") .. " "
 end
 
+function statusline.tabline()
+  local parts = {}
+  local current = vim.api.nvim_get_current_tabpage()
+
+  for i, tab in ipairs(vim.api.nvim_list_tabpages()) do
+    local win = vim.api.nvim_tabpage_get_win(tab)
+    local buf = vim.api.nvim_win_get_buf(win)
+    local label
+
+    if vim.bo[buf].buftype == "terminal" then
+      label = "terminal"
+    else
+      local name = vim.api.nvim_buf_get_name(buf)
+      label = name ~= "" and vim.fn.fnamemodify(name, ":t") or "[No Name]"
+    end
+
+    if vim.bo[buf].modified then
+      label = label .. " +"
+    end
+
+    label = label:gsub("%%", "%%%%")
+    parts[#parts + 1] = tab == current and "%#AxiomTablineSel#" or "%#AxiomTabline#"
+    parts[#parts + 1] = "%" .. i .. "T " .. label .. " "
+  end
+
+  parts[#parts + 1] = "%#AxiomTablineFill#%T%="
+  return table.concat(parts)
+end
+
 _G.axiom_statusline = statusline
 
+vim.o.tabline = "%!v:lua.axiom_statusline.tabline()"
 vim.o.statusline = table.concat({
   "%#AxiomStatuslineFile# %<%t%m%r ",
   "%#AxiomStatuslineMeta#",
