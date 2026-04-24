@@ -7,6 +7,8 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "multi_cursor_modifier": "alt",
+  "cursor_blink": false,
   "project_panel": {
     "dock": "right"
   },
@@ -55,19 +57,42 @@
   },
   "base_keymap": "SublimeText",
   "icon_theme": {
-    "mode": "light",
+    "mode": "system",
     "light": "Zed (Default)",
     "dark": "Zed (Default)"
+  },
+  "title_bar": {
+    "show_branch_status_icon": true,
+    "show_branch_name": true,
+    "show_project_items": true,
+    "show_onboarding_banner": false,
+    "show_user_picture": false,
+    "show_user_menu": true,
+    "show_sign_in": false,
+    "show_menus": false
+  },
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false,
+    "show_tab_bar_buttons": false
   },
   "session": {
     "trust_all_worktrees": true,
   },
   "vim_mode": true,
+  "current_line_highlight": "all",
+  "relative_line_numbers": "enabled",
+  "vertical_scroll_margin": 8,
+  "horizontal_scroll_margin": 8,
+  "scroll_beyond_last_line": "vertical_scroll_margin",
+  "show_whitespaces": "all",
+  "whitespace_map": {
+    "space": "·",
+    "tab": "▸"
+  },
+  "soft_wrap": "none",
+  "line_indicator_format": "long",
   "ui_font_size": 16,
   "buffer_font_size": 13,
-  "theme": {
-    "mode": "system",
-    "light": "One Light",
-    "dark": "pho"
-  },
+  "theme": "pho",
 }
