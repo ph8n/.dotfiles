@@ -651,19 +651,9 @@
             "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
         },
         {
-            "devices": [
-                {
-                    "identifiers": { "is_keyboard": true },
-                    "simple_modifications": [
-                        {
-                            "from": { "key_code": "caps_lock" },
-                            "to": [{ "key_code": "escape" }]
-                        }
-                    ]
-                }
-            ],
-            "name": "none",
+            "name": "default",
             "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
-        }
+        },
+        { "name": "none" }
     ]
 }

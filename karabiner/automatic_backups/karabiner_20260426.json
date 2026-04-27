@@ -637,7 +637,6 @@
                 }
             ],
             "name": "phony",
-            "selected": true,
             "simple_modifications": [
                 {
                     "from": { "key_code": "caps_lock" },
@@ -663,6 +662,7 @@
                 }
             ],
             "name": "none",
+            "selected": true,
             "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
         }
     ]
