@@ -142,6 +142,18 @@ end
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
 map("n", "<leader>h", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
+map("n", "<leader>uw", "<cmd>set wrap!<CR>", { desc = "Toggle line wrap" })
+map("n", "<leader>ul", "<cmd>set number!<CR>", { desc = "Toggle line numbers" })
+map("n", "<leader>uL", "<cmd>set relativenumber!<CR>", { desc = "Toggle relative line numbers" })
+map("n", "<leader>us", "<cmd>set spell!<CR>", { desc = "Toggle spelling" })
+map("n", "<leader>uh", function()
+  if not vim.lsp.inlay_hint or not vim.lsp.inlay_hint.is_enabled or not vim.lsp.inlay_hint.enable then
+    return
+  end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+end, { desc = "Toggle inlay hints" })
 map("n", "<leader>m", "<cmd>make<CR>", { desc = "Run make" })
 map("n", "<leader>.", toggle_quickfix, { desc = "Toggle quickfix window" })
 map("n", "<leader>q", function()
