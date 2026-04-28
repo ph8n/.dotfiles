@@ -1,0 +1,57 @@
+# AeroSpace-like yabai bindings.
+# App bindings focus an existing yabai window first, then launch the app.
+
+# Layout. Stack gives one full-screen managed window at a time; BSP gives splits.
+alt - 0x2C : yabai -m space --layout bsp
+alt - 0x2B : yabai -m space --layout stack
+
+# Focus.
+alt - tab         : yabai -m window --focus stack.next
+alt + shift - tab : yabai -m window --focus stack.prev
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus south
+alt - k : yabai -m window --focus north
+alt - l : yabai -m window --focus east
+
+# Move/reorder.
+alt + shift - h : yabai -m window --swap west
+alt + shift - j : yabai -m window --swap south
+alt + shift - k : yabai -m window --swap north
+alt + shift - l : yabai -m window --swap east
+
+# Resize.
+alt + shift - 0x1B : yabai -m window --ratio rel:-0.05
+alt + shift - 0x18 : yabai -m window --ratio rel:0.05
+
+# Opt the focused window into/out of tiling.
+alt + shift - space : yabai -m window --toggle float
+
+# App-first jumps.
+alt - 0x29      : ~/.config/yabai/focus-or-open Ghostty com.mitchellh.ghostty
+alt - z         : ~/.config/yabai/focus-or-open Zed dev.zed.Zed
+alt - c         : ~/.config/yabai/focus-or-open Codex com.openai.codex
+alt - f         : ~/.config/yabai/focus-or-open Zen app.zen-browser.zen
+alt - d         : ~/.config/yabai/focus-or-open Discord com.hnc.Discord
+alt - s         : ~/.config/yabai/focus-or-open Slack com.tinyspeck.slackmacgap
+alt - n         : ~/.config/yabai/focus-or-open Notion notion.id
+alt - b         : ~/.config/yabai/focus-or-open sioyek info.sioyek.sioyek
+alt - p         : ~/.config/yabai/focus-or-open Spotify com.spotify.client
+alt - m         : ~/.config/yabai/focus-or-open Messages com.apple.MobileSMS
+alt - e         : ~/.config/yabai/focus-or-open Mail com.apple.mail
+
+# Native Spaces, kept for parity with the AeroSpace number muscle memory.
+alt - 1 : yabai -m space --focus 1
+alt - 2 : yabai -m space --focus 2
+alt - 3 : yabai -m space --focus 3
+alt - 4 : yabai -m space --focus 4
+alt - 5 : yabai -m space --focus 5
+alt - 6 : yabai -m space --focus 6
+alt - 7 : yabai -m space --focus 7
+alt - 8 : yabai -m space --focus 8
+alt - 9 : yabai -m space --focus 9
+alt - 0 : yabai -m space --focus 10
+
+# AeroSpace service-mode equivalents as direct bindings.
+alt + shift - 0x29      : yabai -m space --balance
+alt + shift - f         : yabai -m window --toggle zoom-fullscreen
+alt + shift - backspace : yabai -m window --close
