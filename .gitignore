@@ -4,6 +4,7 @@ github-copilot
 
 # Backup files
 *.bak
+karabiner/automatic_backups/
 
 # Sensitive data - credentials, keys, tokens
 *.env
