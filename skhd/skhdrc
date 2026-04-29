@@ -28,7 +28,6 @@ alt + shift - space : yabai -m window --toggle float
 
 # App-first jumps.
 alt - 0x29      : ~/.config/yabai/focus-or-open Ghostty com.mitchellh.ghostty
-alt - z         : ~/.config/yabai/focus-or-open Zed dev.zed.Zed
 alt - c         : ~/.config/yabai/focus-or-open Codex com.openai.codex
 alt - f         : ~/.config/yabai/focus-or-open Zen app.zen-browser.zen
 alt - d         : ~/.config/yabai/focus-or-open Discord com.hnc.Discord
