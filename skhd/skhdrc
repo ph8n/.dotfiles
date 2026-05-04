@@ -32,7 +32,7 @@ alt - c         : ~/.config/yabai/focus-or-open Codex com.openai.codex
 alt - f         : ~/.config/yabai/focus-or-open Zen app.zen-browser.zen
 alt - d         : ~/.config/yabai/focus-or-open Discord com.hnc.Discord
 alt - s         : ~/.config/yabai/focus-or-open Slack com.tinyspeck.slackmacgap
-alt - o         : ~/.config/yabai/focus-or-open Obsidian md.obsidian
+alt - o         : ~/.config/yabai/focus-or-open Logseq com.logseq.Logseq
 alt - n         : ~/.config/yabai/focus-or-open Notion notion.id
 alt - b         : ~/.config/yabai/focus-or-open sioyek info.sioyek.sioyek
 alt - p         : ~/.config/yabai/focus-or-open Spotify com.spotify.client
