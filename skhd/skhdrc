@@ -37,6 +37,7 @@ alt - n         : ~/.config/yabai/focus-or-open Notion notion.id
 alt - b         : ~/.config/yabai/focus-or-open sioyek info.sioyek.sioyek
 alt - p         : ~/.config/yabai/focus-or-open Spotify com.spotify.client
 alt - m         : ~/.config/yabai/focus-or-open Messages com.apple.MobileSMS
+alt - e         : ~/.config/yabai/focus-or-open Finder com.apple.finder
 alt - i         : ~/.config/yabai/focus-or-open Mail com.apple.mail
 
 # Native Spaces, kept for parity with the AeroSpace number muscle memory.
