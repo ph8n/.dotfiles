@@ -304,6 +304,8 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+require("nvim-web-devicons").setup({ default = true })
+
 local fzf = require("fzf-lua")
 fzf.setup({
   winopts = {
