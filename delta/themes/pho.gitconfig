@@ -1,0 +1,23 @@
+[delta "pho"]
+    syntax-theme = Monokai Extended
+    commit-decoration-style = "#6cb6ff" bold
+    commit-style = "#6cb6ff" bold
+    file-style = "#f0f3f6" bold
+    file-decoration-style = "#6cb6ff" bold
+    zero-style = syntax
+    minus-style = syntax
+    minus-emph-style = syntax "#3a2023"
+    minus-non-emph-style = syntax
+    minus-empty-line-marker-style = normal
+    plus-style = syntax
+    plus-emph-style = syntax "#17351f"
+    plus-non-emph-style = syntax
+    plus-empty-line-marker-style = normal
+    line-numbers-minus-style = "#ff6a69"
+    line-numbers-plus-style = "#09b43a"
+    line-numbers-zero-style = "#9ea7b3"
+    hunk-header-style = syntax
+    hunk-header-decoration-style = "#6cb6ff" bold
+    hunk-header-file-style = "#f0f3f6" bold
+    hunk-header-line-number-style = "#9ea7b3"
+    whitespace-error-style = "#ff6a69" reverse
