@@ -29,7 +29,7 @@ alt + shift - space : yabai -m window --toggle float
 # App-first jumps.
 alt - 0x29      : ~/.config/yabai/focus-or-open Ghostty com.mitchellh.ghostty
 alt - c         : ~/.config/yabai/focus-or-open Codex com.openai.codex
-alt - f         : ~/.config/yabai/focus-or-open Zen app.zen-browser.zen
+alt - f         : ~/.config/yabai/focus-or-open Helium net.imput.helium
 alt - d         : ~/.config/yabai/focus-or-open Discord com.hnc.Discord
 alt - s         : ~/.config/yabai/focus-or-open Slack com.tinyspeck.slackmacgap
 alt - o         : ~/.config/yabai/focus-or-open Logseq com.logseq.Logseq
