@@ -8,7 +8,7 @@ macos-titlebar-style = transparent
 macos-window-buttons = hidden
 window-decoration = auto
 macos-option-as-alt = true
-background-opacity = 1.0
+background-opacity = 1
 cursor-style = block
 window-padding-balance = true
 window-padding-x = 20
@@ -16,4 +16,10 @@ window-padding-y = 20
 clipboard-read = allow
 clipboard-write = allow
 confirm-close-surface = false
+
+# Pane navigation
+keybind = ctrl+h=goto_split:left
+keybind = ctrl+j=goto_split:bottom
+keybind = ctrl+k=goto_split:top
+keybind = ctrl+l=goto_split:right
 shell-integration-features = sudo,ssh-terminfo,ssh-env
