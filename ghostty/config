@@ -1,42 +1,19 @@
-
-
-
-
-
-
-
-
-
-
-
 theme = mellow
-
 background = 151515
-
 font-size = 13
+
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
-macos-titlebar-style = hidden
+macos-titlebar-style = transparent
 macos-window-buttons = hidden
 window-decoration = auto
 macos-option-as-alt = true
 background-opacity = 1.0
 cursor-style = block
-
 window-padding-balance = true
 window-padding-x = 20
 window-padding-y = 20
-
 clipboard-read = allow
 clipboard-write = allow
-
 confirm-close-surface = false
-
 shell-integration-features = sudo,ssh-terminfo,ssh-env
-
-# Collapsible quick terminal panel (drop-down, like Zed/VSCode).
-keybind = global:cmd+backquote=toggle_quick_terminal
-quick-terminal-position = bottom
-quick-terminal-size = 35%
-quick-terminal-animation-duration = 0.12
-quick-terminal-autohide = true

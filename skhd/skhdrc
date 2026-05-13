@@ -39,7 +39,7 @@ alt - p         : ~/.config/yabai/focus-or-open Spotify com.spotify.client
 alt - m         : ~/.config/yabai/focus-or-open Messages com.apple.MobileSMS
 alt - e         : ~/.config/yabai/focus-or-open Finder com.apple.finder
 alt - i         : ~/.config/yabai/focus-or-open Mail com.apple.mail
-alt - a         : ~/.config/yabai/focus-or-open Superset com.superset.desktop
+alt - a         : ~/.config/yabai/focus-or-open Superconductor com.zarifpour.superconductor
 
 # Native Spaces, kept for parity with the AeroSpace number muscle memory.
 alt - 1 : yabai -m space --focus 1
