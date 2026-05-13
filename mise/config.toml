@@ -10,6 +10,9 @@ node = "latest"
 "npm:bash-language-server" = "latest"
 "npm:vscode-langservers-extracted" = "latest"
 "npm:yaml-language-server" = "latest"
-pnpm = "latest"
+"npm:pnpm" = "latest"
 python = "latest"
 uv = "latest"
+
+[settings]
+trusted_config_paths = ["/Users/dp/.superconductor/worktrees"]
