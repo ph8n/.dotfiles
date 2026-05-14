@@ -44,84 +44,6 @@ local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup
 local lsp_complete = "o,.,w,b,u,t"
 
-local terminal_buf
-
-local function terminal_buf_valid()
-  return terminal_buf and vim.api.nvim_buf_is_valid(terminal_buf)
-end
-
-local function find_terminal_window()
-  if not terminal_buf_valid() then
-    return
-  end
-
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.api.nvim_win_get_buf(win) == terminal_buf then
-      return win
-    end
-  end
-end
-
-local function close_terminal_window(win)
-  local tab = vim.api.nvim_win_get_tabpage(win)
-
-  if #vim.api.nvim_tabpage_list_wins(tab) == 1 then
-    if #vim.api.nvim_list_tabpages() == 1 then
-      vim.api.nvim_set_current_win(win)
-      vim.cmd.enew()
-    else
-      vim.cmd(vim.api.nvim_tabpage_get_number(tab) .. "tabclose")
-    end
-  else
-    vim.api.nvim_win_close(win, true)
-  end
-end
-
-local function show_terminal()
-  if terminal_buf_valid() then
-    vim.api.nvim_win_set_buf(0, terminal_buf)
-  else
-    vim.cmd.terminal()
-    terminal_buf = vim.api.nvim_get_current_buf()
-    vim.bo[terminal_buf].bufhidden = "hide"
-  end
-
-  vim.cmd.startinsert()
-end
-
-local function toggle_terminal()
-  local term_win = find_terminal_window()
-  local current_tab = vim.api.nvim_get_current_tabpage()
-
-  if term_win then
-    local same_tab = vim.api.nvim_win_get_tabpage(term_win) == current_tab
-    close_terminal_window(term_win)
-    if same_tab then
-      return
-    end
-  end
-
-  vim.cmd("botright 12split")
-  show_terminal()
-end
-
-local function toggle_full_terminal()
-  local term_win = find_terminal_window()
-  local current_tab = vim.api.nvim_get_current_tabpage()
-
-  if term_win then
-    local same_tab = vim.api.nvim_win_get_tabpage(term_win) == current_tab
-    local only_window = same_tab and #vim.api.nvim_tabpage_list_wins(current_tab) == 1
-    close_terminal_window(term_win)
-    if only_window then
-      return
-    end
-  end
-
-  vim.cmd.tabnew()
-  show_terminal()
-end
-
 local function toggle_quickfix()
   local quickfix = vim.fn.getqflist({ winid = 0 })
   if quickfix.winid ~= 0 then
@@ -164,9 +86,6 @@ map("n", "[q", "<cmd>cprev<CR>", { desc = "Quickfix previous item" })
 map("n", "<leader>v", vim.cmd.vsplit, { desc = "Vertical split" })
 map("n", "<leader>s", vim.cmd.split, { desc = "Horizontal split" })
 map("n", "<leader>x", vim.cmd.close, { desc = "Close split" })
-map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
-map({ "n", "i" }, "<C-Space>", toggle_terminal, { desc = "Toggle terminal" })
-map("n", "<leader>t", toggle_full_terminal, { desc = "Toggle full terminal" })
 map("v", "J", ":m '>+1<CR>gv=gv", { silent = true, desc = "Move selection down" })
 map("v", "K", ":m '<-2<CR>gv=gv", { silent = true, desc = "Move selection up" })
 map("x", "<leader>p", '"_dP', { desc = "Paste without yanking replaced text" })
