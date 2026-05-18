@@ -13,6 +13,3 @@ node = "latest"
 "npm:pnpm" = "latest"
 python = "latest"
 uv = "latest"
-
-[settings]
-trusted_config_paths = ["/Users/dp/.superconductor/worktrees"]
