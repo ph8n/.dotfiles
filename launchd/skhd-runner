@@ -1,0 +1,58 @@
+#!/bin/sh
+# LaunchAgent wrapper for skhd.
+# Retries startup failures such as Secure Keyboard Entry being held briefly by
+# loginwindow at login, and restarts skhd if it crashes.
+
+PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH
+
+SKHD_BIN="$HOME/.nix-profile/bin/skhd"
+SKHD_CONFIG="$HOME/.config/skhd/skhdrc"
+RETRY_DELAY="${RETRY_DELAY:-5}"
+STARTUP_DELAY="${STARTUP_DELAY:-8}"
+child=""
+
+log() {
+  printf '%s %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$*" >&2
+}
+
+stop_child() {
+  if [ -n "${child:-}" ]; then
+    kill "$child" 2>/dev/null || true
+    wait "$child" 2>/dev/null || true
+  fi
+}
+
+terminate() {
+  stop_child
+  exit 0
+}
+
+trap terminate INT TERM
+
+if [ "${STARTUP_DELAY}" -gt 0 ] 2>/dev/null; then
+  sleep "${STARTUP_DELAY}" &
+  child=$!
+  wait "$child" || exit 0
+  child=""
+fi
+
+while :; do
+  log "starting skhd"
+  "$SKHD_BIN" -c "$SKHD_CONFIG" &
+  child=$!
+  wait "$child"
+  status=$?
+  child=""
+
+  if [ "$status" -eq 0 ]; then
+    log "skhd exited successfully; not restarting"
+    exit 0
+  fi
+
+  log "skhd exited with status $status; restarting in ${RETRY_DELAY}s"
+  sleep "${RETRY_DELAY}" &
+  child=$!
+  wait "$child" || exit 0
+  child=""
+done

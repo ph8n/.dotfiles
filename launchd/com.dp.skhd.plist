@@ -7,9 +7,7 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/dp/.nix-profile/bin/skhd</string>
-    <string>-c</string>
-    <string>/Users/dp/.config/skhd/skhdrc</string>
+    <string>/Users/dp/.config/launchd/skhd-runner</string>
   </array>
 
   <key>EnvironmentVariables</key>
@@ -25,6 +23,8 @@
     <key>SuccessfulExit</key>
     <false/>
   </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
 
   <key>StandardOutPath</key>
   <string>/Users/dp/.cache/skhd/skhd.out.log</string>

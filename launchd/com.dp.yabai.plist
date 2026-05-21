@@ -7,10 +7,7 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/dp/.nix-profile/bin/yabai</string>
-    <string>--config</string>
-    <string>/Users/dp/.config/yabai/yabairc</string>
-    <string>--verbose</string>
+    <string>/Users/dp/.config/launchd/yabai-runner</string>
   </array>
 
   <key>EnvironmentVariables</key>
@@ -26,6 +23,8 @@
     <key>SuccessfulExit</key>
     <false/>
   </dict>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
 
   <key>StandardOutPath</key>
   <string>/Users/dp/.cache/yabai/yabai.out.log</string>

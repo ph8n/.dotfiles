@@ -1,0 +1,58 @@
+#!/bin/sh
+# LaunchAgent wrapper for yabai.
+# Keeps launchd alive while retrying startup failures that commonly happen
+# during login, before Accessibility is ready, or after a crash.
+
+PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH
+
+YABAI_BIN="$HOME/.nix-profile/bin/yabai"
+YABAI_CONFIG="$HOME/.config/yabai/yabairc"
+RETRY_DELAY="${RETRY_DELAY:-5}"
+STARTUP_DELAY="${STARTUP_DELAY:-8}"
+child=""
+
+log() {
+  printf '%s %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$*" >&2
+}
+
+stop_child() {
+  if [ -n "${child:-}" ]; then
+    kill "$child" 2>/dev/null || true
+    wait "$child" 2>/dev/null || true
+  fi
+}
+
+terminate() {
+  stop_child
+  exit 0
+}
+
+trap terminate INT TERM
+
+if [ "${STARTUP_DELAY}" -gt 0 ] 2>/dev/null; then
+  sleep "${STARTUP_DELAY}" &
+  child=$!
+  wait "$child" || exit 0
+  child=""
+fi
+
+while :; do
+  log "starting yabai"
+  "$YABAI_BIN" --config "$YABAI_CONFIG" --verbose &
+  child=$!
+  wait "$child"
+  status=$?
+  child=""
+
+  if [ "$status" -eq 0 ]; then
+    log "yabai exited successfully; not restarting"
+    exit 0
+  fi
+
+  log "yabai exited with status $status; restarting in ${RETRY_DELAY}s"
+  sleep "${RETRY_DELAY}" &
+  child=$!
+  wait "$child" || exit 0
+  child=""
+done
