@@ -1,25 +1,58 @@
+# Ghostty config
+# Location: ~/.config/ghostty/config
+
+# Appearance
 theme = mellow
-background = 151515
+background = #151515
+background-opacity = 1
+background-blur = false
+
+# Font
 font-size = 13
 
-mouse-hide-while-typing = true
-mouse-scroll-multiplier = 2
+# Cursor
+cursor-style = block
+cursor-style-blink = false
+
+# Window chrome / layout
 macos-titlebar-style = transparent
 macos-window-buttons = hidden
 window-decoration = auto
-macos-option-as-alt = true
-background-opacity = 1
-cursor-style = block
 window-padding-balance = true
 window-padding-x = 20
 window-padding-y = 20
+window-save-state = always
+window-step-resize = true
+window-new-tab-position = current
+window-show-tab-bar = auto
+resize-overlay = after-first
+
+# Splits / panes
+unfocused-split-opacity = 1
+split-divider-color = #303030
+focus-follows-mouse = false
+
+# Input / mouse
+macos-option-as-alt = true
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = precision:1,discrete:2
+scroll-to-bottom = keystroke,no-output
+
+# Clipboard / links
 clipboard-read = allow
 clipboard-write = allow
+link-previews = true
+
+# Behavior
 confirm-close-surface = false
+shell-integration-features = sudo,ssh-terminfo,ssh-env
 
 # Pane navigation
 keybind = ctrl+h=goto_split:left
 keybind = ctrl+j=goto_split:bottom
 keybind = ctrl+k=goto_split:top
 keybind = ctrl+l=goto_split:right
-shell-integration-features = sudo,ssh-terminfo,ssh-env
+
+# Handy config shortcuts
+keybind = super+,=open_config
+keybind = super+shift+,=reload_config
