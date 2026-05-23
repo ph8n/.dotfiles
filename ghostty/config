@@ -15,7 +15,7 @@ cursor-style = block
 cursor-style-blink = false
 
 # Window chrome / layout
-macos-titlebar-style = transparent
+macos-titlebar-style = tabs
 macos-window-buttons = hidden
 window-decoration = auto
 window-padding-balance = true
