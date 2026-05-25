@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+set -eu
+
+if [ "$#" -ne 0 ]; then
+  echo "usage: focus-previous-app" >&2
+  exit 2
+fi
+
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+
+# Use LaunchServices' front-to-back visible app order directly. This avoids
+# spawning AppleScript/System Events, which is noticeably slower.
+previous_asn="$(lsappinfo -nonames visibleProcessList | awk '{ print $2 }')"
+
+if [ -z "${previous_asn:-}" ]; then
+  exit 1
+fi
+
+exec lsappinfo requestfront "$previous_asn" --immediate
