@@ -1,0 +1,54 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "yabai-focus",
+  "description": "Search open yabai windows and focus the selected app or window",
+  "categories": [
+    "Productivity",
+    "System"
+  ],
+  "keywords": [
+    "focus",
+    "macos",
+    "window-manager",
+    "window-switcher",
+    "yabai"
+  ],
+  "license": "MIT",
+  "author": "phongndo69",
+  "scripts": {
+    "build": "ray build -e dist",
+    "ci": "npm run format:check && npm run lsp && npm run lint && npm run build",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "ray lint",
+    "lsp": "tsc --noEmit",
+    "publish": "ray publish",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@raycast/api": "1.104.18"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.1.1",
+    "@types/node": "22.19.17",
+    "@types/react": "19.0.10",
+    "eslint": "^10.0.2",
+    "prettier": "^3.8.1",
+    "typescript": "6.0.3"
+  },
+  "icon": "icon.png",
+  "commands": [
+    {
+      "name": "focus-app",
+      "title": "Focus App",
+      "description": "Search open yabai windows and focus the selected app or window",
+      "mode": "view"
+    }
+  ],
+  "platforms": [
+    "macOS"
+  ],
+  "title": "Yabai Focus"
+}

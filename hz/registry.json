@@ -1,0 +1,109 @@
+{
+  "entries": [
+    {
+      "id": "30554e9a-e0ac-482e-857b-9ad2ca184196",
+      "handle": "gaussian-topology",
+      "repo": "/Users/dp/sandbox/git-testing",
+      "path": "/Users/dp/.hz/worktrees/git-testing/30554e9a-e0ac-482e-857b-9ad2ca184196",
+      "branch": "gaussian-topology",
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780084929,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "bb9003b9-18e2-4d49-90ef-579ee4e980c6",
+      "handle": "13n3",
+      "repo": "/Users/dp/code/projects/tau",
+      "path": "/Users/dp/.hz/worktrees/tau/bb9003b9-18e2-4d49-90ef-579ee4e980c6",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780207590,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "ff43d783-4eba-4dc3-8dae-a17bf793de67",
+      "handle": "smoke",
+      "repo": "/private/tmp/hz-lifecycle-smoke.j8zKq4/repo",
+      "path": "/private/tmp/hz-lifecycle-smoke.j8zKq4/wt",
+      "branch": "smoke",
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780209195,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "ecb23829-4f49-4bc1-993e-0b54b906b376",
+      "handle": "smoke",
+      "repo": "/private/tmp/hz-lifecycle-smoke.84ENl8/repo",
+      "path": "/private/tmp/hz-lifecycle-smoke.84ENl8/wt",
+      "branch": "smoke",
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780209303,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "f97b8351-01c8-4fef-8ffe-8e159fefb841",
+      "handle": "smoke",
+      "repo": "/private/tmp/hz-lifecycle-smoke.Ixbe1Y/repo",
+      "path": "/private/tmp/hz-lifecycle-smoke.Ixbe1Y/wt",
+      "branch": "smoke",
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780209676,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "45aa44e4-9dd5-4e74-b7ae-82db4b365e78",
+      "handle": "feat(tui)/diff",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/45aa44e4-9dd5-4e74-b7ae-82db4b365e78",
+      "branch": "feat(tui)/diff",
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780362941,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "de625fc0-3962-4680-be9c-37fca7a57aaf",
+      "handle": "tw61",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/de625fc0-3962-4680-be9c-37fca7a57aaf",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780377904,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    }
+  ],
+  "handoffs": [
+    {
+      "repo": "/Users/dp/sandbox/git-testing",
+      "branch": "gaussian-topology",
+      "path": "/Users/dp/.hz/worktrees/git-testing/30554e9a-e0ac-482e-857b-9ad2ca184196",
+      "handle": "gaussian-topology",
+      "local_restore_branch": "main",
+      "updated_at_unix": 1780084948
+    }
+  ],
+  "patch_handoffs": [
+    {
+      "repo": "/Users/dp/code/projects/hz",
+      "left_path": "/Users/dp/code/projects/hz",
+      "left_handle": "local",
+      "right_path": "/Users/dp/.hz/worktrees/hz/45aa44e4-9dd5-4e74-b7ae-82db4b365e78",
+      "right_handle": "feat(tui)/diff",
+      "patch_hash": "15c6956fe2c1ad6cab284ea343c06d991dc5b1cd",
+      "updated_at_unix": 1780362954
+    }
+  ]
+}

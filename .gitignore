@@ -27,3 +27,6 @@ karabiner/automatic_backups/
 
 # Stardew Valley for some reason
 StardewValley/
+
+# Raycast stores access tokens here; keep local-only.
+raycast/config.json
