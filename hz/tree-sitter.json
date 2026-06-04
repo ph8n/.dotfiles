@@ -1,0 +1,15 @@
+{
+  "languages": [
+    "asm",
+    "c",
+    "cpp",
+    "llvm",
+    "markdown",
+    "mlir",
+    "rust",
+    "tsx",
+    "typescript",
+    "zig"
+  ],
+  "parsers": []
+}

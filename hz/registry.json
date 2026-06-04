@@ -83,6 +83,102 @@
       "created_at_unix": 1780377904,
       "modified_at_unix": 0,
       "status": "unknown"
+    },
+    {
+      "id": "03ec6650-a304-4b5b-aa69-fbbc6fbea2b5",
+      "handle": "pbz8",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/03ec6650-a304-4b5b-aa69-fbbc6fbea2b5",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780429136,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "41a9fa9b-a453-464c-8c2c-c506a9d86fe4",
+      "handle": "qx7l",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/41a9fa9b-a453-464c-8c2c-c506a9d86fe4",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780437929,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "7a1d241e-32b4-4b67-86aa-dc9d850ef57d",
+      "handle": "kl8u",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/7a1d241e-32b4-4b67-86aa-dc9d850ef57d",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780532819,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "f713f94f-8e6d-4a80-a0bf-e330aa43635a",
+      "handle": "pgmg",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/f713f94f-8e6d-4a80-a0bf-e330aa43635a",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780533128,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "3360db98-1bbb-4a5c-ba1a-14d7e147ee21",
+      "handle": "9ojz",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/3360db98-1bbb-4a5c-ba1a-14d7e147ee21",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780536983,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "93b2d02c-d1d3-417e-b622-757f04342f67",
+      "handle": "k8o4",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/93b2d02c-d1d3-417e-b622-757f04342f67",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780599427,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "1af9851d-6c84-4d33-989a-b3af25ac1c03",
+      "handle": "13rd",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/1af9851d-6c84-4d33-989a-b3af25ac1c03",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780600793,
+      "modified_at_unix": 0,
+      "status": "unknown"
+    },
+    {
+      "id": "94ab8ed9-0939-47db-93f9-e60a7810c9b6",
+      "handle": "46w9",
+      "repo": "/Users/dp/code/projects/hz",
+      "path": "/Users/dp/.hz/worktrees/hz/94ab8ed9-0939-47db-93f9-e60a7810c9b6",
+      "branch": null,
+      "base": null,
+      "source": "managed",
+      "created_at_unix": 1780603075,
+      "modified_at_unix": 0,
+      "status": "unknown"
     }
   ],
   "handoffs": [
