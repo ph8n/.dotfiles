@@ -30,3 +30,7 @@ StardewValley/
 
 # Raycast stores access tokens here; keep local-only.
 raycast/config.json
+
+# hz stores local worktree registry state here; keep local-only.
+hz/registry.json
+hz/registry.json.lock
