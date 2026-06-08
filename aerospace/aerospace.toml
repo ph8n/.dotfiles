@@ -119,6 +119,7 @@ alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
 alt-semicolon = 'exec-and-forget open -b com.mitchellh.ghostty'
+alt-a = 'exec-and-forget open -b com.openai.chat'
 alt-z = 'exec-and-forget open -b dev.zed.Zed'
 alt-c= 'exec-and-forget open -b com.openai.codex'
 alt-f = 'exec-and-forget open -b net.imput.helium'
