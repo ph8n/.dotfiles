@@ -223,28 +223,49 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-require("nvim-web-devicons").setup({ default = true })
+-- nvim-web-devicons loaded lazily with fzf-lua or oil.nvim
 
-local fzf = require("fzf-lua")
-fzf.setup({
-  winopts = {
-    height = 0.85,
-    width = 0.85,
-    preview = {
-      layout = "horizontal",
-      vertical = "down:50%",
-    },
-  },
-})
+local devicons_loaded = false
+local function ensure_devicons()
+  if not devicons_loaded then
+    require("nvim-web-devicons").setup({ default = true })
+    devicons_loaded = true
+  end
+end
 
-map("n", "<leader>f", fzf.files, { desc = "Find files" })
-map("n", "<leader>/", fzf.live_grep, { desc = "Live grep" })
-map("n", "<leader>,", fzf.buffers, { desc = "List buffers" })
+local fzf_loaded = false
+local function load_fzf()
+  ensure_devicons()
+  if not fzf_loaded then
+    local fzf = require("fzf-lua")
+    fzf.setup({
+      winopts = {
+        height = 0.85,
+        width = 0.85,
+        preview = {
+          layout = "horizontal",
+          vertical = "down:50%",
+        },
+      },
+    })
+    fzf_loaded = true
+  end
+  return require("fzf-lua")
+end
 
-local oil = require("oil")
-oil.setup()
+map("n", "<leader>f", function() load_fzf().files() end, { desc = "Find files" })
+map("n", "<leader>/", function() load_fzf().live_grep() end, { desc = "Live grep" })
+map("n", "<leader>,", function() load_fzf().buffers() end, { desc = "List buffers" })
 
-map("n", "-", oil.open, { desc = "Open parent directory" })
+local oil_loaded = false
+map("n", "-", function()
+  if not oil_loaded then
+    ensure_devicons()
+    require("oil").setup()
+    oil_loaded = true
+  end
+  require("oil").open()
+end, { desc = "Open parent directory" })
 
 require("gitsigns").setup({
   signs = {

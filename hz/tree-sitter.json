@@ -9,6 +9,7 @@
     "rust",
     "tsx",
     "typescript",
+    "yaml",
     "zig"
   ],
   "parsers": []
