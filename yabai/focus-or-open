@@ -21,7 +21,13 @@ if command -v yabai >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
             and ."is-hidden" == false
             and ."has-ax-reference" == true
           ))
-          | sort_by(."is-visible", ."has-focus", .id)
+          | sort_by(
+              ."is-visible",
+              (."is-floating" | not),
+              (."is-sticky" | not),
+              ."has-focus",
+              .id
+            )
           | last
           | .id
         ' 2>/dev/null || true

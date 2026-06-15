@@ -46,11 +46,11 @@ while :; do
   child=""
 
   if [ "$status" -eq 0 ]; then
-    log "yabai exited successfully; not restarting"
-    exit 0
+    log "yabai exited; restarting in ${RETRY_DELAY}s"
+  else
+    log "yabai exited with status $status; restarting in ${RETRY_DELAY}s"
   fi
 
-  log "yabai exited with status $status; restarting in ${RETRY_DELAY}s"
   sleep "${RETRY_DELAY}" &
   child=$!
   wait "$child" || exit 0

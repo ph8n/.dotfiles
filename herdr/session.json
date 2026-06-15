@@ -9,16 +9,16 @@
         {
           "custom_name": null,
           "layout": {
-            "Pane": 2
+            "Pane": 1
           },
           "panes": {
-            "2": {
+            "1": {
               "cwd": "/Users/dp/code/projects/hz"
             }
           },
           "zoomed": false,
-          "focused": 2,
-          "root_pane": 2
+          "focused": 1,
+          "root_pane": 1
         }
       ],
       "active_tab": 0
