@@ -42,7 +42,6 @@ vim.o.listchars = "tab:▸ ,trail:·,nbsp:␣"
 
 local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup
-local lsp_complete = "o,.,w,b,u,t"
 
 local function toggle_quickfix()
   local quickfix = vim.fn.getqflist({ winid = 0 })
@@ -53,14 +52,6 @@ local function toggle_quickfix()
   end
 end
 
-local function lsp_completion_convert(item)
-  if vim.lsp.protocol.CompletionItemKind[item.kind] then
-    return {}
-  end
-
-  return { kind = "" }
-end
-
 map("v", "<", "<gv", { silent = true, desc = "Indent left and keep selection" })
 map("v", ">", ">gv", { silent = true, desc = "Indent right and keep selection" })
 map("n", "<leader>h", vim.cmd.nohlsearch, { desc = "Clear search highlight" })
@@ -68,19 +59,8 @@ map("n", "<leader>uw", "<cmd>set wrap!<CR>", { desc = "Toggle line wrap" })
 map("n", "<leader>ul", "<cmd>set number!<CR>", { desc = "Toggle line numbers" })
 map("n", "<leader>uL", "<cmd>set relativenumber!<CR>", { desc = "Toggle relative line numbers" })
 map("n", "<leader>us", "<cmd>set spell!<CR>", { desc = "Toggle spelling" })
-map("n", "<leader>uh", function()
-  if not vim.lsp.inlay_hint or not vim.lsp.inlay_hint.is_enabled or not vim.lsp.inlay_hint.enable then
-    return
-  end
-
-  local bufnr = vim.api.nvim_get_current_buf()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
-end, { desc = "Toggle inlay hints" })
 map("n", "<leader>m", "<cmd>make<CR>", { desc = "Run make" })
 map("n", "<leader>.", toggle_quickfix, { desc = "Toggle quickfix window" })
-map("n", "<leader>q", function()
-  vim.diagnostic.setqflist({ open = true })
-end, { desc = "Diagnostics to quickfix" })
 map("n", "]q", "<cmd>cnext<CR>", { desc = "Quickfix next item" })
 map("n", "[q", "<cmd>cprev<CR>", { desc = "Quickfix previous item" })
 map("n", "<leader>v", vim.cmd.vsplit, { desc = "Vertical split" })
@@ -108,7 +88,6 @@ vim.pack.add({
   gh("nvim-tree/nvim-web-devicons"),
   gh("stevearc/oil.nvim"),
   gh("lewis6991/gitsigns.nvim"),
-  gh("christoomey/vim-tmux-navigator"),
 }, { confirm = false })
 
 require("github-theme").setup({
@@ -141,39 +120,15 @@ vim.api.nvim_set_hl(0, "AxiomTabline", { fg = "#e6edf3", bg = "#3b4252", bold = 
 vim.api.nvim_set_hl(0, "AxiomTablineFill", { fg = "#9da7b3", bg = "#22272e", bold = false })
 
 local statusline = {}
-local diagnostic_labels = {
-  { severity = vim.diagnostic.severity.ERROR, label = "E" },
-  { severity = vim.diagnostic.severity.WARN, label = "W" },
-  { severity = vim.diagnostic.severity.INFO, label = "I" },
-  { severity = vim.diagnostic.severity.HINT, label = "H" },
-}
 
 function statusline.info()
-  local parts = {}
   local branch = vim.b.gitsigns_head
 
   if type(branch) == "string" and branch ~= "" then
-    parts[#parts + 1] = "git:" .. branch
+    return " git:" .. branch .. " "
   end
 
-  local counts = vim.diagnostic.count(0)
-  local present = {}
-  for _, item in ipairs(diagnostic_labels) do
-    local count = counts[item.severity] or 0
-    if count > 0 then
-      present[#present + 1] = item.label .. count
-    end
-  end
-
-  if #present > 0 then
-    parts[#parts + 1] = table.concat(present, " ")
-  end
-
-  if #parts == 0 then
-    return ""
-  end
-
-  return " " .. table.concat(parts, "  ") .. " "
+  return ""
 end
 
 function statusline.tabline()
@@ -288,84 +243,3 @@ require("gitsigns").setup({
     map("n", "<leader>g", gs.preview_hunk, { buffer = bufnr, desc = "Preview git hunk" })
   end,
 })
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = augroup("axiom_lsp", { clear = true }),
-  callback = function(ev)
-    local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
-    local opts = { buffer = ev.buf, silent = true }
-
-    map("n", "gd", vim.lsp.buf.definition, opts)
-    map("n", "gD", vim.lsp.buf.declaration, opts)
-    map("n", "gr", vim.lsp.buf.references, opts)
-    map("n", "gi", vim.lsp.buf.implementation, opts)
-    map("n", "K", vim.lsp.buf.hover, opts)
-    map("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-    map("n", "<leader>d", vim.diagnostic.open_float, opts)
-    map("n", "[d", function()
-      vim.diagnostic.jump({ count = -1 })
-    end, opts)
-    map("n", "]d", function()
-      vim.diagnostic.jump({ count = 1 })
-    end, opts)
-
-    if client:supports_method("textDocument/completion") then
-      vim.bo[ev.buf].complete = lsp_complete
-      vim.lsp.completion.enable(true, client.id, ev.buf, { convert = lsp_completion_convert })
-    end
-  end,
-})
-
-vim.lsp.config("clangd", {
-  cmd = {
-    "xcrun",
-    "clangd",
-    "--background-index",
-    "--clang-tidy",
-    "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang,/usr/bin/cc",
-    "--header-insertion=never",
-  },
-})
-
-vim.lsp.config("lua_ls", {
-  settings = {
-    Lua = {
-      runtime = { version = "LuaJIT" },
-      diagnostics = { globals = { "vim" } },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file("", true),
-        checkThirdParty = false,
-      },
-      telemetry = { enable = false },
-    },
-  },
-})
-
-vim.lsp.config("rust_analyzer", {
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = { allFeatures = true },
-      checkOnSave = false,
-      procMacro = { enable = true },
-    },
-  },
-})
-
-vim.lsp.enable("ast_grep")
-vim.lsp.enable("astro")
-vim.lsp.enable("bashls")
-vim.lsp.enable("clangd")
-vim.lsp.enable("cssls")
-vim.lsp.enable("jsonls")
-vim.lsp.enable("lua_ls")
-vim.lsp.enable("mlir_lsp_server")
-vim.lsp.enable("pyright")
-vim.lsp.enable("racket_langserver")
-vim.lsp.enable("ruff")
-vim.lsp.enable("rust_analyzer")
-vim.lsp.enable("svelte")
-vim.lsp.enable("tailwindcss")
-vim.lsp.enable("ts_ls")
-vim.lsp.enable("yamlls")
-vim.lsp.enable("zls")
