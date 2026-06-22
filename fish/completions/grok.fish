@@ -1,6 +1,6 @@
 # Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
 function __fish_grok_global_optspecs
-	string join \n v/version cwd= leader-socket= debug debug-file= always-approve allow= deny= p/single= prompt-json= prompt-file= verbatim output-format= m/model= reasoning-effort= rules= compaction-mode= compaction-detail= system-prompt-override= r/resume= load= c/continue s/session-id= w/worktree= restore-code no-plan no-subagents no-ask-user experimental-memory no-memory agent= agents= tools= disallowed-tools= effort= max-turns= permission-mode= disable-web-search check best-of-n= sandbox= storage-mode= client-identifier= hunk-tracker-mode= terminal fs-read fs-write no-auto-update todo-gate installer= no-alt-screen log-sampling force-login oauth leader no-leader hub-url= hub-workspace-mode= h/help
+	string join \n v/version cwd= leader-socket= debug debug-file= always-approve allow= deny= p/single= prompt-json= prompt-file= verbatim output-format= m/model= reasoning-effort= rules= compaction-mode= compaction-detail= system-prompt-override= r/resume= load= c/continue s/session-id= w/worktree= restore-code no-plan no-subagents no-ask-user experimental-memory no-memory agent= agents= tools= disallowed-tools= effort= max-turns= permission-mode= disable-web-search check no-wait-for-background background-wait-timeout= best-of-n= sandbox= storage-mode= client-identifier= hunk-tracker-mode= terminal fs-read fs-write no-auto-update todo-gate installer= no-alt-screen log-sampling force-login oauth leader no-leader hub-url= hub-workspace-mode= h/help
 end
 
 function __fish_grok_needs_command
@@ -61,11 +61,12 @@ auto\t''
 dontAsk\t''
 bypassPermissions\t''
 plan\t''"
+complete -c grok -n "__fish_grok_needs_command" -l background-wait-timeout -d 'Max seconds to wait for background work after the first turn ends (headless only). Applies to bash/monitor `task_completed`, background subagents (`SubagentFinished`), and any still-running non-persistent work. Persistent `monitor(persistent:true)` never completes and always waits the full timeout — use `--no-wait-for-background` or a lower timeout for throughput. Conflicts with `--no-wait-for-background`' -r
 complete -c grok -n "__fish_grok_needs_command" -l best-of-n -d 'Run the task N ways in parallel and pick the best (headless only)' -r
 complete -c grok -n "__fish_grok_needs_command" -l sandbox -d 'Sandbox profile for filesystem and network access' -r
 complete -c grok -n "__fish_grok_needs_command" -l storage-mode -d 'Session storage mode: local or writeback' -r
 complete -c grok -n "__fish_grok_needs_command" -l client-identifier -d 'Override the client identifier sent to the agent' -r
-complete -c grok -n "__fish_grok_needs_command" -l hunk-tracker-mode -d 'Hunk tracker mode: agent_only or all_dirty' -r
+complete -c grok -n "__fish_grok_needs_command" -l hunk-tracker-mode -d 'Hunk tracker mode: agent_only, all_dirty, or off ("disabled" is an alias for off, which turns the hunk tracker off entirely)' -r
 complete -c grok -n "__fish_grok_needs_command" -l installer -d 'Set the installer field in config.toml' -r
 complete -c grok -n "__fish_grok_needs_command" -l hub-url -d 'Computer Hub WebSocket URL for tool sharing' -r
 complete -c grok -n "__fish_grok_needs_command" -l hub-workspace-mode -d 'Workspace mode: "local" (default) or "remote=<server-id>"' -r
@@ -82,6 +83,7 @@ complete -c grok -n "__fish_grok_needs_command" -l experimental-memory -d 'Enabl
 complete -c grok -n "__fish_grok_needs_command" -l no-memory -d 'Disable cross-session memory for this session'
 complete -c grok -n "__fish_grok_needs_command" -l disable-web-search -d 'Disable web search and web fetch tools'
 complete -c grok -n "__fish_grok_needs_command" -l check -d 'Append a self-verification loop to the prompt (headless only)'
+complete -c grok -n "__fish_grok_needs_command" -l no-wait-for-background -d 'Exit as soon as the first agent turn ends, without waiting for pending background bash/monitor tasks or background subagents (headless only). Default for all `grok -p` runs is to wait (up to `--background-wait-timeout`) so eval harnesses see full task completion. Use this for fast scripts that only need the first turn\'s text. Does not wait for server-side auto-wake output or persistent monitors (those hit the timeout)'
 complete -c grok -n "__fish_grok_needs_command" -l terminal -d 'Enable terminal support for the agent'
 complete -c grok -n "__fish_grok_needs_command" -l fs-read -d 'Enable client-side file reads'
 complete -c grok -n "__fish_grok_needs_command" -l fs-write -d 'Enable client-side file writes'
@@ -388,13 +390,14 @@ complete -c grok -n "__fish_grok_using_subcommand models" -l leader-socket -d 'U
 complete -c grok -n "__fish_grok_using_subcommand models" -l debug-file -d 'Write debug logs to FILE' -r -F
 complete -c grok -n "__fish_grok_using_subcommand models" -l debug -d 'Enable debug logging'
 complete -c grok -n "__fish_grok_using_subcommand models" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -l debug-file -d 'Write debug logs to FILE' -r -F
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -l debug -d 'Enable debug logging'
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -s h -l help -d 'Print help'
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -f -a "list" -d 'List recent sessions (same as search with no query)'
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -f -a "search" -d 'Search sessions by keyword'
-complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -l debug-file -d 'Write debug logs to FILE' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -l debug -d 'Enable debug logging'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -f -a "list" -d 'List recent sessions (same as search with no query)'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -f -a "search" -d 'Search sessions by keyword'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -f -a "delete" -d 'Permanently delete a session from history'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and not __fish_seen_subcommand_from list search delete help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -s n -l limit -d 'Maximum number of sessions to show' -r
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from list" -l debug-file -d 'Write debug logs to FILE' -r -F
@@ -405,8 +408,13 @@ complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subc
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -l debug-file -d 'Write debug logs to FILE' -r -F
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -l debug -d 'Enable debug logging'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from search" -s h -l help -d 'Print help'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from delete" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from delete" -l debug-file -d 'Write debug logs to FILE' -r -F
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from delete" -l debug -d 'Enable debug logging'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from delete" -s h -l help -d 'Print help'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "list" -d 'List recent sessions (same as search with no query)'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "search" -d 'Search sessions by keyword'
+complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "delete" -d 'Permanently delete a session from history'
 complete -c grok -n "__fish_grok_using_subcommand sessions; and __fish_seen_subcommand_from help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
 complete -c grok -n "__fish_grok_using_subcommand setup" -l leader-socket -d 'Use a custom leader socket path instead of the default `~/.grok/leader.sock`' -r -F
 complete -c grok -n "__fish_grok_using_subcommand setup" -l debug-file -d 'Write debug logs to FILE' -r -F
@@ -557,6 +565,7 @@ complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcomma
 complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from memory" -f -a "clear" -d 'Clear memory files (workspace by default)'
 complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from sessions" -f -a "list" -d 'List recent sessions (same as search with no query)'
 complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from sessions" -f -a "search" -d 'Search sessions by keyword'
+complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from sessions" -f -a "delete" -d 'Permanently delete a session from history'
 complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from worktree" -f -a "list" -d 'List tracked worktrees'
 complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from worktree" -f -a "show" -d 'Show details for a specific worktree'
 complete -c grok -n "__fish_grok_using_subcommand help; and __fish_seen_subcommand_from worktree" -f -a "rm" -d 'Remove worktrees'

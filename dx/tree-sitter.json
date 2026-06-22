@@ -1,7 +1,9 @@
 {
   "languages": [
+    "asm",
     "astro",
     "commonlisp",
+    "go",
     "llvm",
     "mlir",
     "nix",
@@ -12,35 +14,11 @@
   ],
   "parsers": [
     {
-      "language": "astro",
-      "version": "1.9.0-rc.18",
-      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_astro.dylib",
-      "sha256": "c2ab7e9ef34aaa97880a44dc19458369631c2758060b4fe6fe694c5c43a8a5bd",
-      "installed_at_unix": 1781639387,
-      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
-    },
-    {
-      "language": "svelte",
-      "version": "1.9.0-rc.18",
-      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_svelte.dylib",
-      "sha256": "881bebc67a4a292d52683af606decda059731bbe7073c541c0654d89b09266b8",
-      "installed_at_unix": 1781639392,
-      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
-    },
-    {
       "language": "racket",
       "version": "1.9.0-rc.18",
       "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_racket.dylib",
       "sha256": "3e4f341cbd000b53e6078f75bf4e2b82a6558065c5ebed3a2f5499e757d20a9e",
       "installed_at_unix": 1781639422,
-      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
-    },
-    {
-      "language": "commonlisp",
-      "version": "1.9.0-rc.18",
-      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_commonlisp.dylib",
-      "sha256": "ab60426c33628b7558636f53d4687e1e049b17ef399d8cbb5c50b9be890569a1",
-      "installed_at_unix": 1781639425,
       "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
     },
     {
@@ -50,6 +28,40 @@
       "sha256": "67ca439795a5a9724a1434a1e21e8cce18341d7a188b50d3c691a951f967d95b",
       "installed_at_unix": 1781679406,
       "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
+    },
+    {
+      "language": "commonlisp",
+      "version": "1.9.0-rc.18",
+      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_commonlisp.dylib",
+      "sha256": "ab60426c33628b7558636f53d4687e1e049b17ef399d8cbb5c50b9be890569a1",
+      "installed_at_unix": 1781690078,
+      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
+    },
+    {
+      "language": "astro",
+      "version": "1.9.0-rc.18",
+      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_astro.dylib",
+      "sha256": "c2ab7e9ef34aaa97880a44dc19458369631c2758060b4fe6fe694c5c43a8a5bd",
+      "installed_at_unix": 1781696945,
+      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
+    },
+    {
+      "language": "svelte",
+      "version": "1.9.0-rc.18",
+      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_svelte.dylib",
+      "sha256": "881bebc67a4a292d52683af606decda059731bbe7073c541c0654d89b09266b8",
+      "installed_at_unix": 1781696945,
+      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
+    },
+    {
+      "language": "go",
+      "version": "1.9.0-rc.18",
+      "path": "/Users/dp/Library/Caches/tree-sitter-language-pack/v1.9.0-rc.18/libs/libtree_sitter_go.dylib",
+      "sha256": "0680dccdee059b04e5a9525d43db0bb40b5b6a335e4d7dd65c02c213e40c7cad",
+      "installed_at_unix": 1781697009,
+      "source": "github:kreuzberg-dev/tree-sitter-language-pack@parsers.json-sha256:be3db342638e23ceac0844de831ce86baa2d7dacf2666fd42f42619d831da115"
     }
-  ]
+  ],
+  "extensions": [],
+  "filenames": []
 }
