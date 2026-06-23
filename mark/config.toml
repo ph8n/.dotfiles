@@ -1,0 +1,8 @@
+colorscheme = "gruvbox-dark"
+layout = "dynamic"
+line_wrapping = true
+live_reload = true
+syntax_highlighting = true
+
+[diff]
+context_expand = 20
