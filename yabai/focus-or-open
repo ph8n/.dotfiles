@@ -2,40 +2,72 @@
 set -eu
 
 PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH
 
-if [ "$#" -ne 2 ]; then
-  echo "usage: focus-or-open <yabai-app-name> <bundle-id>" >&2
-  exit 2
-fi
+usage() {
+  echo "usage: focus-or-open <app-key> | <yabai-app-name> <bundle-id>" >&2
+}
 
-app_name="$1"
-bundle_id="$2"
+lookup_app() {
+  app_key="$1"
+  apps_file="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/apps.tsv"
 
-if command -v yabai >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
-  window_id="$(
-    yabai -m query --windows 2>/dev/null \
-      | jq -er --arg app "$app_name" '
-          map(select(
-            .app == $app
-            and ."is-minimized" == false
-            and ."is-hidden" == false
-            and ."has-ax-reference" == true
-          ))
-          | sort_by(
-              ."is-visible",
-              (."is-floating" | not),
-              (."is-sticky" | not),
-              ."has-focus",
-              .id
-            )
-          | last
-          | .id // empty
-        ' 2>/dev/null || true
-  )"
+  [ -r "$apps_file" ] || return 1
 
-  if [ -n "${window_id:-}" ]; then
-    yabai -m window --focus "$window_id" >/dev/null 2>&1 && exit 0
+  awk -F '\t' -v key="$app_key" '
+    $0 ~ /^[[:space:]]*(#|$)/ { next }
+    $1 == key && $2 != "" && $3 != "" { print $2 "\t" $3; found = 1; exit }
+    END { if (!found) exit 1 }
+  ' "$apps_file"
+}
+
+case "$#" in
+  1)
+    app_record="$(lookup_app "$1" || true)"
+    if [ -z "${app_record:-}" ]; then
+      echo "focus-or-open: unknown app key '$1'" >&2
+      usage
+      exit 2
+    fi
+
+    old_ifs="$IFS"
+    IFS="$(printf '\t')"
+    set -- $app_record
+    IFS="$old_ifs"
+
+    # $1 is the yabai app name; keep it in apps.tsv / two-arg calls for
+    # compatibility, but app-level focusing only needs the bundle id.
+    bundle_id="$2"
+    ;;
+  2)
+    # $1 is the yabai app name; kept for compatibility with old skhd bindings.
+    bundle_id="$2"
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
+
+open_app() {
+  exec open -b "$bundle_id"
+}
+
+bundle_id_for_asn() {
+  lsappinfo info -only bundleid "$1" 2>/dev/null \
+    | sed -n 's/^"CFBundleIdentifier"="\([^"]*\)"$/\1/p'
+}
+
+# Use LaunchServices for app jumps. yabai window focus across spaces is racy
+# without the scripting addition: it can switch spaces and then leave the last
+# terminal on that space focused. If this app is already frontmost, do nothing
+# so repeated app hotkeys do not cycle same-app windows or create new windows.
+front_asn="$(lsappinfo front 2>/dev/null | sed -n '1p')"
+if [ -n "${front_asn:-}" ]; then
+  front_bundle_id="$(bundle_id_for_asn "$front_asn")"
+  if [ "$front_bundle_id" = "$bundle_id" ]; then
+    exit 0
   fi
 fi
 
-exec open -b "$bundle_id"
+open_app

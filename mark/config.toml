@@ -1,8 +1,12 @@
-colorscheme = "gruvbox-dark"
+colorscheme = "system"
 layout = "dynamic"
-line_wrapping = true
+line_wrapping = false
 live_reload = true
 syntax_highlighting = true
 
 [diff]
 context_expand = 20
+
+[ui.toast]
+corner = "top-right"
+verbosity = "verbose"
