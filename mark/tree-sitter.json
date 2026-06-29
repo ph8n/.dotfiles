@@ -1,0 +1,11 @@
+{
+  "languages": [
+    "asm",
+    "llvm",
+    "mlir",
+    "zig"
+  ],
+  "parsers": [],
+  "extensions": [],
+  "filenames": []
+}

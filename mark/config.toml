@@ -1,4 +1,4 @@
-colorscheme = "system"
+colorscheme = "github-dark-high-contrast"
 layout = "dynamic"
 line_wrapping = false
 live_reload = true
@@ -6,6 +6,9 @@ syntax_highlighting = true
 
 [diff]
 context_expand = 20
+
+[notifications]
+mode = "default"
 
 [ui.toast]
 corner = "top-right"
