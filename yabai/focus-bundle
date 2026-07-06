@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+set -eu
+
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH
+
+if [ "$#" -ne 1 ]; then
+  echo "usage: focus-bundle <bundle-id>" >&2
+  exit 2
+fi
+
+bundle_id="$1"
+
+# Prefer LaunchServices' direct ASN focus for already-running apps. This is much
+# faster than `open -b` for app switching and does not cycle same-app windows.
+set -- $(lsappinfo find "bundleID=$bundle_id" 2>/dev/null || true)
+candidate="${1:-}"
+case "$candidate" in
+  ASN:*)
+    candidate_asn="${candidate%%-\"*}:"
+    if lsappinfo requestfront "$candidate_asn" --immediate >/dev/null 2>&1; then
+      exit 0
+    fi
+    ;;
+esac
+
+exec open -b "$bundle_id"

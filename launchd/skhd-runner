@@ -6,6 +6,12 @@
 PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH
 
+# skhd executes bindings through "$SHELL -c". Pin this to bash so hotkey
+# latency cannot regress if launchd inherits zsh/fish or a future shell startup
+# file gets expensive.
+SHELL="/bin/bash"
+export SHELL
+
 SKHD_BIN="$HOME/.nix-profile/bin/skhd"
 SKHD_CONFIG="$HOME/.config/skhd/skhdrc"
 RETRY_DELAY="${RETRY_DELAY:-5}"

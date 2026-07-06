@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 
 # SIP-enabled trial config. Do not load the scripting addition from here.
+# Keep launchd stdout quiet unless debugging; verbose/debug output records very
+# high-frequency events and can make yabai feel laggy.
+yabai -m config debug_output off
 
 yabai -m config layout stack
 yabai -m config split_type auto

@@ -9,33 +9,10 @@ fi
 PATH="/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH
 
-bundle_id_for_asn() {
-  lsappinfo info -only bundleid "$1" 2>/dev/null \
-    | sed -n 's/^"CFBundleIdentifier"="\([^"]*\)"$/\1/p'
-}
+# LaunchServices reports visible apps in front-to-back order. The second ASN is
+# the previous app. This keeps alt-q to two fast lsappinfo calls instead of
+# querying bundle ids for every visible process.
+set -- $(lsappinfo -nonames visibleProcessList 2>/dev/null || true)
+[ "$#" -ge 2 ] || exit 1
 
-front_asn="$(lsappinfo front 2>/dev/null | awk 'NR == 1 { print $1 }')"
-front_bundle_id=""
-if [ -n "${front_asn:-}" ]; then
-  front_bundle_id="$(bundle_id_for_asn "$front_asn")"
-fi
-
-# Use LaunchServices' front-to-back visible app order directly. Skip the
-# current app and duplicate ASNs from the same bundle so alt-q is an app toggle,
-# not an accidental same-app/window cycle.
-for candidate_asn in $(lsappinfo -nonames visibleProcessList 2>/dev/null); do
-  [ -n "${candidate_asn:-}" ] || continue
-  [ "$candidate_asn" = "${front_asn:-}" ] && continue
-
-  candidate_bundle_id="$(bundle_id_for_asn "$candidate_asn")"
-  [ -n "${candidate_bundle_id:-}" ] || continue
-  [ "$candidate_bundle_id" = "${front_bundle_id:-}" ] && continue
-
-  if lsappinfo requestfront "$candidate_asn" --immediate >/dev/null 2>&1; then
-    exit 0
-  fi
-
-  exec open -b "$candidate_bundle_id"
-done
-
-exit 1
+exec lsappinfo requestfront "$2" --immediate >/dev/null 2>&1

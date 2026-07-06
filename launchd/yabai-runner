@@ -39,7 +39,15 @@ fi
 
 while :; do
   log "starting yabai"
-  "$YABAI_BIN" --config "$YABAI_CONFIG" --verbose &
+  # Keep yabai quiet by default. --verbose/debug_output logs every window and
+  # mouse event; with StandardOutPath set this can grow huge and make dragging
+  # and focus changes feel laggy. Temporarily run with YABAI_VERBOSE=1 when
+  # actively debugging.
+  if [ "${YABAI_VERBOSE:-0}" = "1" ]; then
+    "$YABAI_BIN" --config "$YABAI_CONFIG" --verbose &
+  else
+    "$YABAI_BIN" --config "$YABAI_CONFIG" &
+  fi
   child=$!
   wait "$child"
   status=$?
