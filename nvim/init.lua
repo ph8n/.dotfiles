@@ -7,7 +7,7 @@ for key, value in pairs({
   termguicolors = true,
   number = true,
   relativenumber = true,
-  signcolumn = "yes",
+  signcolumn = "auto",
   cursorline = true,
   wrap = false,
   scrolloff = 8,
@@ -19,7 +19,6 @@ for key, value in pairs({
   shiftwidth = 2,
   softtabstop = 2,
   expandtab = true,
-  smarttab = true,
   autoindent = true,
   ignorecase = true,
   smartcase = true,
@@ -31,7 +30,6 @@ for key, value in pairs({
   splitbelow = true,
   splitright = true,
   completeopt = "menu,menuone,noselect",
-  autocomplete = false,
   list = true,
   listchars = "tab:▸ ,trail:·,nbsp:␣",
 }) do
@@ -60,17 +58,6 @@ map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 map("n", "<leader>.", toggle_quickfix, { desc = "Toggle quickfix" })
 map("n", "]q", "<cmd>cnext<cr>", { desc = "Quickfix next" })
 map("n", "[q", "<cmd>cprev<cr>", { desc = "Quickfix previous" })
-map("n", "]d", function()
-  vim.diagnostic.jump({ count = 1, float = true })
-end, { desc = "Diagnostic next" })
-map("n", "[d", function()
-  vim.diagnostic.jump({ count = -1, float = true })
-end, { desc = "Diagnostic previous" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Diagnostic float" })
-map("n", "<leader>q", vim.diagnostic.setqflist, { desc = "Diagnostics to quickfix" })
-map("n", "<leader>v", "<cmd>vsplit<cr>", { desc = "Vertical split" })
-map("n", "<leader>s", "<cmd>split<cr>", { desc = "Horizontal split" })
-map("n", "<leader>x", "<cmd>close<cr>", { desc = "Close split" })
 map("v", "J", ":m '>+1<cr>gv=gv", { silent = true, desc = "Move selection down" })
 map("v", "K", ":m '<-2<cr>gv=gv", { silent = true, desc = "Move selection up" })
 map("x", "<leader>p", '"_dP', { desc = "Paste without yanking replaced text" })
@@ -108,8 +95,11 @@ require("lazy").setup({
       vim.cmd.colorscheme("github_dark_high_contrast")
     end,
   },
-  { "neovim/nvim-lspconfig", lazy = false },
-  { "nvim-treesitter/nvim-treesitter", lazy = false, build = ":TSUpdate" },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPost", "BufNewFile" },
+    build = ":TSUpdate",
+  },
   {
     "folke/snacks.nvim",
     keys = {
@@ -124,33 +114,11 @@ require("lazy").setup({
       },
     },
   },
-  { "stevearc/oil.nvim", cmd = "Oil", keys = { { "-", "<cmd>Oil<cr>", desc = "Open parent" } }, opts = {} },
   {
-    "lewis6991/gitsigns.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      signs = {
-        add = { text = "+" },
-        change = { text = "~" },
-        delete = { text = "_" },
-        topdelete = { text = "‾" },
-        changedelete = { text = "~" },
-      },
-      update_debounce = 200,
-    },
-  },
-  {
-    "saghen/blink.cmp",
-    version = "*",
-    event = "InsertEnter",
-    opts = {
-      keymap = { preset = "enter" },
-      completion = {
-        list = { selection = { preselect = false, auto_insert = false } },
-      },
-      cmdline = { enabled = false },
-      sources = { default = { "lsp", "path", "buffer" } },
-    },
+    "stevearc/oil.nvim",
+    cmd = "Oil",
+    keys = { { "-", "<cmd>Oil<cr>", desc = "Open parent" } },
+    opts = {},
   },
 }, {
   defaults = { lazy = true },
@@ -176,23 +144,12 @@ require("lazy").setup({
 vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e6edf3", bg = "#2d333b", bold = false })
 vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#9da7b3", bg = "#22272e", bold = false })
 vim.api.nvim_set_hl(0, "AxiomStatuslineFile", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
-vim.api.nvim_set_hl(0, "AxiomStatuslineMeta", { fg = "#e6edf3", bg = "#3b4252", bold = false })
 vim.api.nvim_set_hl(0, "AxiomStatuslinePos", { fg = "#0d1117", bg = "#f2cc60", bold = true })
 vim.api.nvim_set_hl(0, "AxiomTablineSel", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
 vim.api.nvim_set_hl(0, "AxiomTabline", { fg = "#e6edf3", bg = "#3b4252", bold = false })
 vim.api.nvim_set_hl(0, "AxiomTablineFill", { fg = "#9da7b3", bg = "#22272e", bold = false })
 
 local statusline = {}
-
-function statusline.info()
-  local branch = vim.b.gitsigns_head
-
-  if type(branch) == "string" and branch ~= "" then
-    return " git:" .. branch .. " "
-  end
-
-  return ""
-end
 
 function statusline.tabline()
   local parts = {}
@@ -228,8 +185,6 @@ _G.axiom_statusline = statusline
 vim.o.tabline = "%!v:lua.axiom_statusline.tabline()"
 vim.o.statusline = table.concat({
   "%#AxiomStatuslineFile# %<%t%m%r ",
-  "%#AxiomStatuslineMeta#",
-  "%{v:lua.axiom_statusline.info()}",
   "%#StatusLine#%=",
   "%#AxiomStatuslinePos# %l:%c %p%% ",
 })
@@ -240,54 +195,3 @@ vim.api.nvim_create_autocmd("FileType", {
     pcall(vim.treesitter.start, args.buf)
   end,
 })
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-vim.lsp.config("*", { capabilities = capabilities })
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("lsp_keymaps", { clear = true }),
-  callback = function(args)
-    local opts = function(desc)
-      return { buffer = args.buf, desc = desc }
-    end
-
-    map("n", "gd", vim.lsp.buf.definition, opts("LSP definition"))
-    map("n", "gD", vim.lsp.buf.declaration, opts("LSP declaration"))
-    map("n", "gi", vim.lsp.buf.implementation, opts("LSP implementation"))
-    map("n", "gr", vim.lsp.buf.references, opts("LSP references"))
-    map("n", "gy", vim.lsp.buf.type_definition, opts("LSP type definition"))
-    map("n", "K", vim.lsp.buf.hover, opts("LSP hover"))
-    map("n", "<leader>rn", vim.lsp.buf.rename, opts("LSP rename"))
-    map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP code action"))
-    map("n", "<leader>cf", function()
-      vim.lsp.buf.format({ async = true })
-    end, opts("LSP format"))
-    map("n", "<leader>ds", vim.lsp.buf.document_symbol, opts("LSP document symbols"))
-    map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, opts("LSP workspace symbols"))
-  end,
-})
-
-local servers = {}
-local function add_lsp(name, cmd)
-  cmd = cmd or name:gsub("_", "-")
-  if vim.fn.executable(cmd) == 1 then
-    servers[#servers + 1] = name
-    return true
-  end
-  return false
-end
-
-add_lsp("clangd")
-add_lsp("rust_analyzer")
-add_lsp("hls", "haskell-language-server-wrapper")
-add_lsp("basedpyright", "basedpyright-langserver")
-add_lsp("ts_ls", "typescript-language-server")
-add_lsp("zls")
-add_lsp("jdtls")
-add_lsp("prolog_ls", "swipl")
-add_lsp("racket_langserver", "racket")
-add_lsp("texlab")
-add_lsp("marksman")
-
-vim.lsp.enable(servers)
