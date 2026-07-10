@@ -109,19 +109,18 @@ require("lazy").setup({
     end,
   },
   { "neovim/nvim-lspconfig", lazy = false },
+  { "nvim-treesitter/nvim-treesitter", lazy = false, build = ":TSUpdate" },
   {
-    "ibhagwan/fzf-lua",
-    cmd = "FzfLua",
+    "folke/snacks.nvim",
     keys = {
-      { "<leader>f", "<cmd>FzfLua files<cr>", desc = "Find files" },
-      { "<leader>/", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
-      { "<leader>,", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
+      { "<leader>f", function() Snacks.picker.files() end, desc = "Find files" },
+      { "<leader>/", function() Snacks.picker.grep() end, desc = "Live grep" },
+      { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
     },
     opts = {
-      winopts = {
-        height = 0.85,
-        width = 0.85,
-        preview = { layout = "horizontal" },
+      picker = {
+        enabled = true,
+        layout = { preset = "default" },
       },
     },
   },
@@ -271,6 +270,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 local servers = {}
 local function add_lsp(name, cmd)
+  cmd = cmd or name:gsub("_", "-")
   if vim.fn.executable(cmd) == 1 then
     servers[#servers + 1] = name
     return true
@@ -278,18 +278,16 @@ local function add_lsp(name, cmd)
   return false
 end
 
-add_lsp("clangd", "clangd")
-add_lsp("rust_analyzer", "rust-analyzer")
-if not add_lsp("basedpyright", "basedpyright-langserver") and not add_lsp("pyright", "pyright-langserver") then
-  add_lsp("ruff", "ruff")
-end
+add_lsp("clangd")
+add_lsp("rust_analyzer")
+add_lsp("hls", "haskell-language-server-wrapper")
+add_lsp("basedpyright", "basedpyright-langserver")
 add_lsp("ts_ls", "typescript-language-server")
-add_lsp("zls", "zls")
-if not add_lsp("texlab", "texlab") then
-  add_lsp("digestif", "digestif")
-end
-if not add_lsp("marksman", "marksman") then
-  add_lsp("markdown_oxide", "markdown-oxide")
-end
+add_lsp("zls")
+add_lsp("jdtls")
+add_lsp("prolog_ls", "swipl")
+add_lsp("racket_langserver", "racket")
+add_lsp("texlab")
+add_lsp("marksman")
 
 vim.lsp.enable(servers)
