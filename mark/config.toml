@@ -1,4 +1,5 @@
 colorscheme = "github-dark-high-contrast"
+transparent_background = true
 layout = "dynamic"
 line_wrapping = false
 live_reload = true

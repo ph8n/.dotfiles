@@ -51,12 +51,16 @@ while :; do
   status=$?
   child=""
 
+  # Some macOS startup failures (notably Accessibility/Input Monitoring not
+  # being ready yet) can make daemons exit with status 0. A clean exit is not
+  # useful here: skhd is expected to remain alive, while intentional shutdown
+  # is handled by the TERM/INT trap above. Retry every unexpected exit.
   if [ "$status" -eq 0 ]; then
-    log "skhd exited successfully; not restarting"
-    exit 0
+    log "skhd exited; restarting in ${RETRY_DELAY}s"
+  else
+    log "skhd exited with status $status; restarting in ${RETRY_DELAY}s"
   fi
 
-  log "skhd exited with status $status; restarting in ${RETRY_DELAY}s"
   sleep "${RETRY_DELAY}" &
   child=$!
   wait "$child" || exit 0
