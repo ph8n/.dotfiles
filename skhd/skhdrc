@@ -60,7 +60,6 @@ alt - c         : ~/.config/yabai/focus-bundle com.openai.codex
 alt - f         : ~/.config/yabai/focus-bundle net.imput.helium
 alt - d         : ~/.config/yabai/focus-bundle com.hnc.Discord
 alt - s         : ~/.config/yabai/focus-bundle com.tinyspeck.slackmacgap
-alt - o         : ~/.config/yabai/focus-bundle com.electron.logseq
 alt - n         : ~/.config/yabai/focus-bundle notion.id
 alt - b         : ~/.config/yabai/focus-bundle info.sioyek.sioyek
 alt - p         : ~/.config/yabai/focus-bundle com.spotify.client
