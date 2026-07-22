@@ -1,5 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+palette = "mfd-mono"
+
 format = """
 $username\
 $hostname\
@@ -9,42 +11,63 @@ $git_state\
 $git_status\
 $cmd_duration\
 $line_break\
-$python\
 $character"""
 
+[username]
+style_user = "mfd_bright"
+style_root = "bold mfd_bright"
+
+[hostname]
+style = "mfd_bright"
+
 [directory]
-style = "blue"
+style = "mfd_bright"
+read_only_style = "bold mfd_red"
 
 [character]
-success_symbol = "[❯](purple)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+success_symbol = "[❯](bold mfd_green)"
+error_symbol = "[❯](bold mfd_red)"
+vimcmd_symbol = "[❮](bold mfd_green)"
+vimcmd_replace_one_symbol = "[❮](bold mfd_green)"
+vimcmd_replace_symbol = "[❮](bold mfd_green)"
+vimcmd_visual_symbol = "[❮](bold mfd_green)"
 
 [git_branch]
-format = "[$branch]($style)"
-style = "bright-black"
+format = "[on](mfd_bright) [$symbol$branch]($style) "
+symbol = " "
+style = "bold mfd_bright"
 
 [git_status]
-format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
-style = "cyan"
-conflicted = "​"
-untracked = "​"
-modified = "​"
-staged = "​"
-renamed = "​"
-deleted = "​"
-stashed = "≡"
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "bold mfd_red"
+conflicted = "="
+untracked = "?"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+stashed = '\$'
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇕"
+up_to_date = ""
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
-style = "bright-black"
+style = "mfd_bright"
 
 [cmd_duration]
 format = "[$duration]($style) "
-style = "yellow"
+style = "mfd_bright"
+
+[lua]
+disabled = true
 
 [python]
-format = "[$virtualenv]($style) "
-style = "bright-black"
-detect_extensions = []
-detect_files = []
+disabled = true
+
+[palettes.mfd-mono]
+mfd_bg = "#0A0B0A"
+mfd_bright = "#F4F4FF"
+mfd_red = "#F36C7A"
+mfd_green = "#7DCE8C"

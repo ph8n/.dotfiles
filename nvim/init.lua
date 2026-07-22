@@ -80,25 +80,78 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "projekt0n/github-nvim-theme",
+    "kungfusheep/mfd.nvim",
     lazy = false,
     priority = 1000,
-    opts = {
-      options = {
-        transparent = true,
-        terminal_colors = true,
-        styles = { comments = "italic" },
-      },
-    },
-    config = function(_, opts)
-      require("github-theme").setup(opts)
-      vim.cmd.colorscheme("github_dark_high_contrast")
+    config = function()
+      local transparent = {
+        "Normal",
+        "NormalNC",
+        "NormalFloat",
+        "FloatBorder",
+        "FloatTitle",
+        "Pmenu",
+        "SnacksNormal",
+        "SnacksNormalNC",
+        "SnacksPicker",
+        "SnacksPickerInput",
+        "SnacksPickerList",
+        "SnacksPickerPreview",
+        "SnacksPickerBorder",
+        "SnacksPickerInputBorder",
+        "SnacksPickerPreviewBorder",
+        "SnacksPickerPreviewFooter",
+      }
+      local titles = {
+        "SnacksPickerInputTitle",
+        "SnacksPickerListTitle",
+        "SnacksPickerPreviewTitle",
+      }
+
+      local function apply_transparency()
+        local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+        for _, group in ipairs(transparent) do
+          local highlight = vim.api.nvim_get_hl(0, { name = group, link = false })
+          if next(highlight) then
+            highlight.bg = "NONE"
+            vim.api.nvim_set_hl(0, group, highlight)
+          end
+        end
+        for _, group in ipairs(titles) do
+          vim.api.nvim_set_hl(0, group, { fg = normal.fg, bg = "NONE", bold = true })
+        end
+
+      end
+
+      local group = vim.api.nvim_create_augroup("mfd_transparent_background", { clear = true })
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = group,
+        pattern = "mfd-mono",
+        callback = apply_transparency,
+      })
+      vim.cmd.colorscheme("mfd-mono")
+      apply_transparency()
     end,
   },
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPost", "BufNewFile" },
     build = ":TSUpdate",
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = {
+      options = {
+        theme = "mfd-mono",
+        globalstatus = true,
+        component_separators = "",
+        section_separators = "",
+      },
+      sections = {
+        lualine_x = { "encoding", "filetype" },
+      },
+    },
   },
   {
     "folke/snacks.nvim",
@@ -127,7 +180,7 @@ require("lazy").setup({
   defaults = { lazy = true },
   checker = { enabled = false },
   change_detection = { enabled = false, notify = false },
-  install = { colorscheme = { "github_dark_high_contrast" } },
+  install = { colorscheme = { "mfd-mono" } },
   performance = {
     rtp = {
       disabled_plugins = {
@@ -142,54 +195,6 @@ require("lazy").setup({
       },
     },
   },
-})
-
-vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e6edf3", bg = "#2d333b", bold = false })
-vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#9da7b3", bg = "#22272e", bold = false })
-vim.api.nvim_set_hl(0, "AxiomStatuslineFile", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
-vim.api.nvim_set_hl(0, "AxiomStatuslinePos", { fg = "#0d1117", bg = "#f2cc60", bold = true })
-vim.api.nvim_set_hl(0, "AxiomTablineSel", { fg = "#0d1117", bg = "#6cb6ff", bold = true })
-vim.api.nvim_set_hl(0, "AxiomTabline", { fg = "#e6edf3", bg = "#3b4252", bold = false })
-vim.api.nvim_set_hl(0, "AxiomTablineFill", { fg = "#9da7b3", bg = "#22272e", bold = false })
-
-local statusline = {}
-
-function statusline.tabline()
-  local parts = {}
-  local current = vim.api.nvim_get_current_tabpage()
-
-  for i, tab in ipairs(vim.api.nvim_list_tabpages()) do
-    local win = vim.api.nvim_tabpage_get_win(tab)
-    local buf = vim.api.nvim_win_get_buf(win)
-    local label
-
-    if vim.bo[buf].buftype == "terminal" then
-      label = "terminal"
-    else
-      local name = vim.api.nvim_buf_get_name(buf)
-      label = name ~= "" and vim.fn.fnamemodify(name, ":t") or "[No Name]"
-    end
-
-    if vim.bo[buf].modified then
-      label = label .. " +"
-    end
-
-    label = label:gsub("%%", "%%%%")
-    parts[#parts + 1] = tab == current and "%#AxiomTablineSel#" or "%#AxiomTabline#"
-    parts[#parts + 1] = "%" .. i .. "T " .. label .. " "
-  end
-
-  parts[#parts + 1] = "%#AxiomTablineFill#%T%="
-  return table.concat(parts)
-end
-
-_G.axiom_statusline = statusline
-
-vim.o.tabline = "%!v:lua.axiom_statusline.tabline()"
-vim.o.statusline = table.concat({
-  "%#AxiomStatuslineFile# %<%t%m%r ",
-  "%#StatusLine#%=",
-  "%#AxiomStatuslinePos# %l:%c %p%% ",
 })
 
 vim.api.nvim_create_autocmd("FileType", {

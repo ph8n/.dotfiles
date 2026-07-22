@@ -1,9 +1,8 @@
-colorscheme = "github-dark-high-contrast"
-transparent_background = true
 layout = "dynamic"
 line_wrapping = false
 live_reload = true
 syntax_highlighting = true
+theme = "mfd-mono"
 
 [diff]
 context_expand = 20

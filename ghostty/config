@@ -1,9 +1,6 @@
-# Ghostty config
-# Location: ~/.config/ghostty/config
-
 # Appearance
-theme = mellow
-background = #151515
+theme = mono
+background = #0A0B0A
 background-opacity = 1
 background-blur = false
 
@@ -29,7 +26,7 @@ resize-overlay = after-first
 
 # Splits / panes
 unfocused-split-opacity = 1
-split-divider-color = #303030
+split-divider-color = #2A2A32
 focus-follows-mouse = false
 
 # Input / mouse
@@ -45,7 +42,7 @@ link-previews = true
 
 # Behavior
 confirm-close-surface = false
-shell-integration-features = sudo,ssh-terminfo,ssh-env
+shell-integration-features = no-cursor,sudo,ssh-terminfo,ssh-env
 
 # Pane navigation
 keybind = ctrl+h=goto_split:left
@@ -56,7 +53,3 @@ keybind = ctrl+shift+h=resize_split:left,10
 keybind = ctrl+shift+j=resize_split:down,10
 keybind = ctrl+shift+k=resize_split:up,10
 keybind = ctrl+shift+l=resize_split:right,10
-
-# Handy config shortcuts
-keybind = super+,=open_config
-keybind = super+shift+,=reload_config
