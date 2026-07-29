@@ -3,6 +3,7 @@ onboarding = false
 [theme]
 name = "terminal"
 
+auto_switch = false
 [theme.custom]
 panel_bg = "#151515"
 surface0 = "#151515"
@@ -24,3 +25,8 @@ peach = "#e09b13"
 [keys]
 prefix = "ctrl+a"
 
+[ui.toast]
+delivery = "herdr"
+
+[ui]
+show_agent_labels_on_pane_borders = true
