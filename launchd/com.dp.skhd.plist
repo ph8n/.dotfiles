@@ -7,16 +7,10 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/dp/.config/launchd/skhd-runner</string>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>mkdir -p "$HOME/.cache/skhd"; exec "$HOME/.config/launchd/skhd-runner" &gt;&gt;"$HOME/.cache/skhd/skhd.out.log" 2&gt;&gt;"$HOME/.cache/skhd/skhd.err.log"</string>
   </array>
-
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>PATH</key>
-    <string>/Users/dp/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
-    <key>SHELL</key>
-    <string>/bin/bash</string>
-  </dict>
 
   <key>RunAtLoad</key>
   <true/>
@@ -28,9 +22,5 @@
   <key>ThrottleInterval</key>
   <integer>10</integer>
 
-  <key>StandardOutPath</key>
-  <string>/Users/dp/.cache/skhd/skhd.out.log</string>
-  <key>StandardErrorPath</key>
-  <string>/Users/dp/.cache/skhd/skhd.err.log</string>
 </dict>
 </plist>

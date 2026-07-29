@@ -14,6 +14,7 @@ karabiner/automatic_backups/
 *secret*
 *credentials*
 *password*
+gh/hosts.yml
 
 # Database files
 *.mdb
@@ -24,6 +25,21 @@ karabiner/automatic_backups/
 # Log files
 *.log
 .nvimlog
+
+# Generated application state
+cagent/.cagent_first_run
+herdr/.plugins.lock
+herdr/release-notes.json
+herdr/session.json
+hunk/state.json
+racket/racket-prefs.rktd
+
+# Generated OpenCode dependencies
+opencode/.gitignore
+opencode/bun.lock
+opencode/node_modules/
+opencode/package-lock.json
+opencode/package.json
 
 # Stardew Valley for some reason
 StardewValley/

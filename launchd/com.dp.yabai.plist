@@ -7,14 +7,10 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/dp/.config/launchd/yabai-runner</string>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>mkdir -p "$HOME/.cache/yabai"; exec "$HOME/.config/launchd/yabai-runner" &gt;&gt;"$HOME/.cache/yabai/yabai.out.log" 2&gt;&gt;"$HOME/.cache/yabai/yabai.err.log"</string>
   </array>
-
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>PATH</key>
-    <string>/Users/dp/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
-  </dict>
 
   <key>RunAtLoad</key>
   <true/>
@@ -26,9 +22,5 @@
   <key>ThrottleInterval</key>
   <integer>10</integer>
 
-  <key>StandardOutPath</key>
-  <string>/Users/dp/.cache/yabai/yabai.out.log</string>
-  <key>StandardErrorPath</key>
-  <string>/Users/dp/.cache/yabai/yabai.err.log</string>
 </dict>
 </plist>
