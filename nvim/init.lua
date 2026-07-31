@@ -80,57 +80,52 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "kungfusheep/mfd.nvim",
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
     lazy = false,
     priority = 1000,
     config = function()
-      local transparent = {
-        "Normal",
-        "NormalNC",
-        "NormalFloat",
-        "FloatBorder",
-        "FloatTitle",
-        "Pmenu",
-        "SnacksNormal",
-        "SnacksNormalNC",
-        "SnacksPicker",
-        "SnacksPickerInput",
-        "SnacksPickerList",
-        "SnacksPickerPreview",
-        "SnacksPickerBorder",
-        "SnacksPickerInputBorder",
-        "SnacksPickerPreviewBorder",
-        "SnacksPickerPreviewFooter",
-      }
-      local titles = {
-        "SnacksPickerInputTitle",
-        "SnacksPickerListTitle",
-        "SnacksPickerPreviewTitle",
-      }
+      require("github-theme").setup({
+        options = {
+          transparent = true,
+          darken = {
+            floats = false,
+            sidebars = { enable = false },
+          },
+        },
+      })
 
-      local function apply_transparency()
-        local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
-        for _, group in ipairs(transparent) do
+      local function apply_snacks_transparency()
+        local groups = {
+          "SnacksNormal",
+          "SnacksNormalNC",
+          "SnacksInputNormal",
+          "SnacksInputBorder",
+          "SnacksInputTitle",
+        }
+        for _, area in ipairs({ "", "Box", "Input", "List", "Preview" }) do
+          for _, part in ipairs({ "", "Border", "Title", "Footer" }) do
+            groups[#groups + 1] = "SnacksPicker" .. area .. part
+          end
+        end
+
+        for _, group in ipairs(groups) do
           local highlight = vim.api.nvim_get_hl(0, { name = group, link = false })
           if next(highlight) then
             highlight.bg = "NONE"
             vim.api.nvim_set_hl(0, group, highlight)
           end
         end
-        for _, group in ipairs(titles) do
-          vim.api.nvim_set_hl(0, group, { fg = normal.fg, bg = "NONE", bold = true })
-        end
-
       end
 
-      local group = vim.api.nvim_create_augroup("mfd_transparent_background", { clear = true })
+      local group = vim.api.nvim_create_augroup("github_theme_snacks", { clear = true })
       vim.api.nvim_create_autocmd("ColorScheme", {
         group = group,
-        pattern = "mfd-mono",
-        callback = apply_transparency,
+        pattern = "github_dark_high_contrast",
+        callback = apply_snacks_transparency,
       })
-      vim.cmd.colorscheme("mfd-mono")
-      apply_transparency()
+      vim.cmd.colorscheme("github_dark_high_contrast")
+      apply_snacks_transparency()
     end,
   },
   {
@@ -143,7 +138,7 @@ require("lazy").setup({
     event = "VeryLazy",
     opts = {
       options = {
-        theme = "mfd-mono",
+        theme = "auto",
         globalstatus = true,
         component_separators = "",
         section_separators = "",
@@ -156,16 +151,23 @@ require("lazy").setup({
   {
     "folke/snacks.nvim",
     keys = {
+      { "<leader>e", function() Snacks.explorer() end, desc = "File explorer" },
       { "<leader>f", function() Snacks.picker.files() end, desc = "Find files" },
       { "<leader>/", function() Snacks.picker.grep() end, desc = "Live grep" },
       { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
     },
     opts = {
+      explorer = { enabled = true },
       picker = {
         enabled = true,
-        layout = { preset = "default" },
+        ui_select = true,
+        layout = {
+          preset = "default",
+          layout = { backdrop = false },
+        },
         sources = {
           files = { hidden = true },
+          explorer = { hidden = true },
         },
       },
     },
@@ -180,7 +182,7 @@ require("lazy").setup({
   defaults = { lazy = true },
   checker = { enabled = false },
   change_detection = { enabled = false, notify = false },
-  install = { colorscheme = { "mfd-mono" } },
+  install = { colorscheme = { "github_dark_high_contrast" } },
   performance = {
     rtp = {
       disabled_plugins = {

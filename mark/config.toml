@@ -2,7 +2,7 @@ layout = "dynamic"
 line_wrapping = false
 live_reload = true
 syntax_highlighting = true
-theme = "mfd-mono"
+theme = "github-dark-high-contrast"
 
 [diff]
 context_expand = 20
