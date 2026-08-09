@@ -134,6 +134,76 @@ require("lazy").setup({
     build = ":TSUpdate",
   },
   {
+    "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "saghen/blink.cmp" },
+    config = function()
+      vim.lsp.config("*", {
+        capabilities = require("blink.cmp").get_lsp_capabilities(),
+      })
+      vim.lsp.config("lua_ls", {
+        settings = { Lua = { telemetry = { enable = false } } },
+      })
+      vim.lsp.config("ts_ls", {
+        init_options = {
+          tsserver = {
+            path = vim.fn.expand(
+              "~/.local/share/mise/installs/npm-typescript/latest/lib/node_modules/typescript/lib/tsserver.js"
+            ),
+          },
+        },
+      })
+      vim.lsp.enable({
+        "bashls",
+        "clangd",
+        "cssls",
+        "denols",
+        "eslint",
+        "html",
+        "jsonls",
+        "lua_ls",
+        "marksman",
+        "ruff",
+        "rust_analyzer",
+        "tailwindcss",
+        "ts_ls",
+        "ty",
+        "yamlls",
+      })
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("lsp_attach", { clear = true }),
+        callback = function(args)
+          local function lsp_map(lhs, rhs, desc)
+            map("n", lhs, rhs, { buffer = args.buf, desc = desc })
+          end
+
+          lsp_map("gd", function() require("snacks.picker").lsp_definitions() end, "Goto definition")
+          lsp_map("<leader>d", function() require("snacks.picker").diagnostics() end, "Diagnostics")
+          lsp_map("<leader>cf", function() vim.lsp.buf.format({ bufnr = args.buf }) end, "Format buffer")
+          lsp_map("<leader>ui", function()
+            vim.lsp.inlay_hint.enable(
+              not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
+              { bufnr = args.buf }
+            )
+          end, "Toggle inlay hints")
+        end,
+      })
+    end,
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {},
+  },
+  {
+    "saghen/blink.cmp",
+    version = "1.*",
+    event = "InsertEnter",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    opts = { signature = { enabled = true } },
+  },
+  {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = {
