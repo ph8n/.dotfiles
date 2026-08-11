@@ -2,7 +2,7 @@ layout = "dynamic"
 line_wrapping = false
 live_reload = true
 syntax_highlighting = true
-theme = "github-dark-high-contrast"
+theme = "origin"
 
 [diff]
 context_expand = 20

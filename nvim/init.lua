@@ -80,52 +80,13 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "projekt0n/github-nvim-theme",
-    name = "github-theme",
+    "phongndo/origin.nvim",
     lazy = false,
     priority = 1000,
-    config = function()
-      require("github-theme").setup({
-        options = {
-          transparent = true,
-          darken = {
-            floats = false,
-            sidebars = { enable = false },
-          },
-        },
-      })
-
-      local function apply_snacks_transparency()
-        local groups = {
-          "SnacksNormal",
-          "SnacksNormalNC",
-          "SnacksInputNormal",
-          "SnacksInputBorder",
-          "SnacksInputTitle",
-        }
-        for _, area in ipairs({ "", "Box", "Input", "List", "Preview" }) do
-          for _, part in ipairs({ "", "Border", "Title", "Footer" }) do
-            groups[#groups + 1] = "SnacksPicker" .. area .. part
-          end
-        end
-
-        for _, group in ipairs(groups) do
-          local highlight = vim.api.nvim_get_hl(0, { name = group, link = false })
-          if next(highlight) then
-            highlight.bg = "NONE"
-            vim.api.nvim_set_hl(0, group, highlight)
-          end
-        end
-      end
-
-      local group = vim.api.nvim_create_augroup("github_theme_snacks", { clear = true })
-      vim.api.nvim_create_autocmd("ColorScheme", {
-        group = group,
-        pattern = "github_dark_high_contrast",
-        callback = apply_snacks_transparency,
-      })
-      vim.cmd.colorscheme("github_dark_high_contrast")
-      apply_snacks_transparency()
+    opts = { transparent = true },
+    config = function(_, opts)
+      require("origin").setup(opts)
+      vim.cmd.colorscheme("origin")
     end,
   },
   {
@@ -138,11 +99,16 @@ require("lazy").setup({
     event = { "BufReadPre", "BufNewFile" },
     dependencies = { "saghen/blink.cmp" },
     config = function()
-      vim.lsp.config("*", {
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
-      })
       vim.lsp.config("lua_ls", {
-        settings = { Lua = { telemetry = { enable = false } } },
+        settings = {
+          Lua = {
+            telemetry = { enable = false },
+            workspace = {
+              checkThirdParty = false,
+              library = { vim.env.VIMRUNTIME },
+            },
+          },
+        },
       })
       vim.lsp.config("ts_ls", {
         init_options = {
@@ -179,29 +145,25 @@ require("lazy").setup({
           end
 
           lsp_map("gd", function() require("snacks.picker").lsp_definitions() end, "Goto definition")
-          lsp_map("<leader>d", function() require("snacks.picker").diagnostics() end, "Diagnostics")
-          lsp_map("<leader>cf", function() vim.lsp.buf.format({ bufnr = args.buf }) end, "Format buffer")
+          lsp_map("<leader>d", vim.diagnostic.open_float, "Line diagnostics")
+          lsp_map("<leader>D", function() require("snacks.picker").diagnostics() end, "All diagnostics")
+          lsp_map("<leader>cf", vim.lsp.buf.format, "Format buffer")
           lsp_map("<leader>ui", function()
-            vim.lsp.inlay_hint.enable(
-              not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
-              { bufnr = args.buf }
-            )
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
           end, "Toggle inlay hints")
         end,
       })
     end,
   },
   {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {},
-  },
-  {
     "saghen/blink.cmp",
     version = "1.*",
     event = "InsertEnter",
     dependencies = { "rafamadriz/friendly-snippets" },
-    opts = { signature = { enabled = true } },
+    opts = {
+      completion = { list = { selection = { preselect = false, auto_insert = false } } },
+      signature = { enabled = true },
+    },
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -221,10 +183,10 @@ require("lazy").setup({
   {
     "folke/snacks.nvim",
     keys = {
-      { "<leader>e", function() Snacks.explorer() end, desc = "File explorer" },
-      { "<leader>f", function() Snacks.picker.files() end, desc = "Find files" },
-      { "<leader>/", function() Snacks.picker.grep() end, desc = "Live grep" },
-      { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
+      { "<leader>e", function() require("snacks").explorer() end, desc = "File explorer" },
+      { "<leader>f", function() require("snacks").picker.files() end, desc = "Find files" },
+      { "<leader>/", function() require("snacks").picker.grep() end, desc = "Live grep" },
+      { "<leader>,", function() require("snacks").picker.buffers() end, desc = "Buffers" },
     },
     opts = {
       explorer = { enabled = true },
@@ -252,7 +214,7 @@ require("lazy").setup({
   defaults = { lazy = true },
   checker = { enabled = false },
   change_detection = { enabled = false, notify = false },
-  install = { colorscheme = { "github_dark_high_contrast" } },
+  install = { colorscheme = { "origin" } },
   performance = {
     rtp = {
       disabled_plugins = {
