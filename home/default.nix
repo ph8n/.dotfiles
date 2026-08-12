@@ -4,6 +4,7 @@
   imports = [
     ./files.nix
     ./packages.nix
+    ./services.nix
     ./shell.nix
   ];
 

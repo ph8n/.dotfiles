@@ -29,8 +29,6 @@ in
     "hunk/build-pho.sh" = immutable ../hunk/build-pho.sh;
     "hunk/config.toml" = immutable ../hunk/config.toml;
     "hunk/pho-theme.ts" = immutable ../hunk/pho-theme.ts;
-    "launchd/com.dp.skhd.plist" = immutable ../launchd/com.dp.skhd.plist;
-    "launchd/com.dp.yabai.plist" = immutable ../launchd/com.dp.yabai.plist;
     "launchd/skhd-runner" = immutable ../launchd/skhd-runner;
     "launchd/yabai-runner" = immutable ../launchd/yabai-runner;
     "mark/config.toml" = immutable ../mark/config.toml;
