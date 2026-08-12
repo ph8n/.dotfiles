@@ -1,22 +1,26 @@
 typeset -U path PATH fpath
 
-# Paths: prefer Nix tools while keeping Homebrew available as a fallback.
-path=(
-  "$HOME/.nix-profile/bin"
-  "/nix/var/nix/profiles/default/bin"
-  "$HOME/.local/bin"
-  "/opt/homebrew/bin"
-  "/opt/homebrew/sbin"
-  "$HOME/.lmstudio/bin"
-  "/usr/bin"
-  "/bin"
-  "/usr/sbin"
-  "/sbin"
-)
+# Outside a Nix development shell, establish the normal user PATH.
+# Inside one, preserve the PATH supplied by the flake.
+if [[ -z "${IN_NIX_SHELL:-}" ]]; then
+  path=(
+    "$HOME/.nix-profile/bin"
+    "/nix/var/nix/profiles/default/bin"
+    "$HOME/.local/bin"
+    "/opt/homebrew/bin"
+    "/opt/homebrew/sbin"
+    "$HOME/.lmstudio/bin"
+    "/usr/bin"
+    "/bin"
+    "/usr/sbin"
+    "/sbin"
+  )
+
+  (( $+commands[mise] )) && eval "$(mise activate zsh)"
+fi
 
 # Integrations
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
-(( $+commands[mise] )) && eval "$(mise activate zsh)"
 (( $+commands[starship] )) && eval "$(starship init zsh)"
 
 if (( $+commands[fzf] )); then
