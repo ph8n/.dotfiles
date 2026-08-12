@@ -1,5 +1,10 @@
 .DS_Store
 
+# Nix and Home Manager build/activation output
+/result
+result-*
+*.hm-backup
+
 github-copilot
 
 # Backup files
@@ -27,7 +32,6 @@ gh/hosts.yml
 .nvimlog
 
 # Generated application state
-cagent/.cagent_first_run
 herdr/.plugins.lock
 herdr/release-notes.json
 herdr/session.json
