@@ -65,14 +65,14 @@ format = "[$duration]($style) "
 style = "mfd_bright"
 
 [custom.nix_flake_inside]
-when = '''test -n "$NIX_FLAKE_ROOT" && case "$PWD/" in "$NIX_FLAKE_ROOT/"*) true ;; *) false ;; esac'''
+when = '''test -n "$IN_NIX_SHELL" && test -n "$NIX_FLAKE_ROOT" && case "$PWD/" in "$NIX_FLAKE_ROOT/"*) true ;; *) false ;; esac'''
 command = "printf λ"
 format = "[$output]($style) "
 style = "bold mfd_green"
 shell = ["sh"]
 
 [custom.nix_flake_outside]
-when = '''test -n "$NIX_FLAKE_ROOT" && case "$PWD/" in "$NIX_FLAKE_ROOT/"*) false ;; *) true ;; esac'''
+when = '''test -n "$IN_NIX_SHELL" && { test -z "$NIX_FLAKE_ROOT" || case "$PWD/" in "$NIX_FLAKE_ROOT/"*) false ;; *) true ;; esac; }'''
 command = "printf λ"
 format = "[$output]($style) "
 style = "bold mfd_red"

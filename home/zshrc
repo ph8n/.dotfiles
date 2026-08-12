@@ -1,45 +1,28 @@
 typeset -U path PATH fpath
 
-# Preserve a flake's tool precedence while loading this personal Zsh configuration.
-if [[ -n "${IN_NIX_SHELL:-}" ]]; then
-  _nix_develop_path="$PATH"
-  [[ -x "$ZSH_ARGZERO" ]] && export SHELL="$ZSH_ARGZERO"
-fi
-
 # Paths: prefer Nix tools while keeping Homebrew available as a fallback.
 path=(
   "$HOME/.nix-profile/bin"
+  "/nix/var/nix/profiles/default/bin"
   "$HOME/.local/bin"
-  "$HOME/.cargo/bin"
   "/opt/homebrew/bin"
   "/opt/homebrew/sbin"
-  "${path[@]:#/opt/homebrew/opt/llvm/bin}"
   "$HOME/.lmstudio/bin"
+  "/usr/bin"
+  "/bin"
+  "/usr/sbin"
+  "/sbin"
 )
-
-# Completion
-_zsh_cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-[[ -d "$_zsh_cache_dir" ]] || mkdir -p "$_zsh_cache_dir"
-
-autoload -Uz compinit
-_zsh_compdump="$_zsh_cache_dir/compdump"
-compinit -C -d "$_zsh_compdump"
-if [[ -s "$_zsh_compdump" && ( ! -s "$_zsh_compdump.zwc" || "$_zsh_compdump" -nt "$_zsh_compdump.zwc" ) ]]; then
-  zcompile "$_zsh_compdump"
-fi
-unset _zsh_cache_dir _zsh_compdump
 
 # Integrations
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 (( $+commands[mise] )) && eval "$(mise activate zsh)"
 (( $+commands[starship] )) && eval "$(starship init zsh)"
-(( $+commands[hz] )) && eval "$(hz shell zsh)"
 
 if (( $+commands[fzf] )); then
   (( $+commands[bat] )) && export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always {}'"
   source <(fzf --zsh)
   bindkey -r '^[c'
-  bindkey '^O' fzf-cd-widget
 fi
 
 # Editor, aliases, and keybindings
@@ -51,34 +34,8 @@ alias box='ssh phongndo@dp'
 alias dot='git -C "$HOME/nix-config"'
 alias hm='home-manager switch --flake "$HOME/nix-config#dp"'
 
-# Keep the exact `nix develop` command manual while opening the configured interactive shell.
-nix() {
-  if (( $# == 1 )) && [[ "$1" == develop ]]; then
-    local flake_root="$PWD"
-    while [[ "$flake_root" != / && ! -f "$flake_root/flake.nix" ]]; do
-      flake_root="${flake_root:h}"
-    done
-
-    command nix develop --command env \
-      NIX_FLAKE_ROOT="$flake_root" \
-      NIX_FLAKE_NAME="${flake_root:t}" \
-      SHELL="$SHELL" \
-      "$SHELL" -i
-  else
-    command nix "$@"
-  fi
-}
-
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^G' edit-command-line
 
 ulimit -n 65536
-
-# Prevent fff from indexing the home directory.
-export FFF_ENABLE_HOME_SCAN=0
-
-if [[ -n "${_nix_develop_path:-}" ]]; then
-  export PATH="$_nix_develop_path"
-  unset _nix_develop_path
-fi
