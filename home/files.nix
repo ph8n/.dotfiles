@@ -20,8 +20,6 @@ in
 
   xdg.configFile = {
     # Hand-authored, immutable configuration. Edit the source and run `hm`.
-    "aerospace/aerospace.toml" = immutable ../aerospace/aerospace.toml;
-    "amp/plugins/superset-lifecycle.ts" = immutable ../amp/plugins/superset-lifecycle.ts;
     "cmux/settings.json" = immutable ../cmux/settings.json;
     "ghostty/config" = immutable ../ghostty/config;
     "ghostty/themes/mono" = immutable ../ghostty/themes/mono;
@@ -39,7 +37,6 @@ in
     "skhd/focus-previous-app" = immutable ../skhd/focus-previous-app;
     "skhd/skhdrc" = immutable ../skhd/skhdrc;
     "starship.toml" = immutable ../starship/starship.toml;
-    "wezterm/wezterm.lua" = immutable ../wezterm/wezterm.lua;
     "yabai/apps.tsv" = immutable ../yabai/apps.tsv;
     "yabai/focus-bundle" = immutable ../yabai/focus-bundle;
     "yabai/focus-or-open" = immutable ../yabai/focus-or-open;
