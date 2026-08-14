@@ -1,0 +1,44 @@
+# Outside a Nix development shell, establish the normal user PATH.
+# Inside one, preserve the PATH supplied by the flake.
+if [[ -z "${IN_NIX_SHELL:-}" ]]; then
+  PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.lmstudio/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+  export PATH
+
+  command -v mise >/dev/null && eval "$(mise activate bash)"
+fi
+
+# Integrations
+command -v zoxide >/dev/null && eval "$(zoxide init bash)"
+
+if command -v fzf >/dev/null; then
+  command -v bat >/dev/null && export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always {}'"
+  eval "$(fzf --bash)"
+fi
+
+# Editor
+export EDITOR="nvim"
+export VISUAL="$EDITOR"
+
+ulimit -n 65536
+
+# Nix runs a development shell's shellHook after Bash reads .bashrc, so
+# IN_NIX_SHELL is not available yet during normal initialization. Capture
+# the originating flake once, immediately before Starship draws the first
+# prompt, instead of wrapping `nix develop`.
+_nix_capture_flake_root() {
+  [[ -n "${IN_NIX_SHELL:-}" && -z "${_NIX_FLAKE_ROOT_CAPTURED:-}" ]] || return 0
+
+  local root="$PWD"
+  while [[ "$root" != "/" && ! -f "$root/flake.nix" ]]; do
+    root="${root%/*}"
+    [[ -n "$root" ]] || root="/"
+  done
+
+  if [[ -f "$root/flake.nix" ]]; then
+    export NIX_FLAKE_ROOT="$root"
+  else
+    unset NIX_FLAKE_ROOT
+  fi
+  _NIX_FLAKE_ROOT_CAPTURED=1
+}
+starship_precmd_user_func=_nix_capture_flake_root

@@ -1,15 +1,31 @@
-{ ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
+  home.shellAliases = {
+    ls = "${lib.getExe pkgs.eza} --group-directories-first";
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
     history.path = "$HOME/.zsh_history";
-    initContent = builtins.readFile ./zshrc;
+    initContent = lib.mkMerge [
+      (lib.mkBefore ''
+        # Run Atuin's PTY proxy before the regular shell integration so recent
+        # command output is available to Atuin AI through the daemon.
+        eval "$(${lib.getExe config.programs.atuin.package} pty-proxy init zsh)"
+      '')
+      (builtins.readFile ./zshrc)
+    ];
   };
 
-  # Keep development Bash predictable: the flake owns its environment while
-  # Home Manager contributes only completion, history behavior, and Starship.
+  # Keep Bash aligned with Zsh. The flake still owns PATH inside `nix develop`;
+  # Home Manager contributes the same aliases, integrations, and Starship hook.
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -21,29 +37,7 @@
       "checkwinsize"
       "histappend"
     ];
-    initExtra = ''
-      # Nix runs a development shell's shellHook after Bash reads .bashrc, so
-      # IN_NIX_SHELL is not available yet during normal initialization. Capture
-      # the originating flake once, immediately before Starship draws the first
-      # prompt, instead of wrapping `nix develop`.
-      _nix_capture_flake_root() {
-        [[ -n "''${IN_NIX_SHELL:-}" && -z "''${_NIX_FLAKE_ROOT_CAPTURED:-}" ]] || return 0
-
-        local root="$PWD"
-        while [[ "$root" != "/" && ! -f "$root/flake.nix" ]]; do
-          root="''${root%/*}"
-          [[ -n "$root" ]] || root="/"
-        done
-
-        if [[ -f "$root/flake.nix" ]]; then
-          export NIX_FLAKE_ROOT="$root"
-        else
-          unset NIX_FLAKE_ROOT
-        fi
-        _NIX_FLAKE_ROOT_CAPTURED=1
-      }
-      starship_precmd_user_func=_nix_capture_flake_root
-    '';
+    initExtra = builtins.readFile ./bashrc;
   };
 
   programs.atuin = {
@@ -58,6 +52,26 @@
       auto_sync = true;
       sync_frequency = "5m";
       search_mode = "daemon-fuzzy";
+
+      # Give Atuin AI useful terminal context and access to its unique history
+      # features, but leave filesystem mutation and command execution to the
+      # dedicated coding agents.
+      ai = {
+        enabled = true;
+        yolo = false;
+
+        opening = {
+          send_cwd = true;
+          send_last_command = true;
+        };
+
+        capabilities = {
+          enable_history_search = true;
+          enable_history_output = true;
+          enable_file_tools = false;
+          enable_command_execution = false;
+        };
+      };
 
       # Ctrl-R searches globally; up-arrow starts in the current directory.
       filter_mode = "global";
@@ -74,6 +88,10 @@
       enter_accept = false;
       keymap_mode = "auto";
       secrets_filter = true;
+
+      # `pass show` can print credentials and command substitutions can embed
+      # secret-store paths. Keep all password-store invocations out of Atuin.
+      history_filter = [ "\\bpass\\b" ];
     };
 
     # Home Manager manages the daemon as a launchd agent on macOS.

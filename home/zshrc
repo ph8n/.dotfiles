@@ -33,7 +33,6 @@ fi
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
 
-alias ls='eza --group-directories-first'
 alias box='ssh phongndo@dp'
 alias dot='git -C "$HOME/nix-config"'
 alias hm='home-manager switch --flake "$HOME/nix-config#dp"'
