@@ -1,10 +1,11 @@
 # Outside a Nix development shell, establish the normal user PATH.
 # Inside one, preserve the PATH supplied by the flake.
 if [[ -z "${IN_NIX_SHELL:-}" ]]; then
-  PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.lmstudio/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+  PATH="$HOME/.grok/bin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.lmstudio/bin:/usr/bin:/bin:/usr/sbin:/sbin"
   export PATH
 
   command -v mise >/dev/null && eval "$(mise activate bash)"
+  [[ -r "$HOME/.grok/completions/bash/grok.bash" ]] && source "$HOME/.grok/completions/bash/grok.bash"
 fi
 
 # Integrations

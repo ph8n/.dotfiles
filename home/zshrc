@@ -4,6 +4,7 @@ typeset -U path PATH fpath
 # Inside one, preserve the PATH supplied by the flake.
 if [[ -z "${IN_NIX_SHELL:-}" ]]; then
   path=(
+    "$HOME/.grok/bin"
     "$HOME/.nix-profile/bin"
     "/nix/var/nix/profiles/default/bin"
     "$HOME/.local/bin"
@@ -17,6 +18,7 @@ if [[ -z "${IN_NIX_SHELL:-}" ]]; then
   )
 
   (( $+commands[mise] )) && eval "$(mise activate zsh)"
+  fpath=("$HOME/.grok/completions/zsh" $fpath)
 fi
 
 # Integrations
