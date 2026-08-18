@@ -26,7 +26,9 @@
     pinentry_mac
     ripgrep
     skhd
+    tmux
     yabai
+    zellij
     zoxide
   ];
 }

@@ -2,8 +2,8 @@
 # App bindings focus/open the requested app only; no same-app window cycling.
 # Keep high-frequency yabai hotkeys direct and quiet. skhd already runs each
 # command through a shell; extra wrapper scripts and query+jq paths add latency.
-# In stack layout, use alt-tab/shift-alt-tab to move within the stack; h/j/k/l
-# directional focus is mainly useful after switching the space to bsp.
+# In stack layout, use alt-tab/shift-alt-tab to move within the stack.
+# Alt-h/j/k/l is reserved for terminal applications such as Lemma.
 
 # Layout. Stack gives one full-screen managed window at a time; BSP gives splits.
 alt - 0x2C : "$HOME/.nix-profile/bin/yabai" -m space --layout bsp >/dev/null 2>&1
@@ -12,10 +12,6 @@ alt - 0x2B : "$HOME/.nix-profile/bin/yabai" -m space --layout stack >/dev/null 2
 # Focus.
 alt - tab         : "$HOME/.nix-profile/bin/yabai" -m window --focus stack.next >/dev/null 2>&1
 alt + shift - tab : "$HOME/.nix-profile/bin/yabai" -m window --focus stack.prev >/dev/null 2>&1
-alt - h : "$HOME/.nix-profile/bin/yabai" -m window --focus west >/dev/null 2>&1
-alt - j : "$HOME/.nix-profile/bin/yabai" -m window --focus south >/dev/null 2>&1
-alt - k : "$HOME/.nix-profile/bin/yabai" -m window --focus north >/dev/null 2>&1
-alt - l : "$HOME/.nix-profile/bin/yabai" -m window --focus east >/dev/null 2>&1
 
 # Spaces (yabai index on current display; 1-based). Missing/already-focused
 # spaces are quiet no-ops.

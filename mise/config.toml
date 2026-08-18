@@ -1,6 +1,9 @@
 [settings]
 minimum_release_age = "0s"
 
+[settings.npm]
+package_manager = "npm"
+
 [tools]
 bun = "latest"
 codex = "latest"
@@ -10,3 +13,5 @@ copilot-cli = "latest"
 uv = "latest"
 opencode = "latest"
 pi = "latest"
+node = "latest"
+"npm:@deepseek-ai/dsh" = "latest"

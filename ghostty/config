@@ -44,11 +44,7 @@ link-previews = true
 confirm-close-surface = false
 shell-integration-features = no-cursor,sudo,ssh-terminfo,ssh-env
 
-# Pane navigation
-keybind = ctrl+h=goto_split:left
-keybind = ctrl+j=goto_split:bottom
-keybind = ctrl+k=goto_split:top
-keybind = ctrl+l=goto_split:right
+# Native pane resize. Ctrl-h/j/k/l is intentionally left to terminal applications.
 keybind = ctrl+shift+h=resize_split:left,10
 keybind = ctrl+shift+j=resize_split:down,10
 keybind = ctrl+shift+k=resize_split:up,10

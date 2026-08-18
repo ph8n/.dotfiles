@@ -10,6 +10,10 @@
     ls = "${lib.getExe pkgs.eza} --group-directories-first";
   };
 
+  # Keep user-installed Cargo binaries available without mutating managed
+  # shell startup files.
+  home.sessionPath = [ "$HOME/.cargo/bin" ];
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
