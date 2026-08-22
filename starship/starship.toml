@@ -7,7 +7,6 @@ palette = "mfd-mono"
 format = """
 ${custom.nix_flake_inside}\
 ${custom.nix_flake_outside}\
-$username\
 $hostname\
 $directory\
 $git_branch\
@@ -17,12 +16,13 @@ $cmd_duration\
 $line_break\
 $character"""
 
-[username]
-style_user = "mfd_bright"
-style_root = "bold mfd_bright"
-
 [hostname]
+ssh_only = true
+format = "[@$hostname]($style) "
 style = "mfd_bright"
+
+[hostname.aliases]
+dp = "box"
 
 [directory]
 style = "mfd_bright"
