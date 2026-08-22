@@ -57,5 +57,11 @@ in
     "zed/themes/pho.json" = writable "zed/themes/pho.json";
   };
 
+  # Local mise plugins that are not published as git repos. mise discovers
+  # these under XDG data; the installed CLI versions remain mise-owned.
+  xdg.dataFile = {
+    "mise/plugins/cursor-agent" = immutable ../mise/plugins/cursor-agent;
+  };
+
   home.file.".zshenv" = immutable ./zshenv;
 }
