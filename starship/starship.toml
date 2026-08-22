@@ -21,9 +21,6 @@ ssh_only = true
 format = "[@$hostname]($style) "
 style = "mfd_bright"
 
-[hostname.aliases]
-dp = "box"
-
 [directory]
 style = "mfd_bright"
 read_only_style = "bold mfd_red"

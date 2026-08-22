@@ -9,9 +9,15 @@ if [[ -z "${IN_NIX_SHELL:-}" ]]; then
     "$HOME/.nix-profile/bin"
     "/nix/var/nix/profiles/default/bin"
     "$HOME/.local/bin"
-    "/opt/homebrew/bin"
-    "/opt/homebrew/sbin"
-    "$HOME/.lmstudio/bin"
+  )
+  if [[ "$OSTYPE" == darwin* ]]; then
+    path+=(
+      "/opt/homebrew/bin"
+      "/opt/homebrew/sbin"
+      "$HOME/.lmstudio/bin"
+    )
+  fi
+  path+=(
     "/usr/bin"
     "/bin"
     "/usr/sbin"

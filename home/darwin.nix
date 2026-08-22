@@ -43,6 +43,7 @@ in
   programs.zsh.shellAliases.box = "ssh phongndo@box";
 
   home.packages = with pkgs; [
+    browserpass
     pass
     pinentry_mac
     skhd

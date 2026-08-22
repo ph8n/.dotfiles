@@ -24,9 +24,6 @@ in
   xdg.configFile = lib.mkMerge [
     {
       "atuin/TERMINAL.md" = immutable ../atuin/TERMINAL.md;
-      "cmux/settings.json" = immutable ../cmux/settings.json;
-      "ghostty/config" = immutable ../ghostty/config;
-      "ghostty/themes/mono" = immutable ../ghostty/themes/mono;
       "herdr/config.toml" = immutable ../herdr/config.toml;
       "hunk/build-pho.sh" = immutable ../hunk/build-pho.sh;
       "hunk/config.toml" = immutable ../hunk/config.toml;
@@ -41,12 +38,12 @@ in
       "btop/btop.conf" = writable "btop/btop.conf";
       "gh/config.yml" = writable "gh/config.yml";
       "nvim/lazy-lock.json" = writable "nvim/lazy-lock.json";
-      "zed/keymap.json" = writable "zed/keymap.json";
-      "zed/settings.json" = writable "zed/settings.json";
-      "zed/themes/pho.json" = writable "zed/themes/pho.json";
     }
 
     (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      "cmux/settings.json" = immutable ../cmux/settings.json;
+      "ghostty/config" = immutable ../ghostty/config;
+      "ghostty/themes/mono" = immutable ../ghostty/themes/mono;
       "karabiner/karabiner.json" = writable "karabiner/karabiner.json";
       "launchd/skhd-runner" = immutable ../launchd/skhd-runner;
       "launchd/yabai-runner" = immutable ../launchd/yabai-runner;
@@ -59,6 +56,9 @@ in
       "yabai/move-window-to-space" = immutable ../yabai/move-window-to-space;
       "yabai/safe-yabai" = immutable ../yabai/safe-yabai;
       "yabai/yabairc" = immutable ../yabai/yabairc;
+      "zed/keymap.json" = writable "zed/keymap.json";
+      "zed/settings.json" = writable "zed/settings.json";
+      "zed/themes/pho.json" = writable "zed/themes/pho.json";
     })
   ];
 

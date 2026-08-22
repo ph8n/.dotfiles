@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     bat
-    browserpass
     btop
     eza
     fd

@@ -165,7 +165,7 @@ in
         }"
         "DB_URL=postgresql:///immich?host=${runDir}"
         "REDIS_SOCKET=${runDir}/redis.sock"
-        "IMMICH_HOST=0.0.0.0"
+        "IMMICH_HOST=127.0.0.1"
         "IMMICH_PORT=2283"
         "IMMICH_MEDIA_LOCATION=${media}"
         "IMMICH_MACHINE_LEARNING_URL=http://127.0.0.1:3003"
@@ -173,20 +173,17 @@ in
     };
   };
 
+  # Needs `sudo tailscale set --operator=$USER` from box-bootstrap.sh.
   systemd.user.services.immich-tailscale = {
     Unit = {
       Description = "Publish Immich on Tailscale";
       After = [ "immich-server.service" ];
+      Requires = [ "immich-server.service" ];
     };
     Service = {
       Type = "oneshot";
       RemainAfterExit = true;
-      TimeoutStartSec = "8";
-      SuccessExitStatus = [
-        "0"
-        "1"
-        "SIGTERM"
-      ];
+      TimeoutStartSec = "15";
       ExecStart = "${lib.getExe pkgs.tailscale} serve --bg http://127.0.0.1:2283";
     };
     Install.WantedBy = [ "default.target" ];
