@@ -46,9 +46,9 @@ dot diff
 ## Monitor seat on box
 
 `hm` installs Nix `cage`, `foot`, Mesa, fonts, and kanata.
-`seat` is fullscreen `cage -s -d -- foot`. tty1 login starts it.
+The monitor is one login: `seat` (fullscreen `cage -s -d -- foot`).
 Kanata is the Mac Karabiner layout (Caps tap Esc / hold Ctrl, Space symbols).
-Muxer owns tabs/panes. `Ctrl+Alt+F2` is a rescue getty.
+Muxer owns tabs/panes. SSH is the escape hatch if the seat fails.
 
 Ubuntu cannot provide DRM or uinput from Home Manager. Once per machine:
 

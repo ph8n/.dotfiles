@@ -14,6 +14,10 @@ udevadm trigger /dev/uinput || true
 usermod -aG video,render,input "$target"
 loginctl enable-linger "$target"
 
+for n in 2 3 4 5 6; do
+  systemctl mask --now "getty@tty${n}.service" || true
+done
+
 apt-get remove -y cage kitty kitty-doc kitty-terminfo kitty-shell-integration || true
 apt-get autoremove -y
 apt-get update
