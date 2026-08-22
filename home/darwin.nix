@@ -40,7 +40,7 @@ let
   };
 in
 {
-  programs.zsh.shellAliases.box = "ssh phongndo@dp";
+  programs.zsh.shellAliases.box = "ssh phongndo@box";
 
   home.packages = with pkgs; [
     pass
