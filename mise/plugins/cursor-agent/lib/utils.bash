@@ -34,7 +34,8 @@ cursor_agent_arch() {
 
 cursor_agent_curl() {
   command -v curl >/dev/null 2>&1 || cursor_agent_fail "curl is required."
-  curl -fsSL "$@"
+  # --retry-all-errors covers SSL connect failures (curl 35) on flaky links.
+  curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --connect-timeout 15 "$@"
 }
 
 # Resolve the version currently published by the official installer.
