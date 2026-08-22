@@ -40,6 +40,15 @@ let
   };
 in
 {
+  programs.zsh.shellAliases.box = "ssh phongndo@dp";
+
+  home.packages = with pkgs; [
+    pass
+    pinentry_mac
+    skhd
+    yabai
+  ];
+
   launchd.agents = {
     # Home Manager's Atuin module owns the rest of this agent. Override only
     # its executable so stale crash state cannot create a restart loop.

@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-  # Personal tools: useful across projects and unrelated to a specific build.
   home.packages = with pkgs; [
     bat
     browserpass
@@ -22,12 +21,8 @@
     lazygit
     mise
     neovim
-    pass
-    pinentry_mac
     ripgrep
-    skhd
     tmux
-    yabai
     zellij
     zoxide
   ];

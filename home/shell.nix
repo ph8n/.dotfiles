@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  machine,
   pkgs,
   ...
 }:
@@ -8,6 +9,12 @@
 {
   home.shellAliases = {
     ls = "${lib.getExe pkgs.eza} --group-directories-first";
+
+    # Git operations in this repository.
+    dot = "git -C \"$HOME/nix-config\"";
+
+    # `machine` names the flake attribute this host activates.
+    hm = "home-manager switch --flake \"$HOME/nix-config#${machine}\"";
   };
 
   # Keep user-installed Cargo binaries available without mutating managed

@@ -36,10 +36,6 @@ fi
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
 
-alias box='ssh phongndo@dp'
-alias dot='git -C "$HOME/nix-config"'
-alias hm='home-manager switch --flake "$HOME/nix-config#dp"'
-
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^G' edit-command-line

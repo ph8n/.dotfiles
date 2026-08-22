@@ -1,0 +1,37 @@
+(defcfg
+  process-unmapped-keys yes
+  linux-continue-if-no-devs-found yes
+  linux-dev-names-exclude (
+    "Dell KB216 Wired Keyboard Consumer Control"
+    "Dell KB216 Wired Keyboard System Control"
+  )
+)
+
+(defsrc
+  esc  caps
+  q    w    e    r    t    y    u    i    o    p
+  a    s    d    f    g    h    j    k    l    ;
+  z    x    c    v    b    n    m    ,    .    /
+  spc
+)
+
+(deflayer base
+  caps @cap
+  q    w    e    r    t    y    u    i    o    p
+  a    s    d    f    g    h    j    k    l    ;
+  z    x    c    v    b    n    m    ,    .    /
+  @spc
+)
+
+(deflayer symbols
+  _    _
+  '    S-,  S-.  S-'  .    `    S-7  S-[  S-]  S-5
+  S-1  -    S-=  =    S-3  S-\  S-;  S-9  S-0  S-/
+  S-6  /    S-8  \    S--  S-`  S-4  [    ]    S-2
+  _
+)
+
+(defalias
+  cap (tap-hold 120 120 esc lctl)
+  spc (tap-hold-press 150 150 spc (layer-while-held symbols))
+)
