@@ -44,11 +44,12 @@ in
   systemd.user.services.kanata = {
     Unit = {
       Description = "kanata keyboard remapper";
+      After = [ "default.target" ];
       ConditionPathIsWritable = "/dev/uinput";
     };
     Service = {
       ExecStart = "${lib.getExe pkgs.kanata} --nodelay --cfg ${../kanata/kanata.kbd}";
-      Restart = "on-failure";
+      Restart = "always";
       RestartSec = "2";
     };
     Install.WantedBy = [ "default.target" ];

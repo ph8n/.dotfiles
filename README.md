@@ -56,8 +56,8 @@ Ubuntu cannot provide DRM or uinput from Home Manager. Once per machine:
 ~/nix-config/machines/box-bootstrap.sh
 ```
 
-That sets `video`/`render`/`input`, installs the uinput udev rule, removes
-apt `cage`/`kitty`, and upgrades the host. Re-login afterwards.
+That sets `video`/`render`/`input`, lingering, and the uinput udev rule,
+removes apt `cage`/`kitty`, and upgrades the host. Kanata starts at boot.
 
 ## Remaining work
 

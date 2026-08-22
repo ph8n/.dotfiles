@@ -12,10 +12,11 @@ install -m 644 "$repo/kanata/99-uinput.rules" /etc/udev/rules.d/99-uinput.rules
 udevadm control --reload-rules
 udevadm trigger /dev/uinput || true
 usermod -aG video,render,input "$target"
+loginctl enable-linger "$target"
 
 apt-get remove -y cage kitty kitty-doc kitty-terminfo kitty-shell-integration || true
 apt-get autoremove -y
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
-echo "re-login so groups apply, then: systemctl --user restart kanata"
+echo "done. next boot starts kanata on its own"
