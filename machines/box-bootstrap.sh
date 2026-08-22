@@ -51,10 +51,10 @@ if ! cmp -s "$repo/machines/tailscaled.service" "$unit"; then
 fi
 systemctl enable tailscaled.service
 
-# Lets the lingering user publish `tailscale serve` without root.
-if command -v tailscale >/dev/null; then
-  tailscale set --operator="$target"
-fi
+# Root's PATH does not include the Home Manager profile. Use the same
+# stable symlink the tailscaled unit uses.
+tailscale="/home/${target}/.nix-profile/bin/tailscale"
+"$tailscale" set --operator="$target"
 
 runtime="/run/user/${uid}"
 if [ -d "$runtime" ]; then
