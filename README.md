@@ -19,12 +19,15 @@ Multi-host Home Manager configuration inspired by Mitchell Hashimoto's Nix setup
 ## Layout
 
 ```
-flake.nix          # homeConfigurations.dp and homeConfigurations.box
-machines/          # per-host entry points
-home/              # shared user config
-home/darwin.nix    # yabai/skhd/karabiner-era packages, launchd agents, pass
-home/linux.nix     # fonts, cage, foot, kanata, tty1 seat
-kanata/            # keyboard remaps for box
+flake.nix                  # homeConfigurations.dp and homeConfigurations.box
+machines/                  # per-host entry points
+machines/box-bootstrap.sh  # once: groups, linger, uinput, drop extra gettys
+machines/box-data.nix      # ~/code and ~/scratch onto /mnt/data
+machines/immich.nix        # nixpkgs Immich, PostgreSQL, Redis as user services
+home/                  # shared user config
+home/darwin.nix        # yabai/skhd/karabiner-era packages, launchd agents, pass
+home/linux.nix         # fonts, cage, foot, kanata, tty1 seat
+kanata/                # keyboard remaps for box
 ```
 
 ## Dotfiles
@@ -58,6 +61,16 @@ Ubuntu cannot provide DRM or uinput from Home Manager. Once per machine:
 
 That sets `video`/`render`/`input`, lingering, and the uinput udev rule,
 removes apt `cage`/`kitty`, and upgrades the host. Kanata starts at boot.
+
+## Storage and Immich on box
+
+Filesystems are Ubuntu host state. Processes come from nixpkgs and Home Manager.
+
+- SSD root is 180G. The 4TB disk is `data-vg`: `/mnt/data` (~2.6T) and
+  `/srv/photos` (1T). `~/code` and `~/scratch` are links.
+- Immich, PostgreSQL (pgvector + vectorchord), and Redis run as lingering
+  user services. Media is `/srv/photos`.
+- Reach it on the tailnet only: `https://dp.tail5606b4.ts.net`
 
 ## Remaining work
 

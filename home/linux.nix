@@ -36,6 +36,7 @@ in
     pkgs.jetbrains-mono
     pkgs.nerd-fonts.symbols-only
     pkgs.kanata
+    pkgs.tailscale
     seat
   ];
 
