@@ -45,15 +45,26 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    settings.box = {
-      HostName = "box.tail5606b4.ts.net";
-      User = "phongndo";
-      IdentityFile = "~/.ssh/box_ed25519";
-      IdentitiesOnly = true;
-      AddKeysToAgent = "yes";
-      ServerAliveInterval = 30;
-      ServerAliveCountMax = 3;
-      UseKeychain = "yes";
+    includes = [
+      "~/.orbstack/ssh/config"
+      "~/.colima/ssh_config"
+    ];
+    settings = {
+      box = {
+        HostName = "box.tail5606b4.ts.net";
+        User = "phongndo";
+        IdentityFile = "~/.ssh/box_ed25519";
+        IdentitiesOnly = true;
+        AddKeysToAgent = "yes";
+        ServerAliveInterval = 30;
+        ServerAliveCountMax = 3;
+        UseKeychain = "yes";
+      };
+      "github.com" = {
+        IdentityFile = "~/.ssh/id_ed25519";
+        AddKeysToAgent = "yes";
+        UseKeychain = "yes";
+      };
     };
   };
 
