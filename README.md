@@ -41,7 +41,7 @@ kanata/                    # keyboard remaps for box
 - Hand-authored configuration is linked immutably from the Nix store: edit `~/nix-config`, then run `hm`.
 - Settings that applications update themselves are writable links into `~/nix-config`, so changes appear in `dot status`.
 - Credentials, sessions, caches, and generated state remain local and ignored.
-- Mac-only apps (Ghostty, Zed, cmux, Karabiner, yabai, skhd) stay off `box`.
+- Mac-only apps (Ghostty, Zed, Karabiner, yabai, skhd) stay off `box`.
 
 ## Commands
 

@@ -41,7 +41,6 @@ in
     }
 
     (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      "cmux/settings.json" = immutable ../cmux/settings.json;
       "ghostty/config" = immutable ../ghostty/config;
       "ghostty/themes/mono" = immutable ../ghostty/themes/mono;
       "karabiner/karabiner.json" = writable "karabiner/karabiner.json";
