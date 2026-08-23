@@ -51,13 +51,8 @@ alt + shift - space : "$HOME/.nix-profile/bin/yabai" -m window --toggle float >/
 
 # App-first jumps. Bundle ids avoid apps.tsv lookup on every keypress.
 alt - 0x29      : ~/.config/yabai/focus-bundle com.mitchellh.ghostty
-alt - a         : ~/.config/yabai/focus-bundle com.openai.chat
 alt - c         : ~/.config/yabai/focus-bundle com.openai.codex
 alt - f         : ~/.config/yabai/focus-bundle net.imput.helium
-alt - d         : ~/.config/yabai/focus-bundle com.hnc.Discord
-alt - s         : ~/.config/yabai/focus-bundle com.tinyspeck.slackmacgap
-alt - n         : ~/.config/yabai/focus-bundle notion.id
-alt - b         : ~/.config/yabai/focus-bundle info.sioyek.sioyek
 alt - p         : ~/.config/yabai/focus-bundle com.spotify.client
 alt - m         : ~/.config/yabai/focus-bundle com.apple.MobileSMS
 alt - e         : ~/.config/yabai/focus-bundle com.apple.finder
