@@ -45,10 +45,6 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    includes = [
-      "~/.orbstack/ssh/config"
-      "~/.colima/ssh_config"
-    ];
     settings = {
       box = {
         HostName = "box.tail5606b4.ts.net";
