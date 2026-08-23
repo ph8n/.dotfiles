@@ -40,7 +40,22 @@ let
   };
 in
 {
-  programs.zsh.shellAliases.box = "ssh phongndo@box";
+  programs.zsh.shellAliases.box = "ssh box";
+
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    settings.box = {
+      HostName = "box.tail5606b4.ts.net";
+      User = "phongndo";
+      IdentityFile = "~/.ssh/box_ed25519";
+      IdentitiesOnly = true;
+      AddKeysToAgent = "yes";
+      ServerAliveInterval = 30;
+      ServerAliveCountMax = 3;
+      UseKeychain = "yes";
+    };
+  };
 
   home.packages = with pkgs; [
     browserpass

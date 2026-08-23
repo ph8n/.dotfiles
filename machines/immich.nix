@@ -10,10 +10,10 @@
 
 let
   media = "/srv/photos";
-  data = "/mnt/data/immich";
-  pgdata = "${data}/pgdata";
-  redisDir = "${data}/redis";
-  mlCache = "${data}/ml-cache";
+  fastData = "${config.home.homeDirectory}/.local/share/immich/data";
+  pgdata = "${fastData}/pgdata";
+  redisDir = "${fastData}/redis";
+  mlCache = "${fastData}/ml-cache";
   runDir = "${config.home.homeDirectory}/.local/share/immich/run";
 
   postgresql = pkgs.postgresql.withPackages (ps: [
@@ -59,7 +59,7 @@ let
     runtimeInputs = [ postgresql ];
     text = ''
       export PGHOST=${lib.escapeShellArg runDir}
-      until pg_isready -q; do sleep 0.2; done
+      until pg_isready -q -d postgres; do sleep 0.2; done
       if ! psql -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='immich'" | grep -qx 1; then
         createdb immich
       fi
@@ -89,6 +89,26 @@ let
         --daemonize no \
         --supervised no \
         --save 60 1000
+    '';
+  };
+
+  publishImmich = pkgs.writeShellApplication {
+    name = "publish-immich";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.jq
+      pkgs.tailscale
+    ];
+    text = ''
+      for _ in $(seq 1 60); do
+        if tailscale status --json 2>/dev/null \
+          | jq -e '.BackendState == "Running"' >/dev/null; then
+          exec tailscale serve --bg http://127.0.0.1:2283
+        fi
+        sleep 1
+      done
+      echo "Tailscale did not become ready within 60 seconds" >&2
+      exit 1
     '';
   };
 
@@ -133,14 +153,20 @@ in
   systemd.user.services.immich-machine-learning = unit {
     description = "Immich machine learning";
     exec = lib.getExe pkgs.immich.machine-learning;
-    extra.Environment = [
-      "MACHINE_LEARNING_WORKERS=1"
-      "MACHINE_LEARNING_WORKER_TIMEOUT=120"
-      "MACHINE_LEARNING_CACHE_FOLDER=${mlCache}"
-      "XDG_CACHE_HOME=${mlCache}"
-      "IMMICH_HOST=127.0.0.1"
-      "IMMICH_PORT=3003"
-    ];
+    extra = {
+      # Agent builds are the interactive workload; background indexing yields.
+      Nice = "5";
+      CPUWeight = "25";
+      IOWeight = "25";
+      Environment = [
+        "MACHINE_LEARNING_WORKERS=1"
+        "MACHINE_LEARNING_WORKER_TIMEOUT=120"
+        "MACHINE_LEARNING_CACHE_FOLDER=${mlCache}"
+        "XDG_CACHE_HOME=${mlCache}"
+        "IMMICH_HOST=127.0.0.1"
+        "IMMICH_PORT=3003"
+      ];
+    };
   };
 
   systemd.user.services.immich-server = unit {
@@ -169,6 +195,9 @@ in
         "IMMICH_PORT=2283"
         "IMMICH_MEDIA_LOCATION=${media}"
         "IMMICH_MACHINE_LEARNING_URL=http://127.0.0.1:3003"
+        # QSV via oneVPL no longer initializes on Skylake. VAAPI is tested.
+        "LIBVA_DRIVER_NAME=iHD"
+        "LIBVA_DRIVERS_PATH=${pkgs.intel-media-driver}/lib/dri"
       ];
     };
   };
@@ -183,8 +212,10 @@ in
     Service = {
       Type = "oneshot";
       RemainAfterExit = true;
-      TimeoutStartSec = "15";
-      ExecStart = "${lib.getExe pkgs.tailscale} serve --bg http://127.0.0.1:2283";
+      TimeoutStartSec = "75";
+      Restart = "on-failure";
+      RestartSec = "5";
+      ExecStart = lib.getExe publishImmich;
     };
     Install.WantedBy = [ "default.target" ];
   };
