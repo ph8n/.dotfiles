@@ -5,11 +5,11 @@ Multi-host configuration inspired by Mitchell Hashimoto's Nix setup, with less a
 ## Hosts
 
 - `dp` — macOS workstation (`aarch64-darwin`, user `dp`)
-- `box` — NixOS server (`x86_64-linux`, user `box`)
+- `z` — NixOS server (`x86_64-linux`, user `z`)
 
 ## Ownership
 
-- NixOS owns the kernel, disks, networking, Nix, and system services on `box`.
+- NixOS owns the kernel, disks, networking, Nix, and system services on `z`.
 - Standalone Home Manager owns personal packages and retained dotfiles/services on `dp`.
 - Mise owns fast-moving personal CLIs and convenient global runtimes; its
   config is shared verbatim between hosts.
@@ -19,13 +19,13 @@ Multi-host configuration inspired by Mitchell Hashimoto's Nix setup, with less a
 ## Layout
 
 ```
-flake.nix                  # nixosConfigurations.box and homeConfigurations.dp
-machines/box/              # NixOS host: boot, user, Tailscale
+flake.nix                  # nixosConfigurations.z and homeConfigurations.dp
+machines/z/                # NixOS host: boot, user, Tailscale
 machines/dp.nix            # Home Manager entry for the Mac
-home/                      # shared user config (Mac today; box later)
+home/                      # shared user config (Mac today; z later)
 home/darwin.nix            # yabai/skhd/karabiner-era packages, launchd agents, pass
 home/linux.nix             # fonts, cage, foot, kanata, tty1 seat (not wired yet)
-kanata/                    # keyboard remaps for box
+kanata/                    # keyboard remaps for z
 ```
 
 ## Dotfiles
@@ -33,15 +33,15 @@ kanata/                    # keyboard remaps for box
 - Hand-authored configuration is linked immutably from the Nix store: edit `~/nix-config`, then run `hm` on `dp`.
 - Settings that applications update themselves are writable links into `~/nix-config`, so changes appear in `dot status`.
 - Credentials, sessions, caches, and generated state remain local and ignored.
-- Mac-only apps (Ghostty, Zed, Karabiner, yabai, skhd) stay off `box`.
+- Mac-only apps (Ghostty, Zed, Karabiner, yabai, skhd) stay off `z`.
 
 ## Commands
 
 ```sh
 nix flake check ~/nix-config
 
-# box
-sudo nixos-rebuild switch --flake ~/nix-config#box
+# z
+sudo nixos-rebuild switch --flake ~/nix-config#z
 
 # dp
 hm          # apply this host's Home Manager generation
@@ -50,9 +50,9 @@ dot status  # Git operations in ~/nix-config
 dot diff
 ```
 
-On `dp`, `box` is `ssh box`: Tailscale MagicDNS name `box`, user `box`.
+On `dp`, `box` is `ssh box`: Tailscale MagicDNS name `z`, user `z`.
 
-## Remaining work on box
+## Remaining work on z
 
 - Mount `data-vg` (`/mnt/data`, `/srv/photos`) and restore `~/storage` / `~/scratch`.
 - Run Immich, PostgreSQL, and Redis as NixOS services.

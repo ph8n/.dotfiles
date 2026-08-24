@@ -9,7 +9,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "box";
+  # Transparent btrfs compression. Merges with subvol options
+  # from hardware-configuration.nix.
+  fileSystems."/".options = [ "compress=zstd" ];
+  fileSystems."/home".options = [ "compress=zstd" ];
+  fileSystems."/nix".options = [ "compress=zstd" ];
+
+  networking.hostName = "z";
   networking.networkmanager.enable = true;
 
   time.timeZone = "America/Los_Angeles";
@@ -27,7 +33,7 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  users.users.box = {
+  users.users.z = {
     isNormalUser = true;
     description = "phony";
     extraGroups = [
@@ -70,7 +76,7 @@
     openFirewall = true;
     extraSetFlags = [
       "--ssh"
-      "--operator=box"
+      "--operator=z"
     ];
   };
 

@@ -39,9 +39,9 @@
         }).nixfmt-tree;
     in
     {
-      nixosConfigurations.box = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.z = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [ ./machines/box ];
+        modules = [ ./machines/z ];
       };
 
       homeConfigurations.dp = mkHome {

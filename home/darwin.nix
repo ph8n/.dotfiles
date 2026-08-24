@@ -47,8 +47,8 @@ in
     enableDefaultConfig = false;
     settings = {
       box = {
-        HostName = "box.tail5606b4.ts.net";
-        User = "box";
+        HostName = "z.tail5606b4.ts.net";
+        User = "z";
         ServerAliveInterval = 30;
         ServerAliveCountMax = 3;
       };
