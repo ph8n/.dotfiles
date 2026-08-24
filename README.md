@@ -50,7 +50,7 @@ dot status  # Git operations in ~/nix-config
 dot diff
 ```
 
-On `dp`, `box` is `ssh box`: Tailscale MagicDNS name `nixos`, user `box`.
+On `dp`, `box` is `ssh box`: Tailscale MagicDNS name `box`, user `box`.
 
 ## Remaining work on box
 
