@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  machine,
+  configurationName,
   pkgs,
   ...
 }:
@@ -13,8 +13,8 @@
     # Git operations in this repository.
     dot = "git -C \"$HOME/nix-config\"";
 
-    # `machine` names the flake attribute this host activates.
-    hm = "home-manager switch --flake \"$HOME/nix-config#${machine}\"";
+    # `configurationName` names the flake attribute this host activates.
+    hm = "home-manager switch --flake \"$HOME/nix-config#${configurationName}\"";
   };
 
   # Keep user-installed Cargo binaries available without mutating managed

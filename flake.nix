@@ -14,23 +14,26 @@
     { nixpkgs, home-manager, ... }:
     let
       system = "aarch64-darwin";
-      pkgs = import nixpkgs {
+      mkHome = import ./lib/mk-home.nix {
+        inherit nixpkgs home-manager;
+      };
+
+      darwinHome = mkHome {
+        name = "darwin";
         inherit system;
-        config.allowUnfree = true;
+        modules = [
+          ./home
+          ./machines/darwin.nix
+        ];
       };
     in
     {
-      homeConfigurations.dp = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = {
-          machine = "dp";
-        };
-        modules = [
-          ./home
-          ./machines/dp.nix
-        ];
-      };
+      homeConfigurations.darwin = darwinHome;
 
-      formatter.${system} = pkgs.nixfmt-tree;
+      # Every declared target should expose its activation or system closure as
+      # a check so `nix flake check --all-systems` evaluates them uniformly.
+      checks.${system}.home = darwinHome.activationPackage;
+
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-tree;
     };
 }
