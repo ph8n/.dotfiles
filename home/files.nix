@@ -32,7 +32,6 @@ in
       "mise/config.toml" = immutable ../mise/config.toml;
       "nvim/init.lua" = immutable ../nvim/init.lua;
       "opencode/opencode.json" = immutable ../opencode/opencode.json;
-      "opencode/themes/mellow.json" = immutable ../opencode/themes/mellow.json;
       "starship.toml" = immutable ../starship/starship.toml;
 
       "btop/btop.conf" = writable "btop/btop.conf";
@@ -55,9 +54,6 @@ in
       "yabai/move-window-to-space" = immutable ../yabai/move-window-to-space;
       "yabai/safe-yabai" = immutable ../yabai/safe-yabai;
       "yabai/yabairc" = immutable ../yabai/yabairc;
-      "zed/keymap.json" = writable "zed/keymap.json";
-      "zed/settings.json" = writable "zed/settings.json";
-      "zed/themes/pho.json" = writable "zed/themes/pho.json";
     })
   ];
 
