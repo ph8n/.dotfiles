@@ -55,6 +55,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    gh
     git
     ghostty.terminfo
     mise
