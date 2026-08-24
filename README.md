@@ -30,27 +30,27 @@ kanata/                    # keyboard remaps for box
 
 ## Dotfiles
 
-- Hand-authored configuration is linked immutably from the Nix store: edit `~/.nix-conf`, then run `hm` on `dp`.
-- Settings that applications update themselves are writable links into `~/.nix-conf`, so changes appear in `dot status`.
+- Hand-authored configuration is linked immutably from the Nix store: edit `~/.nix-config`, then run `hm` on `dp`.
+- Settings that applications update themselves are writable links into `~/.nix-config`, so changes appear in `dot status`.
 - Credentials, sessions, caches, and generated state remain local and ignored.
 - Mac-only apps (Ghostty, Zed, Karabiner, yabai, skhd) stay off `box`.
 
 ## Commands
 
 ```sh
-nix flake check ~/.nix-conf
+nix flake check ~/.nix-config
 
 # box
-sudo nixos-rebuild switch --flake ~/.nix-conf#box
+sudo nixos-rebuild switch --flake ~/.nix-config#box
 
 # dp
 hm          # apply this host's Home Manager generation
 
-dot status  # Git operations in ~/.nix-conf
+dot status  # Git operations in ~/.nix-config
 dot diff
 ```
 
-On `dp`, `box` is `ssh box`: Tailscale MagicDNS name `box.tail5606b4.ts.net`, user `box`.
+On `dp`, `box` is `ssh box`: Tailscale MagicDNS name `nixos`, user `box`.
 
 ## Remaining work on box
 

@@ -6,7 +6,7 @@
 }:
 
 let
-  configRoot = "${config.home.homeDirectory}/.nix-conf";
+  configRoot = "${config.home.homeDirectory}/.nix-config";
 
   immutable = source: {
     inherit source;
