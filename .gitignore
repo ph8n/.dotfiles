@@ -35,15 +35,7 @@ gh/hosts.yml
 herdr/.plugins.lock
 herdr/release-notes.json
 herdr/session.json
-hunk/state.json
 racket/racket-prefs.rktd
-
-# Generated OpenCode dependencies
-opencode/.gitignore
-opencode/bun.lock
-opencode/node_modules/
-opencode/package-lock.json
-opencode/package.json
 
 # Stardew Valley for some reason
 StardewValley/

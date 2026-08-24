@@ -13,7 +13,6 @@
     git-lfs
     gnupg
     herdr
-    hunk
     imagemagick
     jq
     jujutsu

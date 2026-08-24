@@ -25,13 +25,9 @@ in
     {
       "atuin/TERMINAL.md" = immutable ../atuin/TERMINAL.md;
       "herdr/config.toml" = immutable ../herdr/config.toml;
-      "hunk/build-pho.sh" = immutable ../hunk/build-pho.sh;
-      "hunk/config.toml" = immutable ../hunk/config.toml;
-      "hunk/pho-theme.ts" = immutable ../hunk/pho-theme.ts;
       "mark/config.toml" = immutable ../mark/config.toml;
       "mise/config.toml" = immutable ../mise/config.toml;
       "nvim/init.lua" = immutable ../nvim/init.lua;
-      "opencode/opencode.json" = immutable ../opencode/opencode.json;
       "starship.toml" = immutable ../starship/starship.toml;
 
       "btop/btop.conf" = writable "btop/btop.conf";
