@@ -40,18 +40,10 @@ let
   };
 in
 {
-  programs.zsh.shellAliases.box = "ssh box";
-
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
     settings = {
-      box = {
-        HostName = "z.tail5606b4.ts.net";
-        User = "z";
-        ServerAliveInterval = 30;
-        ServerAliveCountMax = 3;
-      };
       "github.com" = {
         IdentityFile = "~/.ssh/id_ed25519";
         AddKeysToAgent = "yes";

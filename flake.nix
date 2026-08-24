@@ -13,44 +13,24 @@
   outputs =
     { nixpkgs, home-manager, ... }:
     let
-      mkHome =
-        {
-          system,
-          module,
-          machine,
-        }:
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-          extraSpecialArgs = { inherit machine; };
-          modules = [
-            ./home
-            module
-          ];
-        };
-
-      fmt =
-        system:
-        (import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        }).nixfmt-tree;
+      system = "aarch64-darwin";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in
     {
-      nixosConfigurations.z = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./machines/z ];
+      homeConfigurations.dp = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = {
+          machine = "dp";
+        };
+        modules = [
+          ./home
+          ./machines/dp.nix
+        ];
       };
 
-      homeConfigurations.dp = mkHome {
-        system = "aarch64-darwin";
-        machine = "dp";
-        module = ./machines/dp.nix;
-      };
-
-      formatter.aarch64-darwin = fmt "aarch64-darwin";
-      formatter.x86_64-linux = fmt "x86_64-linux";
+      formatter.${system} = pkgs.nixfmt-tree;
     };
 }
