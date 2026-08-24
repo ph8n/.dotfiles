@@ -11,10 +11,10 @@
     ls = "${lib.getExe pkgs.eza} --group-directories-first";
 
     # Git operations in this repository.
-    dot = "git -C \"$HOME/.nix-config\"";
+    dot = "git -C \"$HOME/.nix-conf\"";
 
     # `machine` names the flake attribute this host activates.
-    hm = "home-manager switch --flake \"$HOME/.nix-config#${machine}\"";
+    hm = "home-manager switch --flake \"$HOME/.nix-conf#${machine}\"";
   };
 
   # Keep user-installed Cargo binaries available without mutating managed
