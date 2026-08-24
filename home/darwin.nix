@@ -48,13 +48,9 @@ in
     settings = {
       box = {
         HostName = "box.tail5606b4.ts.net";
-        User = "phongndo";
-        IdentityFile = "~/.ssh/box_ed25519";
-        IdentitiesOnly = true;
-        AddKeysToAgent = "yes";
+        User = "box";
         ServerAliveInterval = 30;
         ServerAliveCountMax = 3;
-        UseKeychain = "yes";
       };
       "github.com" = {
         IdentityFile = "~/.ssh/id_ed25519";

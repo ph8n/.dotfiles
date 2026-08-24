@@ -1,5 +1,5 @@
 {
-  description = "dp's personal Home Manager configuration";
+  description = "dp's personal Nix configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -39,16 +39,15 @@
         }).nixfmt-tree;
     in
     {
+      nixosConfigurations.box = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./machines/box ];
+      };
+
       homeConfigurations.dp = mkHome {
         system = "aarch64-darwin";
         machine = "dp";
         module = ./machines/dp.nix;
-      };
-
-      homeConfigurations.box = mkHome {
-        system = "x86_64-linux";
-        machine = "box";
-        module = ./machines/box.nix;
       };
 
       formatter.aarch64-darwin = fmt "aarch64-darwin";
