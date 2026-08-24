@@ -47,7 +47,7 @@ in
     enableDefaultConfig = false;
     settings = {
       box = {
-        HostName = "box.tail5606b4.ts.net";
+        HostName = "nixos";
         User = "box";
         ServerAliveInterval = 30;
         ServerAliveCountMax = 3;
