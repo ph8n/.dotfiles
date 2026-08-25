@@ -6,7 +6,8 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     determinate-nix = {
       url = "https://flakehub.com/f/DeterminateSystems/nix-src/3.22.2";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Match the dependency revision tested by this Determinate release.
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/4382ed2b7a6839d4280a9b386db49cbc5907414d";
     };
 
     home-manager = {
@@ -54,15 +55,11 @@
         system = linuxSystem;
         user = "z";
         modules = [
-          (
-            { pkgs, ... }:
-            {
-              # Keep Nix managed by NixOS while replacing only its package with
-              # the pinned Determinate distribution.
-              nix.package = pkgs.nix;
-              nixpkgs.overlays = [ determinate-nix.overlays.default ];
-            }
-          )
+          {
+            # Keep Nix managed by NixOS while replacing only its package with
+            # the pinned Determinate distribution and matching dependencies.
+            nix.package = determinate-nix.packages.${linuxSystem}.default;
+          }
         ];
       };
 
