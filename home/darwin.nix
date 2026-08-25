@@ -60,6 +60,11 @@ in
   # requires the private key that remains outside this repository.
   home.shellAliases.box = "ssh box";
 
+  programs.browserpass = {
+    enable = true;
+    browsers = [ "chrome" ];
+  };
+
   home.packages = with pkgs; [
     browserpass
     pass
