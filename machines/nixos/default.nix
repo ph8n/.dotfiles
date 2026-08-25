@@ -3,9 +3,14 @@
 {
   imports = [ ./hardware.nix ];
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+
+    # Keep the Intel Wi-Fi adapter in its maximum-performance policy.
+    extraModprobeConfig = "options iwlmvm power_scheme=1";
   };
 
   # Compress new writes without rewriting existing data during migration.
@@ -17,7 +22,10 @@
 
   networking = {
     hostName = "box";
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      wifi.powersave = false;
+    };
   };
 
   time.timeZone = "America/Los_Angeles";
