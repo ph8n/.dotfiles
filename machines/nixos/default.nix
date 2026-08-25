@@ -65,6 +65,13 @@
     };
   };
 
+  # Establish the encrypted transport first. Authentication remains an
+  # explicit interactive step so no tailnet credential enters the Nix store.
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
+  };
+
   # Preserve the version from the machine's original installation.
   system.stateVersion = "26.05";
 }
