@@ -56,14 +56,19 @@
 
   programs.nix-ld.enable = true;
 
-  # Keep password authentication as a fallback through the first reboot.
+  # SSH is reachable only inside the tailnet and still requires the user's
+  # declared public key.
   services.openssh = {
     enable = true;
+    openFirewall = false;
     settings = {
-      PasswordAuthentication = true;
+      KbdInteractiveAuthentication = false;
+      PasswordAuthentication = false;
       PermitRootLogin = "no";
     };
   };
+
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
 
   # Establish the encrypted transport first. Authentication remains an
   # explicit interactive step so no tailnet credential enters the Nix store.
