@@ -33,6 +33,18 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.lsp.config("nixd", {
+  cmd = { "nixd" },
+  filetypes = { "nix" },
+  root_markers = { "flake.nix", ".git" },
+  settings = {
+    nixd = {
+      formatting = { command = { "nixfmt" } },
+    },
+  },
+})
+vim.lsp.enable("nixd")
+
 require("lazy").setup({
   {
     "phongndo/origin.nvim",

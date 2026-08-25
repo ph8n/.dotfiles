@@ -20,6 +20,7 @@
     mise
     neovim
     nixd
+    nixfmt
     nixfmt-tree
     ripgrep
     statix
