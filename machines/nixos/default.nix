@@ -37,10 +37,17 @@
     };
   };
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+
+    # Determinate's evaluator features are not enabled by the NixOS module,
+    # because NixOS owns nix.conf instead of the Determinate installer.
+    eval-cores = 0;
+    lazy-trees = true;
+  };
 
   # Keep a small system profile for recovery before Home Manager is introduced.
   environment.systemPackages = with pkgs; [
