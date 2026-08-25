@@ -1,4 +1,5 @@
 [settings]
+all_compile = false
 minimum_release_age = "0s"
 
 [settings.npm]
