@@ -48,7 +48,6 @@
         name = "box";
         system = linuxSystem;
         user = "z";
-        enableHomeManager = false;
       };
     in
     {

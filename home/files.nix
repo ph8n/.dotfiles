@@ -59,13 +59,18 @@ in
     "mise/plugins/cursor-agent" = immutable ../mise/plugins/cursor-agent;
   };
 
-  home.file = {
-    ".zshenv" = immutable ./zshenv;
+  home.file = lib.mkMerge [
+    {
+      ".bashrc".force = true;
+      ".zshenv" = immutable ./zshenv;
+    }
 
-    # Alfred owns the workflow directory. Link its editable source files
-    # individually so activation never has to replace that directory.
-    "${alfredWorkflow}/focus-window.sh" = writable "alfred/appfocus/focus-window.sh";
-    "${alfredWorkflow}/info.plist" = writable "alfred/appfocus/info.plist";
-    "${alfredWorkflow}/list-windows.sh" = writable "alfred/appfocus/list-windows.sh";
-  };
+    (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      # Alfred owns the workflow directory. Link its editable source files
+      # individually so activation never has to replace that directory.
+      "${alfredWorkflow}/focus-window.sh" = writable "alfred/appfocus/focus-window.sh";
+      "${alfredWorkflow}/info.plist" = writable "alfred/appfocus/info.plist";
+      "${alfredWorkflow}/list-windows.sh" = writable "alfred/appfocus/list-windows.sh";
+    })
+  ];
 }
