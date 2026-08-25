@@ -26,7 +26,8 @@
       ...
     }:
     let
-      system = "aarch64-darwin";
+      darwinSystem = "aarch64-darwin";
+      linuxSystem = "x86_64-linux";
       mkSystem = import ./lib/mk-system.nix {
         inherit
           self
@@ -39,16 +40,26 @@
 
       darwin = mkSystem {
         name = "darwin";
-        inherit system;
+        system = darwinSystem;
         user = "dp";
+      };
+
+      box = mkSystem {
+        name = "box";
+        system = linuxSystem;
+        user = "z";
+        enableHomeManager = false;
       };
     in
     {
       darwinConfigurations.darwin = darwin;
+      nixosConfigurations.box = box;
 
       # Every declared target exposes its system closure as a check.
-      checks.${system}.system = darwin.system;
+      checks.${darwinSystem}.system = darwin.system;
+      checks.${linuxSystem}.system = box.config.system.build.toplevel;
 
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-tree;
+      formatter.${darwinSystem} = nixpkgs.legacyPackages.${darwinSystem}.nixfmt-tree;
+      formatter.${linuxSystem} = nixpkgs.legacyPackages.${linuxSystem}.nixfmt-tree;
     };
 }

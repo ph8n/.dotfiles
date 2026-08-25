@@ -10,6 +10,7 @@
   name,
   system,
   user,
+  enableHomeManager ? true,
   modules ? [ ],
 }:
 
@@ -51,7 +52,8 @@ systemBuilder {
       nixpkgs.config.allowUnfree = true;
       system.configurationRevision = self.rev or self.dirtyRev or null;
     }
-
+  ]
+  ++ nixpkgs.lib.optionals enableHomeManager [
     homeManagerModule
     {
       home-manager = {
