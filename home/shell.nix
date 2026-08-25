@@ -3,6 +3,7 @@
   lib,
   configurationName,
   rebuildCommand,
+  unstablePkgs,
   pkgs,
   ...
 }:
@@ -54,6 +55,7 @@
 
   programs.atuin = {
     enable = true;
+    package = unstablePkgs.atuin;
     enableBashIntegration = true;
     enableZshIntegration = true;
 

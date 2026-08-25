@@ -1,6 +1,7 @@
 {
   self,
   nixpkgs,
+  nixpkgs-unstable,
   home-manager,
   nix-darwin,
 }:
@@ -25,6 +26,10 @@ let
     else
       home-manager.nixosModules.home-manager;
   rebuildCommand = if isDarwin then "darwin-rebuild" else "nixos-rebuild";
+  unstablePkgs = import nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
 in
 systemBuilder {
   inherit system;
@@ -54,7 +59,7 @@ systemBuilder {
         useUserPackages = true;
         extraSpecialArgs = {
           configurationName = name;
-          inherit rebuildCommand;
+          inherit rebuildCommand unstablePkgs;
         };
         users.${user} = import userHomeConfig;
       };
