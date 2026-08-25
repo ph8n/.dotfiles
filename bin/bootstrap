@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -eu
+
+repo=$(
+  unset CDPATH
+  cd -- "$(dirname -- "$0")/.."
+  pwd
+)
+
+if [ "$(uname -s)" != Darwin ]; then
+  echo "bootstrap: this script only supports macOS" >&2
+  exit 1
+fi
+
+if [ "$(id -un)" != dp ]; then
+  echo "bootstrap: expected the macOS user to be dp" >&2
+  exit 1
+fi
+
+for command in nix brew; do
+  if ! command -v "$command" >/dev/null 2>&1; then
+    echo "bootstrap: install $command first" >&2
+    exit 1
+  fi
+done
+
+cd "$repo"
+trap 'rm -f "$repo/result"' EXIT
+
+nix build .#darwinConfigurations.darwin.system
+sudo -v
+sudo ./result/sw/bin/darwin-rebuild switch --flake "$repo#darwin"
+
+mise=/etc/profiles/per-user/dp/bin/mise
+"$mise" trust "$repo/mise/config.toml"
+"$mise" install

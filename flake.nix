@@ -2,37 +2,49 @@
   description = "dp's personal Nix configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs =
-    { nixpkgs, home-manager, ... }:
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nix-darwin,
+      ...
+    }:
     let
       system = "aarch64-darwin";
-      mkHome = import ./lib/mk-home.nix {
-        inherit nixpkgs home-manager;
+      mkSystem = import ./lib/mk-system.nix {
+        inherit
+          self
+          nixpkgs
+          home-manager
+          nix-darwin
+          ;
       };
 
-      darwinHome = mkHome {
+      darwin = mkSystem {
         name = "darwin";
         inherit system;
-        modules = [
-          ./home
-          ./machines/darwin.nix
-        ];
+        user = "dp";
       };
     in
     {
-      homeConfigurations.darwin = darwinHome;
+      darwinConfigurations.darwin = darwin;
 
-      # Every declared target should expose its activation or system closure as
-      # a check so `nix flake check --all-systems` evaluates them uniformly.
-      checks.${system}.home = darwinHome.activationPackage;
+      # Every declared target exposes its system closure as a check.
+      checks.${system}.system = darwin.system;
 
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-tree;
     };

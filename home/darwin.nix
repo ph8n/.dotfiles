@@ -19,12 +19,9 @@ let
 
   agent = name: {
     enable = true;
-    domain = "gui";
 
     # Home Manager wraps the command with wait4path so launchd cannot race the
     # encrypted Nix store during login.
-    waitForNixStore = true;
-
     config = {
       Label = "com.dp.${name}";
       ProgramArguments = [

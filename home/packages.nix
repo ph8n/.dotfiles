@@ -12,7 +12,6 @@
     git
     git-lfs
     gnupg
-    herdr
     imagemagick
     jq
     jujutsu

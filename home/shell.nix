@@ -2,6 +2,7 @@
   config,
   lib,
   configurationName,
+  rebuildCommand,
   pkgs,
   ...
 }:
@@ -13,8 +14,8 @@
     # Git operations in this repository.
     dot = "git -C \"$HOME/nix-config\"";
 
-    # `configurationName` names the flake attribute this host activates.
-    hm = "home-manager switch --flake \"$HOME/nix-config#${configurationName}\"";
+    # Rebuild the complete host; Home Manager is part of the system generation.
+    hm = "sudo ${rebuildCommand} switch --flake \"$HOME/nix-config#${configurationName}\"";
   };
 
   # Keep user-installed Cargo binaries available without mutating managed

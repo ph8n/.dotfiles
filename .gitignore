@@ -32,9 +32,6 @@ gh/hosts.yml
 .nvimlog
 
 # Generated application state
-herdr/.plugins.lock
-herdr/release-notes.json
-herdr/session.json
 racket/racket-prefs.rktd
 
 # Stardew Valley for some reason

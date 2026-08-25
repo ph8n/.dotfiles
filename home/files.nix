@@ -7,6 +7,7 @@
 
 let
   configRoot = "${config.home.homeDirectory}/nix-config";
+  alfredWorkflow = "Library/Application Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.63D398BB-A391-40E9-B356-24123A2B339E";
 
   immutable = source: {
     inherit source;
@@ -24,7 +25,6 @@ in
   xdg.configFile = lib.mkMerge [
     {
       "atuin/TERMINAL.md" = immutable ../atuin/TERMINAL.md;
-      "herdr/config.toml" = immutable ../herdr/config.toml;
       "mark/config.toml" = immutable ../mark/config.toml;
       "mise/config.toml" = immutable ../mise/config.toml;
       "nvim/init.lua" = immutable ../nvim/init.lua;
@@ -59,5 +59,13 @@ in
     "mise/plugins/cursor-agent" = immutable ../mise/plugins/cursor-agent;
   };
 
-  home.file.".zshenv" = immutable ./zshenv;
+  home.file = {
+    ".zshenv" = immutable ./zshenv;
+
+    # Alfred owns the workflow directory. Link its editable source files
+    # individually so activation never has to replace that directory.
+    "${alfredWorkflow}/focus-window.sh" = writable "alfred/appfocus/focus-window.sh";
+    "${alfredWorkflow}/info.plist" = writable "alfred/appfocus/info.plist";
+    "${alfredWorkflow}/list-windows.sh" = writable "alfred/appfocus/list-windows.sh";
+  };
 }
