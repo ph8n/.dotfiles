@@ -1,0 +1,29 @@
+;; Mirrors the selected Karabiner profile on the physical NixOS keyboard.
+;; The Logitech receiver remains untouched, matching Karabiner's device ignore.
+(defsrc
+  esc  q    w    e    r    t    y    u    i    o    p
+  caps a    s    d    f    g    h    j    k    l    ;
+  z    x    c    v    b    n    m    ,    .    /
+  spc
+)
+
+(defalias
+  ;; Match Karabiner's 150 ms simultaneous and 120 ms hold thresholds.
+  ;; f24 avoids Linux key-repeat edge cases around tap-hold actions.
+  cap (multi f24 (tap-hold-press 150 120 esc lctl))
+  spc (multi f24 (tap-hold-press 150 120 spc (layer-while-held symbols)))
+)
+
+(deflayer base
+  caps q    w    e    r    t    y    u    i    o    p
+  @cap a    s    d    f    g    h    j    k    l    ;
+  z    x    c    v    b    n    m    ,    .    /
+  @spc
+)
+
+(deflayer symbols
+  _    '    S-,  S-.  S-'  .    grv  S-7  S-[  S-]  S-5
+  _    S-1  -    S-=  =    S-3  S-\  S-;  S-9  S-0  S-/
+  S-6  /    S-8  \    S--  S-grv S-4  [    ]    S-2
+  _
+)

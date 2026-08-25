@@ -59,6 +59,16 @@
       variant = "";
     };
 
+    # Mirror the Mac's Karabiner layers on the attached Dell keyboard. The
+    # Logitech receiver is intentionally excluded, as it is on macOS.
+    kanata = {
+      enable = true;
+      keyboards.phony = {
+        devices = [ "/dev/input/by-id/usb-413c_Dell_KB216_Wired_Keyboard-event-kbd" ];
+        config = builtins.readFile ../../kanata/box.kbd;
+      };
+    };
+
     # SSH is reachable only inside the tailnet and still requires the user's
     # declared public key.
     openssh = {
