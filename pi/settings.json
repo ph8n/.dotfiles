@@ -1,0 +1,31 @@
+{
+  "lastChangelogVersion": "0.84.3",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "high",
+  "collapseChangelog": true,
+  "quietStartup": true,
+  "enableInstallTelemetry": false,
+  "doubleEscapeAction": "tree",
+  "theme": "origin",
+  "packages": [
+    "npm:@ff-labs/pi-fff",
+    "../../code/pi-extensions"
+  ],
+  "treeFilterMode": "default",
+  "hideThinkingBlock": true,
+  "showCacheMissNotices": true,
+  "enableSkillCommands": true,
+  "terminal": {
+    "imageWidthCells": 60
+  },
+  "autocompleteMaxVisible": 10,
+  "warnings": {
+    "anthropicExtraUsage": true
+  },
+  "tuiMode": "regular",
+  "markdown": {
+    "mermaid": "final"
+  },
+  "fullscreenExitOutput": "transcript"
+}

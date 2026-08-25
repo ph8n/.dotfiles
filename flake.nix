@@ -49,14 +49,49 @@
         system = linuxSystem;
         user = "z";
       };
+
+      qualityChecks =
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          format = pkgs.runCommand "nix-format-check" { nativeBuildInputs = [ pkgs.nixfmt-tree ]; } ''
+            cp -R ${self} source
+            chmod -R u+w source
+            cd source
+            treefmt --ci --tree-root . --walk filesystem
+            touch $out
+          '';
+
+          lint =
+            pkgs.runCommand "nix-lint-check"
+              {
+                nativeBuildInputs = with pkgs; [
+                  deadnix
+                  statix
+                ];
+              }
+              ''
+                statix check ${self}
+                deadnix --fail ${self}
+                touch $out
+              '';
+        };
     in
     {
       darwinConfigurations.darwin = darwin;
       nixosConfigurations.box = box;
 
-      # Every declared target exposes its system closure as a check.
-      checks.${darwinSystem}.system = darwin.system;
-      checks.${linuxSystem}.system = box.config.system.build.toplevel;
+      # Every target exposes its closure plus formatting and static analysis.
+      checks.${darwinSystem} = {
+        inherit (darwin) system;
+      }
+      // qualityChecks darwinSystem;
+      checks.${linuxSystem} = {
+        system = box.config.system.build.toplevel;
+      }
+      // qualityChecks linuxSystem;
 
       formatter.${darwinSystem} = nixpkgs.legacyPackages.${darwinSystem}.nixfmt-tree;
       formatter.${linuxSystem} = nixpkgs.legacyPackages.${linuxSystem}.nixfmt-tree;

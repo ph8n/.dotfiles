@@ -9,9 +9,11 @@
   };
 
   # Compress new writes without rewriting existing data during migration.
-  fileSystems."/".options = [ "compress=zstd:3" ];
-  fileSystems."/home".options = [ "compress=zstd:3" ];
-  fileSystems."/nix".options = [ "compress=zstd:3" ];
+  fileSystems = {
+    "/".options = [ "compress=zstd:3" ];
+    "/home".options = [ "compress=zstd:3" ];
+    "/nix".options = [ "compress=zstd:3" ];
+  };
 
   networking = {
     hostName = "box";
@@ -35,11 +37,6 @@
     };
   };
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -56,26 +53,33 @@
 
   programs.nix-ld.enable = true;
 
-  # SSH is reachable only inside the tailnet and still requires the user's
-  # declared public key.
-  services.openssh = {
-    enable = true;
-    openFirewall = false;
-    settings = {
-      KbdInteractiveAuthentication = false;
-      PasswordAuthentication = false;
-      PermitRootLogin = "no";
+  services = {
+    xserver.xkb = {
+      layout = "us";
+      variant = "";
+    };
+
+    # SSH is reachable only inside the tailnet and still requires the user's
+    # declared public key.
+    openssh = {
+      enable = true;
+      openFirewall = false;
+      settings = {
+        KbdInteractiveAuthentication = false;
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
+      };
+    };
+
+    # Establish the encrypted transport first. Authentication remains an
+    # explicit interactive step so no tailnet credential enters the Nix store.
+    tailscale = {
+      enable = true;
+      openFirewall = true;
     };
   };
 
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
-
-  # Establish the encrypted transport first. Authentication remains an
-  # explicit interactive step so no tailnet credential enters the Nix store.
-  services.tailscale = {
-    enable = true;
-    openFirewall = true;
-  };
 
   # Preserve the version from the machine's original installation.
   system.stateVersion = "26.05";

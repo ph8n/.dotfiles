@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     bat
     btop
+    deadnix
     eza
     fd
     ffmpeg
@@ -18,7 +19,10 @@
     lazygit
     mise
     neovim
+    nixd
+    nixfmt-tree
     ripgrep
+    statix
     tmux
     zellij
     zoxide

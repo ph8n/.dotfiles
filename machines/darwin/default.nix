@@ -1,4 +1,4 @@
-{ ... }:
+_:
 
 {
   # Determinate manages the installed Nix daemon and store. nix-darwin owns
