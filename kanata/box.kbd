@@ -1,5 +1,4 @@
-;; Mirrors the selected Karabiner profile on the physical NixOS keyboard.
-;; The Logitech receiver remains untouched, matching Karabiner's device ignore.
+;; Mirrors the selected Karabiner profile on every NixOS keyboard.
 (defsrc
   esc  q    w    e    r    t    y    u    i    o    p
   caps a    s    d    f    g    h    j    k    l    ;
