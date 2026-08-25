@@ -1,11 +1,10 @@
-# Outside a Nix development shell, establish the normal user PATH.
-# Inside one, preserve the PATH supplied by the flake.
+# Add user tools without discarding platform paths such as NixOS setuid
+# wrappers. Inside a Nix development shell, preserve the flake's PATH.
 if [[ -z "${IN_NIX_SHELL:-}" ]]; then
-  PATH="$HOME/.cargo/bin:$HOME/.grok/bin:$HOME/.nix-profile/bin:/etc/profiles/per-user/$USER/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$HOME/.local/bin"
+  PATH="$HOME/.cargo/bin:$HOME/.grok/bin:$HOME/.local/bin:$PATH"
   if [[ "$OSTYPE" == darwin* ]]; then
     PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.lmstudio/bin"
   fi
-  PATH="$PATH:/usr/bin:/bin:/usr/sbin:/sbin"
   export PATH
 
   command -v mise >/dev/null && eval "$(mise activate bash)"

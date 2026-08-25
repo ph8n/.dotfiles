@@ -1,16 +1,13 @@
 typeset -U path PATH fpath
 
-# Outside a Nix development shell, establish the normal user PATH.
-# Inside one, preserve the PATH supplied by the flake.
+# Add user tools without discarding platform paths such as NixOS setuid
+# wrappers. Inside a Nix development shell, preserve the flake's PATH.
 if [[ -z "${IN_NIX_SHELL:-}" ]]; then
   path=(
     "$HOME/.cargo/bin"
     "$HOME/.grok/bin"
-    "$HOME/.nix-profile/bin"
-    "/etc/profiles/per-user/$USER/bin"
-    "/run/current-system/sw/bin"
-    "/nix/var/nix/profiles/default/bin"
     "$HOME/.local/bin"
+    $path
   )
   if [[ "$OSTYPE" == darwin* ]]; then
     path+=(
@@ -19,12 +16,6 @@ if [[ -z "${IN_NIX_SHELL:-}" ]]; then
       "$HOME/.lmstudio/bin"
     )
   fi
-  path+=(
-    "/usr/bin"
-    "/bin"
-    "/usr/sbin"
-    "/sbin"
-  )
 
   (( $+commands[mise] )) && eval "$(mise activate zsh)"
   fpath=("$HOME/.grok/completions/zsh" $fpath)
