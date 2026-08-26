@@ -10,9 +10,9 @@
 
   # Compress new writes without rewriting existing data during migration.
   fileSystems = {
-    "/".options = [ "compress=zstd:3" ];
-    "/home".options = [ "compress=zstd:3" ];
-    "/nix".options = [ "compress=zstd:3" ];
+    "/".options = [ "compress=zstd:1" ];
+    "/home".options = [ "compress=zstd:1" ];
+    "/nix".options = [ "compress=zstd:1" ];
   };
 
   networking = {
