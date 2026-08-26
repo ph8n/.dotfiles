@@ -92,13 +92,7 @@
     };
   };
 
-  networking.firewall.interfaces = {
-    tailscale0.allowedTCPPorts = [ 22 ];
-
-    # Keep Wi-Fi SSH as a recovery path until this replacement installation is
-    # authenticated to the tailnet and survives reboot.
-    wlp5s0.allowedTCPPorts = [ 22 ];
-  };
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
 
   # Preserve the version from the machine's original installation.
   system.stateVersion = "26.05";

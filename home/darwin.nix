@@ -48,7 +48,7 @@ in
       };
 
       box = {
-        HostName = "100.121.207.25";
+        HostName = "100.122.138.125";
         User = "z";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
