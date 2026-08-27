@@ -10,7 +10,7 @@
   "theme": "origin",
   "packages": [
     "npm:@ff-labs/pi-fff",
-    "../../pi-extensions"
+    "../../code/pi-extensions"
   ],
   "treeFilterMode": "default",
   "hideThinkingBlock": true,

@@ -3,10 +3,11 @@
 # Keeps launchd alive while retrying startup failures that commonly happen
 # during login, before Accessibility is ready, or after a crash.
 
-PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+USER_PROFILE="/etc/profiles/per-user/${USER:-${HOME##*/}}"
+PATH="$USER_PROFILE/bin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH
 
-YABAI_BIN="$HOME/.nix-profile/bin/yabai"
+YABAI_BIN="${YABAI_BIN:-$USER_PROFILE/bin/yabai}"
 YABAI_CONFIG="$HOME/.config/yabai/yabairc"
 RETRY_DELAY="${RETRY_DELAY:-5}"
 STARTUP_DELAY="${STARTUP_DELAY:-8}"

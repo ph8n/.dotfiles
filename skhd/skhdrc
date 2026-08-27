@@ -6,62 +6,65 @@
 # Alt-h/j/k/l is reserved for terminal applications such as Lemma.
 
 # Layout. Stack gives one full-screen managed window at a time; BSP gives splits.
-alt - 0x2C : "$HOME/.nix-profile/bin/yabai" -m space --layout bsp >/dev/null 2>&1
-alt - 0x2B : "$HOME/.nix-profile/bin/yabai" -m space --layout stack >/dev/null 2>&1
+alt - 0x2C : yabai -m space --layout bsp >/dev/null 2>&1
+alt - 0x2B : yabai -m space --layout stack >/dev/null 2>&1
 
 # Focus.
-alt - tab         : "$HOME/.nix-profile/bin/yabai" -m window --focus stack.next >/dev/null 2>&1
-alt + shift - tab : "$HOME/.nix-profile/bin/yabai" -m window --focus stack.prev >/dev/null 2>&1
+alt - tab         : yabai -m window --focus stack.next >/dev/null 2>&1
+alt + shift - tab : yabai -m window --focus stack.prev >/dev/null 2>&1
 
 # Spaces (yabai index on current display; 1-based). Missing/already-focused
 # spaces are quiet no-ops.
-alt - 1 : "$HOME/.nix-profile/bin/yabai" -m space --focus 1 >/dev/null 2>&1
-alt - 2 : "$HOME/.nix-profile/bin/yabai" -m space --focus 2 >/dev/null 2>&1
-alt - 3 : "$HOME/.nix-profile/bin/yabai" -m space --focus 3 >/dev/null 2>&1
-alt - 4 : "$HOME/.nix-profile/bin/yabai" -m space --focus 4 >/dev/null 2>&1
-alt - 5 : "$HOME/.nix-profile/bin/yabai" -m space --focus 5 >/dev/null 2>&1
-alt - 6 : "$HOME/.nix-profile/bin/yabai" -m space --focus 6 >/dev/null 2>&1
-alt - 7 : "$HOME/.nix-profile/bin/yabai" -m space --focus 7 >/dev/null 2>&1
-alt - 8 : "$HOME/.nix-profile/bin/yabai" -m space --focus 8 >/dev/null 2>&1
-alt - 9 : "$HOME/.nix-profile/bin/yabai" -m space --focus 9 >/dev/null 2>&1
-alt - 0 : "$HOME/.nix-profile/bin/yabai" -m space --focus 10 >/dev/null 2>&1
-alt + shift - 1 : "$HOME/.nix-profile/bin/yabai" -m window --space 1 --follow-window >/dev/null 2>&1
-alt + shift - 2 : "$HOME/.nix-profile/bin/yabai" -m window --space 2 --follow-window >/dev/null 2>&1
-alt + shift - 3 : "$HOME/.nix-profile/bin/yabai" -m window --space 3 --follow-window >/dev/null 2>&1
-alt + shift - 4 : "$HOME/.nix-profile/bin/yabai" -m window --space 4 --follow-window >/dev/null 2>&1
-alt + shift - 5 : "$HOME/.nix-profile/bin/yabai" -m window --space 5 --follow-window >/dev/null 2>&1
-alt + shift - 6 : "$HOME/.nix-profile/bin/yabai" -m window --space 6 --follow-window >/dev/null 2>&1
-alt + shift - 7 : "$HOME/.nix-profile/bin/yabai" -m window --space 7 --follow-window >/dev/null 2>&1
-alt + shift - 8 : "$HOME/.nix-profile/bin/yabai" -m window --space 8 --follow-window >/dev/null 2>&1
-alt + shift - 9 : "$HOME/.nix-profile/bin/yabai" -m window --space 9 --follow-window >/dev/null 2>&1
-alt + shift - 0 : "$HOME/.nix-profile/bin/yabai" -m window --space 10 --follow-window >/dev/null 2>&1
+alt - 1 : yabai -m space --focus 1 >/dev/null 2>&1
+alt - 2 : yabai -m space --focus 2 >/dev/null 2>&1
+alt - 3 : yabai -m space --focus 3 >/dev/null 2>&1
+alt - 4 : yabai -m space --focus 4 >/dev/null 2>&1
+alt - 5 : yabai -m space --focus 5 >/dev/null 2>&1
+alt - 6 : yabai -m space --focus 6 >/dev/null 2>&1
+alt - 7 : yabai -m space --focus 7 >/dev/null 2>&1
+alt - 8 : yabai -m space --focus 8 >/dev/null 2>&1
+alt - 9 : yabai -m space --focus 9 >/dev/null 2>&1
+alt - 0 : yabai -m space --focus 10 >/dev/null 2>&1
+alt + shift - 1 : yabai -m window --space 1 --follow-window >/dev/null 2>&1
+alt + shift - 2 : yabai -m window --space 2 --follow-window >/dev/null 2>&1
+alt + shift - 3 : yabai -m window --space 3 --follow-window >/dev/null 2>&1
+alt + shift - 4 : yabai -m window --space 4 --follow-window >/dev/null 2>&1
+alt + shift - 5 : yabai -m window --space 5 --follow-window >/dev/null 2>&1
+alt + shift - 6 : yabai -m window --space 6 --follow-window >/dev/null 2>&1
+alt + shift - 7 : yabai -m window --space 7 --follow-window >/dev/null 2>&1
+alt + shift - 8 : yabai -m window --space 8 --follow-window >/dev/null 2>&1
+alt + shift - 9 : yabai -m window --space 9 --follow-window >/dev/null 2>&1
+alt + shift - 0 : yabai -m window --space 10 --follow-window >/dev/null 2>&1
 
 # Move/reorder.
-alt + shift - h : "$HOME/.nix-profile/bin/yabai" -m window --swap west >/dev/null 2>&1
-alt + shift - j : "$HOME/.nix-profile/bin/yabai" -m window --swap south >/dev/null 2>&1
-alt + shift - k : "$HOME/.nix-profile/bin/yabai" -m window --swap north >/dev/null 2>&1
-alt + shift - l : "$HOME/.nix-profile/bin/yabai" -m window --swap east >/dev/null 2>&1
+alt + shift - h : yabai -m window --swap west >/dev/null 2>&1
+alt + shift - j : yabai -m window --swap south >/dev/null 2>&1
+alt + shift - k : yabai -m window --swap north >/dev/null 2>&1
+alt + shift - l : yabai -m window --swap east >/dev/null 2>&1
 
 # Resize.
-alt + shift - 0x1B : "$HOME/.nix-profile/bin/yabai" -m window --ratio rel:-0.05 >/dev/null 2>&1
-alt + shift - 0x18 : "$HOME/.nix-profile/bin/yabai" -m window --ratio rel:0.05 >/dev/null 2>&1
+alt + shift - 0x1B : yabai -m window --ratio rel:-0.05 >/dev/null 2>&1
+alt + shift - 0x18 : yabai -m window --ratio rel:0.05 >/dev/null 2>&1
 
 # Opt the focused window into/out of tiling.
-alt + shift - space : "$HOME/.nix-profile/bin/yabai" -m window --toggle float >/dev/null 2>&1
+alt + shift - space : yabai -m window --toggle float >/dev/null 2>&1
 
-# App-first jumps. Bundle ids avoid apps.tsv lookup on every keypress.
-alt - 0x29      : ~/.config/yabai/focus-bundle com.mitchellh.ghostty
-alt - c         : ~/.config/yabai/focus-bundle com.openai.codex
-alt - f         : ~/.config/yabai/focus-bundle net.imput.helium
-alt - p         : ~/.config/yabai/focus-bundle com.spotify.client
-alt - m         : ~/.config/yabai/focus-bundle com.apple.MobileSMS
-alt - e         : ~/.config/yabai/focus-bundle com.apple.finder
-alt - i         : ~/.config/yabai/focus-bundle com.apple.mail
+# App-first jumps. fd 9 feeds a resident lsappinfo process owned by skhd-runner,
+# avoiding process startup on the focus path. The background check only opens a
+# cold app; if the broker is unavailable, focus-bundle is the safe fallback.
+alt - 0x29      : app=com.mitchellh.ghostty; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - c         : app=com.openai.codex; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - f         : app=net.imput.helium; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - g         : app=com.anysphere.sand; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - p         : app=com.spotify.client; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - m         : app=com.apple.MobileSMS; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - e         : app=com.apple.finder; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
+alt - i         : app=com.apple.mail; printf 'requestfront %s --immediate\n' "$app" >&9 || exec ~/.config/yabai/focus-bundle "$app"; { set -- $(/usr/bin/lsappinfo -q -nonames find "bundleID=$app" 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"; } &
 
 # Fast previous-app toggle.
 alt - q : set -- $(/usr/bin/lsappinfo -nonames visibleProcessList 2>/dev/null); [ $# -ge 2 ] && /usr/bin/lsappinfo requestfront "$2" --immediate >/dev/null 2>&1
 
 # AeroSpace service-mode equivalents as direct bindings.
-alt + shift - 0x29      : "$HOME/.nix-profile/bin/yabai" -m space --balance >/dev/null 2>&1
-alt + shift - f         : "$HOME/.nix-profile/bin/yabai" -m window --toggle zoom-fullscreen >/dev/null 2>&1
-alt + shift - backspace : "$HOME/.nix-profile/bin/yabai" -m window --close >/dev/null 2>&1
+alt + shift - 0x29      : yabai -m space --balance >/dev/null 2>&1
+alt + shift - f         : yabai -m window --toggle zoom-fullscreen >/dev/null 2>&1
+alt + shift - backspace : yabai -m window --close >/dev/null 2>&1

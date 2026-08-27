@@ -11,17 +11,12 @@ fi
 
 bundle_id="$1"
 
-# Prefer LaunchServices' direct ASN focus for already-running apps. This is much
-# faster than `open -b` for app switching and does not cycle same-app windows.
-set -- $(lsappinfo find "bundleID=$bundle_id" 2>/dev/null || true)
-candidate="${1:-}"
-case "$candidate" in
-  ASN:*)
-    candidate_asn="${candidate%%-\"*}:"
-    if lsappinfo requestfront "$candidate_asn" --immediate >/dev/null 2>&1; then
-      exit 0
-    fi
-    ;;
-esac
+# A bundle id is itself an app specifier. Request focus first, then use the same
+# lsappinfo process to report whether the app is running. This avoids a separate
+# ASN lookup and gives running apps the fast path before considering `open`.
+set -- $(lsappinfo -q -nonames \
+  requestfront "$bundle_id" --immediate \
+  find "bundleID=$bundle_id" 2>/dev/null || true)
+[ "$#" -gt 0 ] && exit 0
 
 exec open -b "$bundle_id"

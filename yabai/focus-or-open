@@ -49,25 +49,12 @@ case "$#" in
     ;;
 esac
 
-open_app() {
-  exec open -b "$bundle_id"
-}
+# Requesting front by bundle id does not cycle windows when the app is already
+# focused. Run `find` in the same lsappinfo process so only a cold app falls back
+# to the substantially slower LaunchServices open path.
+set -- $(lsappinfo -q -nonames \
+  requestfront "$bundle_id" --immediate \
+  find "bundleID=$bundle_id" 2>/dev/null || true)
+[ "$#" -gt 0 ] && exit 0
 
-bundle_id_for_asn() {
-  lsappinfo info -only bundleid "$1" 2>/dev/null \
-    | sed -n 's/^"CFBundleIdentifier"="\([^"]*\)"$/\1/p'
-}
-
-# Use LaunchServices for app jumps. yabai window focus across spaces is racy
-# without the scripting addition: it can switch spaces and then leave the last
-# terminal on that space focused. If this app is already frontmost, do nothing
-# so repeated app hotkeys do not cycle same-app windows or create new windows.
-front_asn="$(lsappinfo front 2>/dev/null | sed -n '1p')"
-if [ -n "${front_asn:-}" ]; then
-  front_bundle_id="$(bundle_id_for_asn "$front_asn")"
-  if [ "$front_bundle_id" = "$bundle_id" ]; then
-    exit 0
-  fi
-fi
-
-open_app
+exec open -b "$bundle_id"

@@ -70,13 +70,6 @@ in
     }
 
     (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      # Keep the shared Pi package path while the editable checkout remains
-      # under ~/code on the Mac.
-      "pi-extensions" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/code/pi-extensions";
-        force = true;
-      };
-
       # Alfred owns the workflow directory. Link its editable source files
       # individually so activation never has to replace that directory.
       "${alfredWorkflow}/focus-window.sh" = writable "alfred/appfocus/focus-window.sh";

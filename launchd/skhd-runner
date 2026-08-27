@@ -3,7 +3,8 @@
 # Retries startup failures such as Secure Keyboard Entry being held briefly by
 # loginwindow at login, and restarts skhd if it crashes.
 
-PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+USER_PROFILE="/etc/profiles/per-user/${USER:-${HOME##*/}}"
+PATH="$USER_PROFILE/bin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH
 
 # skhd executes bindings through "$SHELL -c". Pin this to bash so hotkey
@@ -12,11 +13,13 @@ export PATH
 SHELL="/bin/bash"
 export SHELL
 
-SKHD_BIN="$HOME/.nix-profile/bin/skhd"
+SKHD_BIN="${SKHD_BIN:-$USER_PROFILE/bin/skhd}"
 SKHD_CONFIG="$HOME/.config/skhd/skhdrc"
+FOCUS_FIFO="$HOME/.cache/skhd/app-focus.fifo"
 RETRY_DELAY="${RETRY_DELAY:-5}"
 STARTUP_DELAY="${STARTUP_DELAY:-8}"
 child=""
+focus_broker=""
 
 log() {
   printf '%s %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$*" >&2
@@ -29,8 +32,32 @@ stop_child() {
   fi
 }
 
+# Keep one LaunchServices client initialized and feed it focus requests through
+# fd 9. Every shell spawned by skhd inherits this descriptor, making app focus
+# a shell-builtin FIFO write instead of a new lsappinfo process.
+start_focus_broker() {
+  rm -f "$FOCUS_FIFO"
+  /usr/bin/mkfifo "$FOCUS_FIFO" || return 1
+  /usr/bin/lsappinfo file "$FOCUS_FIFO" forever >/dev/null 2>&1 &
+  focus_broker=$!
+
+  # The broker and this writer open unblock each other. Keep the writer open so
+  # lsappinfo continues reading commands across skhd restarts.
+  exec 9>"$FOCUS_FIFO"
+}
+
+stop_focus_broker() {
+  exec 9>&-
+  if [ -n "${focus_broker:-}" ]; then
+    kill "$focus_broker" 2>/dev/null || true
+    wait "$focus_broker" 2>/dev/null || true
+  fi
+  rm -f "$FOCUS_FIFO"
+}
+
 terminate() {
   stop_child
+  stop_focus_broker
   exit 0
 }
 
@@ -41,6 +68,11 @@ if [ "${STARTUP_DELAY}" -gt 0 ] 2>/dev/null; then
   child=$!
   wait "$child" || exit 0
   child=""
+fi
+
+if ! start_focus_broker; then
+  log "failed to start app-focus broker"
+  exit 1
 fi
 
 while :; do
