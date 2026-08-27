@@ -11,63 +11,79 @@ if ! visible_asns="$(/usr/bin/lsappinfo -nonames visibleProcessList 2>/dev/null)
   exit 0
 fi
 
-# Build one record for every visible foreground app. LaunchServices includes
-# apps without a yabai window (such as Finder or Mail), which a window-only
-# query would otherwise omit.
-app_records=()
-for app_asn in ${=visible_asns}; do
-  app_info="$(/usr/bin/lsappinfo info "$app_asn" 2>/dev/null)" || continue
-  info_lines=("${(@f)app_info}")
-  [[ ${#info_lines[@]} -gt 0 ]] || continue
-
-  first_line="$info_lines[1]"
-  app_name="${first_line#\"}"
-  app_name="${app_name%%\" ASN:*}"
-  bundle_id=""
-  app_path=""
-  app_pid=""
-
-  for line in "${info_lines[@]}"; do
-    case "$line" in
-      *'bundleID="'*)
-        bundle_id="${line#*bundleID=\"}"
-        bundle_id="${bundle_id%%\"*}"
-        ;;
-      *'bundle path="'*)
-        app_path="${line#*bundle path=\"}"
-        app_path="${app_path%%\"*}"
-        ;;
-      *'pid = '*)
-        app_pid="${line#*pid = }"
-        app_pid="${app_pid%% *}"
-        ;;
-    esac
-  done
-
-  [[ -n "$app_name" && -n "$bundle_id" && "$app_pid" == <-> ]] || continue
-  [[ "$app_path" == *.app && -d "$app_path" ]] || continue
-  app_records+=("$app_pid"$'\t'"$app_name"$'\t'"$bundle_id"$'\t'"$app_path")
+# Ask LaunchServices for every app in one process. Spawning one lsappinfo per
+# app was the largest part of the Script Filter's cold-start latency.
+app_asns=( ${=visible_asns} )
+info_args=()
+for app_asn in "${app_asns[@]}"; do
+  info_args+=(info -only pid bundleID bundlepath displayname "$app_asn")
 done
 
-apps_json="$(
-  printf '%s\n' "${app_records[@]}" | $jq_bin -Rsc '
-    split("\n")
-    | map(select(length > 0) | split("\t"))
-    | map(select(length >= 4) | {
-        pid: (.[0] | tonumber),
-        name: .[1],
-        bundle_id: .[2],
-        path: .[3]
-      })
-  '
-)"
+if (( ${#info_args[@]} == 0 )); then
+  app_info=""
+elif ! app_info="$(/usr/bin/lsappinfo -nonames "${info_args[@]}" 2>/dev/null)"; then
+  $jq_bin -cn '{items: [{title: "Unable to read running apps", subtitle: "LaunchServices did not respond", valid: false}]}'
+  exit 0
+fi
+
+app_records=()
+app_pid=""
+bundle_id=""
+app_path=""
+app_name=""
+
+append_app_record() {
+  [[ -n "$app_name" && -n "$bundle_id" && "$app_pid" == <-> ]] || return 0
+  [[ "$app_path" == *.app && -d "$app_path" ]] || return 0
+  app_records+=("$app_pid"$'\t'"$app_name"$'\t'"$bundle_id"$'\t'"$app_path")
+}
+
+# `info -only` emits one key per line and starts each app with its pid.
+while IFS= read -r line; do
+  case "$line" in
+    '"pid"='*)
+      append_app_record
+      app_pid="${line#*=}"
+      bundle_id=""
+      app_path=""
+      app_name=""
+      ;;
+    '"CFBundleIdentifier"="'*)
+      bundle_id="${line#\"CFBundleIdentifier\"=\"}"
+      bundle_id="${bundle_id%\"}"
+      ;;
+    '"LSBundlePath"="'*)
+      app_path="${line#\"LSBundlePath\"=\"}"
+      app_path="${app_path%\"}"
+      ;;
+    '"LSDisplayName"="'*)
+      app_name="${line#\"LSDisplayName\"=\"}"
+      app_name="${app_name%\"}"
+      ;;
+  esac
+done <<< "$app_info"
+append_app_record
+
+apps_tsv="$(printf '%s\n' "${app_records[@]}")"
 
 # Window data enriches subtitles and searching, but the app list remains useful
 # when yabai is unavailable or an app currently has no standard window.
 windows_json="$($yabai_bin -m query --windows 2>/dev/null || print -r -- '[]')"
 
-$jq_bin -cn --argjson apps "$apps_json" --argjson windows "$windows_json" '
-  {
+$jq_bin -cn --arg apps_tsv "$apps_tsv" --argjson windows "$windows_json" '
+  ($apps_tsv
+   | split("\n")
+   | map(select(length > 0) | split("\t"))
+   | map(select(length >= 4) | {
+       pid: (.[0] | tonumber),
+       name: .[1],
+       bundle_id: .[2],
+       path: .[3]
+     })) as $apps
+  | {
+    # Alfred serves this list immediately on later invocations, then refreshes
+    # stale results in the background. Five seconds is its minimum cache TTL.
+    cache: {seconds: 5, loosereload: true},
     items: [
       $apps[]
       | . as $app

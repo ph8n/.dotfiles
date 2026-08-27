@@ -11,8 +11,9 @@ if [[ -z "$bundle_id" ]]; then
   exit 2
 fi
 
-app_asn="$(/usr/bin/lsappinfo find bundleID="$bundle_id" 2>/dev/null)"
-pid_output="$(/usr/bin/lsappinfo info -only pid "$app_asn" 2>/dev/null)"
+# A bundle id is already a valid lsappinfo application specifier, so avoid a
+# separate `find` process before reading the pid.
+pid_output="$(/usr/bin/lsappinfo info -only pid "$bundle_id" 2>/dev/null)"
 app_pid="${pid_output#*=}"
 app_pid="${app_pid//[^0-9]/}"
 
@@ -26,8 +27,10 @@ if ! windows_json="$($yabai_bin -m query --windows 2>/dev/null)"; then
   exit $?
 fi
 
-window_json="$(
-  print -r -- "$windows_json" | $jq_bin -c --argjson pid "$app_pid" '
+# Return only the three fields needed below; this avoids repeatedly launching
+# jq to unpack the selected window.
+window_fields="$(
+  print -r -- "$windows_json" | $jq_bin -r --argjson pid "$app_pid" '
     [
       .[]
       | select(.pid == $pid)
@@ -43,30 +46,33 @@ window_json="$(
         else 4
         end
       )
-    | .[0] // empty
+    | .[0] // null
+    | if . == null then empty else [.id, ."is-minimized", .space] | @tsv end
   '
 )"
 
-if [[ -z "$window_json" ]]; then
+if [[ -z "$window_fields" ]]; then
   /usr/bin/open -b "$bundle_id" >/dev/null 2>&1
   exit $?
 fi
 
-window_id="$(print -r -- "$window_json" | $jq_bin -r '.id')"
+window_values=("${(@ps:\t:)window_fields}")
+window_id="$window_values[1]"
+window_minimized="$window_values[2]"
+window_space="$window_values[3]"
 
-if [[ "$(print -r -- "$window_json" | $jq_bin -r '."is-minimized"')" == "true" ]]; then
+if [[ "$window_minimized" == "true" ]]; then
   $yabai_bin -m window "$window_id" --deminimize >/dev/null 2>&1 || true
 fi
 
 if $yabai_bin -m window --focus "$window_id" >/dev/null 2>&1 \
-  && $yabai_bin -m query --windows \
-    | $jq_bin -e --argjson pid "$app_pid" 'any(.[]; .pid == $pid and ."has-focus")' >/dev/null; then
+  && $yabai_bin -m query --windows --window "$window_id" \
+    | $jq_bin -e '."has-focus" == true' >/dev/null; then
   exit 0
 fi
 
-window_space="$(print -r -- "$window_json" | $jq_bin -r '.space')"
 $yabai_bin -m space --focus "$window_space" >/dev/null 2>&1 || true
 $yabai_bin -m window --focus "$window_id" >/dev/null 2>&1 || true
-$yabai_bin -m query --windows \
-  | $jq_bin -e --argjson pid "$app_pid" 'any(.[]; .pid == $pid and ."has-focus")' >/dev/null \
+$yabai_bin -m query --windows --window "$window_id" \
+  | $jq_bin -e '."has-focus" == true' >/dev/null \
   || /usr/bin/open -b "$bundle_id" >/dev/null 2>&1
