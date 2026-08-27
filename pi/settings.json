@@ -1,7 +1,5 @@
 {
   "lastChangelogVersion": "0.84.3",
-  "defaultProvider": "xai",
-  "defaultModel": "grok-4.6",
   "defaultThinkingLevel": "high",
   "collapseChangelog": true,
   "quietStartup": true,
@@ -27,9 +25,5 @@
   "markdown": {
     "mermaid": "final"
   },
-  "fullscreenExitOutput": "transcript",
-  "enabledModels": [
-    "openai-codex/gpt-5.6-sol",
-    "xai/grok-4.6"
-  ]
+  "fullscreenExitOutput": "transcript"
 }
