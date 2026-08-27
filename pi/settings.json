@@ -1,6 +1,6 @@
 {
   "lastChangelogVersion": "0.84.3",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "collapseChangelog": true,
   "quietStartup": true,
   "enableInstallTelemetry": false,
@@ -25,5 +25,7 @@
   "markdown": {
     "mermaid": "final"
   },
-  "fullscreenExitOutput": "transcript"
+  "fullscreenExitOutput": "transcript",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol"
 }
