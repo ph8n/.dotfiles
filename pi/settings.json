@@ -27,5 +27,9 @@
   "markdown": {
     "mermaid": "final"
   },
-  "fullscreenExitOutput": "transcript"
+  "fullscreenExitOutput": "transcript",
+  "enabledModels": [
+    "openai-codex/gpt-5.6-sol",
+    "xai/grok-4.6"
+  ]
 }
