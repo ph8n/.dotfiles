@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./hardware.nix ];
+  imports = [
+    ./hardware.nix
+    ./immich.nix
+  ];
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -95,7 +98,11 @@
     };
   };
 
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
+  # SSH/SFTP and Tailscale Serve HTTPS are private to the tailnet.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [
+    22
+    443
+  ];
 
   # Preserve the version from the machine's original installation.
   system.stateVersion = "26.05";

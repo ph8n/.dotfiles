@@ -49,6 +49,18 @@
         "dmask=0077"
       ];
     };
+
+    "/srv/photos" = {
+      device = "/dev/disk/by-label/photos";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
+
+    "/srv/data" = {
+      device = "/dev/disk/by-label/data";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
   };
 
   swapDevices = [ ];
