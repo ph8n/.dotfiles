@@ -26,6 +26,12 @@
     };
   };
 
+  # Pair HID devices like the Logitech MX Keys over the onboard adapter.
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   time.timeZone = "America/Los_Angeles";
 
   i18n = {
