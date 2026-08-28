@@ -16,7 +16,6 @@ in
 
   environment.systemPackages = [
     pkgs.docker-compose
-    pkgs.e2fsprogs
   ];
 
   systemd.tmpfiles.rules = [

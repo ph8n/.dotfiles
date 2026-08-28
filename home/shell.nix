@@ -19,9 +19,9 @@
     hm = "sudo ${rebuildCommand} switch --flake \"$HOME/nix-config#${configurationName}\"";
   };
 
-  # Keep user-installed Cargo binaries available without mutating managed
-  # shell startup files.
-  home.sessionPath = [ "$HOME/.cargo/bin" ];
+  # Home Manager exposes mise/config.toml globally. Prevent mise from loading
+  # the repository source as a second project config when working here.
+  home.sessionVariables.MISE_IGNORED_CONFIG_PATHS = "$HOME/nix-config/mise/config.toml";
 
   programs = {
     zsh = {

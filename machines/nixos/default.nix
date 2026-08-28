@@ -1,4 +1,4 @@
-{ pkgs, unstablePkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -61,14 +61,9 @@
     lazy-trees = true;
   };
 
-  # Keep a small system profile for recovery before Home Manager is introduced.
-  environment.systemPackages = with pkgs; [
-    gh
-    git
-    ghostty.terminfo
-    unstablePkgs.mise
-    neovim
-  ];
+  # User-facing tools are owned by Home Manager. Keep only the terminal data
+  # required before the user profile is available.
+  environment.systemPackages = [ pkgs.ghostty.terminfo ];
 
   programs.nix-ld.enable = true;
 

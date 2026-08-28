@@ -33,5 +33,4 @@ sudo -v
 sudo ./result/sw/bin/darwin-rebuild switch --flake "$repo#darwin"
 
 mise=/etc/profiles/per-user/dp/bin/mise
-"$mise" trust "$repo/mise/config.toml"
-"$mise" install
+"$mise" -C "$HOME" install
