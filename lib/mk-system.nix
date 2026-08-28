@@ -41,6 +41,7 @@ systemBuilder {
       system
       user
       isDarwin
+      unstablePkgs
       ;
   };
 

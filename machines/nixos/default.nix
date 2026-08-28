@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, unstablePkgs, ... }:
 
 {
   imports = [
@@ -66,7 +66,7 @@
     gh
     git
     ghostty.terminfo
-    mise
+    unstablePkgs.mise
     neovim
   ];
 

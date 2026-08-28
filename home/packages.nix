@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, unstablePkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -17,7 +17,7 @@
     jq
     jujutsu
     lazygit
-    mise
+    unstablePkgs.mise
     neovim
     nixd
     nixfmt
