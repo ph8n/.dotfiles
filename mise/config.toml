@@ -9,9 +9,7 @@ package_manager = "npm"
 co = "https://github.com/anysphere/origin-cli-asdf"
 
 [tools]
-bun = "latest"
 codex = "latest"
-deno = "latest"
 python = "3.14"
 pnpm = "11.17.0"
 copilot-cli = "latest"
