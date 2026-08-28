@@ -26,9 +26,7 @@ in
     configFile = lib.mkMerge [
       {
         "atuin/TERMINAL.md" = immutable ../atuin/TERMINAL.md;
-        # Herdr's onboarding updates this file, so it must not point into the
-        # read-only Nix store.
-        "herdr/config.toml" = writable "herdr/config.toml";
+        "herdr/config.toml" = immutable ../herdr/config.toml;
         "mark/config.toml" = immutable ../mark/config.toml;
         "mise/config.toml" = immutable ../mise/config.toml;
         "nvim/init.lua" = immutable ../nvim/init.lua;
