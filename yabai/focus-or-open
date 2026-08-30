@@ -50,11 +50,10 @@ case "$#" in
 esac
 
 # Requesting front by bundle id does not cycle windows when the app is already
-# focused. Run `find` in the same lsappinfo process so only a cold app falls back
-# to the substantially slower LaunchServices open path.
+# focused. A successful request prints the running app's ASN, so only a cold app
+# falls back to the substantially slower LaunchServices open path.
 set -- $(lsappinfo -q -nonames \
-  requestfront "$bundle_id" --immediate \
-  find "bundleID=$bundle_id" 2>/dev/null || true)
+  requestfront "$bundle_id" --immediate 2>/dev/null || true)
 [ "$#" -gt 0 ] && exit 0
 
 exec open -b "$bundle_id"

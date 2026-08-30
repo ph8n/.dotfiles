@@ -25,7 +25,10 @@ if ! command -v yabai >/dev/null 2>&1; then
   exit 0
 fi
 
-# Let yabai be the source of truth and suppress legitimate no-op errors
-# (missing space, no focused window, already on that space). Avoid query+jq in
-# the hotkey path.
-exec yabai -m window --space "$target" --follow-window >/dev/null 2>&1
+# yabai has no --follow-window option. Move first, then focus the destination;
+# suppress legitimate no-op errors (missing space/window or same destination).
+if yabai -m window --space "$target" >/dev/null 2>&1; then
+  exec yabai -m space --focus "$target" >/dev/null 2>&1
+fi
+
+exit 0
