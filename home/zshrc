@@ -4,6 +4,7 @@ typeset -U path PATH fpath
 # wrappers. Inside a Nix development shell, preserve the flake's PATH.
 if [[ -z "${IN_NIX_SHELL:-}" ]]; then
   path=(
+    "$HOME/.local/share/mise/shims"
     "$HOME/.cargo/bin"
     "$HOME/.grok/bin"
     "$HOME/.local/bin"
@@ -17,26 +18,48 @@ if [[ -z "${IN_NIX_SHELL:-}" ]]; then
     )
   fi
 
-  (( $+commands[mise] )) && eval "$(mise activate zsh)"
-  fpath=("$HOME/.grok/completions/zsh" $fpath)
+  # Shims select the configured tool version per invocation without running
+  # mise's comparatively expensive shell hook at every startup.
 fi
 
-# Integrations
-(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
-(( $+commands[starship] )) && eval "$(starship init zsh)"
-
-if (( $+commands[fzf] )); then
-  (( $+commands[bat] )) && export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always {}'"
-  source <(fzf --zsh)
-  bindkey -r '^[c'
-fi
-
-# Editor, aliases, and keybindings
+# Editor and keybindings
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
 
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^G' edit-command-line
+
+# Replace Starship custom-command checks with a builtin-only precmd hook.
+_nix_update_flake_prompt() {
+  if [[ -z "${IN_NIX_SHELL:-}" ]]; then
+    unset NIX_FLAKE_INSIDE NIX_FLAKE_OUTSIDE
+    return 0
+  fi
+
+  if [[ -z "${_NIX_FLAKE_ROOT_CAPTURED:-}" ]]; then
+    local root="$PWD"
+    while [[ "$root" != "/" && ! -f "$root/flake.nix" ]]; do
+      root="${root:h}"
+    done
+
+    if [[ -f "$root/flake.nix" ]]; then
+      export NIX_FLAKE_ROOT="$root"
+    else
+      unset NIX_FLAKE_ROOT
+    fi
+    typeset -g _NIX_FLAKE_ROOT_CAPTURED=1
+  fi
+
+  if [[ -n "${NIX_FLAKE_ROOT:-}" && "$PWD/" == "$NIX_FLAKE_ROOT/"* ]]; then
+    export NIX_FLAKE_INSIDE=1
+    unset NIX_FLAKE_OUTSIDE
+  else
+    unset NIX_FLAKE_INSIDE
+    export NIX_FLAKE_OUTSIDE=1
+  fi
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _nix_update_flake_prompt
 
 ulimit -n 65536

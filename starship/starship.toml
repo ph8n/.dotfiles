@@ -5,8 +5,8 @@ command_timeout = 100
 palette = "mfd-mono"
 
 format = """
-${custom.nix_flake_inside}\
-${custom.nix_flake_outside}\
+${env_var.NIX_FLAKE_INSIDE}\
+${env_var.NIX_FLAKE_OUTSIDE}\
 $hostname\
 $directory\
 $git_branch\
@@ -61,19 +61,13 @@ style = "mfd_bright"
 format = "[$duration]($style) "
 style = "mfd_bright"
 
-[custom.nix_flake_inside]
-when = '''test -n "$IN_NIX_SHELL" && test -n "$NIX_FLAKE_ROOT" && case "$PWD/" in "$NIX_FLAKE_ROOT/"*) true ;; *) false ;; esac'''
-command = "printf λ"
-format = "[$output]($style) "
+[env_var.NIX_FLAKE_INSIDE]
+format = "[λ]($style) "
 style = "bold mfd_green"
-shell = ["sh"]
 
-[custom.nix_flake_outside]
-when = '''test -n "$IN_NIX_SHELL" && { test -z "$NIX_FLAKE_ROOT" || case "$PWD/" in "$NIX_FLAKE_ROOT/"*) false ;; *) true ;; esac; }'''
-command = "printf λ"
-format = "[$output]($style) "
+[env_var.NIX_FLAKE_OUTSIDE]
+format = "[λ]($style) "
 style = "bold mfd_red"
-shell = ["sh"]
 
 [lua]
 disabled = true
