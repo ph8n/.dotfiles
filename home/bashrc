@@ -1,7 +1,7 @@
 # Add user tools without discarding platform paths such as NixOS setuid
 # wrappers. Inside a Nix development shell, preserve the flake's PATH.
 if [[ -z "${IN_NIX_SHELL:-}" ]]; then
-  PATH="$HOME/.local/share/mise/shims:$HOME/.cargo/bin:$HOME/.grok/bin:$HOME/.local/bin:$PATH"
+  PATH="$HOME/.local/share/mise/shims:$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
   if [[ "$OSTYPE" == darwin* ]]; then
     PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.lmstudio/bin"
   fi

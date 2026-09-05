@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# asdf hook: install grok as a real binary under bin/, not a cache symlink.
+set -euo pipefail
+
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=/dev/null
+source "${PLUGIN_DIR}/lib/utils.bash"
+
+: "${ASDF_INSTALL_TYPE:?ASDF_INSTALL_TYPE must be set}"
+: "${ASDF_INSTALL_VERSION:?ASDF_INSTALL_VERSION must be set}"
+: "${ASDF_INSTALL_PATH:?ASDF_INSTALL_PATH must be set}"
+
+[ "$ASDF_INSTALL_TYPE" = "version" ] ||
+  grok_fail "only 'version' installs are supported (got type '$ASDF_INSTALL_TYPE')"
+
+bin_dir="$ASDF_INSTALL_PATH/bin"
+mkdir -p "$bin_dir"
+
+if [ -n "${ASDF_DOWNLOAD_PATH:-}" ] && [ -f "${ASDF_DOWNLOAD_PATH}/grok" ]; then
+  cp "$ASDF_DOWNLOAD_PATH/grok" "$bin_dir/grok"
+else
+  grok_fetch "$bin_dir" "$ASDF_INSTALL_VERSION"
+fi
+chmod 755 "$bin_dir/grok"
+
+"$bin_dir/grok" --version >/dev/null 2>&1 ||
+  grok_fail "installed grok failed to run ($bin_dir/grok --version)"
+
+echo "Installed grok $ASDF_INSTALL_VERSION to $bin_dir/" >&2

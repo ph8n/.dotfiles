@@ -6,7 +6,6 @@ if [[ -z "${IN_NIX_SHELL:-}" ]]; then
   path=(
     "$HOME/.local/share/mise/shims"
     "$HOME/.cargo/bin"
-    "$HOME/.grok/bin"
     "$HOME/.local/bin"
     $path
   )

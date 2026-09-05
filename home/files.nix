@@ -59,6 +59,7 @@ in
     # these under XDG data; the installed CLI versions remain mise-owned.
     dataFile = {
       "mise/plugins/cursor-agent" = immutable ../mise/plugins/cursor-agent;
+      "mise/plugins/grok" = immutable ../mise/plugins/grok;
     };
   };
 
