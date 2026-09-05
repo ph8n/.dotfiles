@@ -5,6 +5,9 @@ minimum_release_age = "0s"
 [settings.npm]
 package_manager = "npm"
 
+[env]
+PI_CODING_AGENT_DIR = "{{ .chezmoi.homeDir }}/.config/pi"
+
 [plugins]
 co = "https://github.com/anysphere/origin-cli-asdf"
 

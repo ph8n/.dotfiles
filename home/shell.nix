@@ -83,10 +83,6 @@ in
     hm = "sudo ${rebuildCommand} switch --flake \"$HOME/nix-config#${configurationName}\"";
   };
 
-  # Home Manager exposes mise/config.toml globally. Prevent mise from loading
-  # the repository source as a second project config when working here.
-  home.sessionVariables.MISE_IGNORED_CONFIG_PATHS = "$HOME/nix-config/mise/config.toml";
-
   programs = {
     zsh = {
       enable = true;
@@ -227,10 +223,18 @@ in
 
             # Queue a normal Tab after this one-shot Readline macro loads both
             # completion frameworks. This preserves first-Tab behavior.
+            # The rebind runs on every invocation: /etc/bashrc already loads
+            # bash-completion on NixOS, so BASH_COMPLETION_VERSINFO cannot be
+            # used as the loaded sentinel. Without the rebind, Tab would stay
+            # bound to this macro and recurse until Readline gives up.
             _load_shell_completions() {
-              [[ -n ''${BASH_COMPLETION_VERSINFO+x} ]] && return 0
-              source ${pkgs.bash-completion}/etc/profile.d/bash_completion.sh
-              source ${pkgs.fzf}/share/fzf/completion.bash
+              if [[ -z "''${_BASH_LAZY_COMPLETIONS_LOADED:-}" ]]; then
+                _BASH_LAZY_COMPLETIONS_LOADED=1
+                if [[ -z "''${BASH_COMPLETION_VERSINFO:-}" ]]; then
+                  source ${pkgs.bash-completion}/etc/profile.d/bash_completion.sh
+                fi
+                source ${pkgs.fzf}/share/fzf/completion.bash
+              fi
               bind -m emacs-standard '"\C-i": complete'
               bind -m vi-insert '"\C-i": complete'
             }
