@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  unstablePkgs,
   ...
 }:
 
@@ -43,15 +44,19 @@ in
       MISE_IGNORED_CONFIG_PATHS = "${chezmoiSource}/dot_config/mise/config.toml.tmpl";
     };
 
-    # HM's only chezmoi coupling: after writeBoundary has placed
-    # chezmoi.toml, apply the agent tree. Agent migrations and skill
-    # copies live in chezmoi run scripts, not here.
+    # After writeBoundary has placed chezmoi.toml, apply the agent tree
+    # (plugins included), then install mise tools. Mac bootstrap already
+    # did this as two steps; Linux `hm` previously stopped after apply,
+    # so grok stayed on a leftover http backend with a dead shim.
     activation.chezmoiApply = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD ${lib.getExe pkgs.chezmoi} apply \
         --source "${chezmoiSource}" \
         --destination "${config.home.homeDirectory}" \
         --force \
         --no-tty
+    '';
+    activation.miseInstall = lib.hm.dag.entryAfter [ "chezmoiApply" ] ''
+      $DRY_RUN_CMD ${lib.getExe unstablePkgs.mise} --yes -C "${config.home.homeDirectory}" install
     '';
 
     file = lib.mkMerge [
