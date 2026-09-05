@@ -22,27 +22,31 @@ let
   };
 in
 {
-  # Nix owns the machine, packages, shell, and non-agent dotfiles.
-  # Chezmoi owns agent-tool configs under ~/.config (see ../chezmoi).
-  # PI_CODING_AGENT_DIR is set here and in mise so Linux and macOS both
-  # load Pi from XDG instead of ~/.pi.
+  # One owner per path (Hashimoto-style).
+  # Nix/HM: machine, packages, shell, user services, non-agent dots.
+  # Chezmoi: agent-tool files. Do not also set these via home.file or
+  # xdg.configFile:
+  #   ~/.codex ~/.copilot ~/.cursor ~/.grok
+  #   ~/.config/{herdr,mark,mise,opencode,pi,pi-extensions}
+  #   ~/.local/share/mise/plugins
+  #
+  # Chezmoi reads the live tree at ~/nix-config/chezmoi, not a Nix
+  # generation. Roll back Nix and agent files stay as last applied.
+  #
+  # PI_CODING_AGENT_DIR: HM injects it into login shells; mise [env]
+  # injects it into GUI/tool processes that do not source HM session vars.
+  # MISE_IGNORED_CONFIG_PATHS must live in the environment (not mise
+  # config) so mise never parses the chezmoi template as TOML.
   home = {
     sessionVariables = {
       PI_CODING_AGENT_DIR = piConfigDir;
       MISE_IGNORED_CONFIG_PATHS = "${chezmoiSource}/dot_config/mise/config.toml.tmpl";
     };
 
-    # writeBoundary has already placed chezmoi.toml. Apply the source tree
-    # noninteractively so `hm` on NixOS and darwin-rebuild on macOS both
-    # install agent configs, including the Pi package list.
+    # HM's only chezmoi coupling: after writeBoundary has placed
+    # chezmoi.toml, apply the agent tree. Agent migrations and skill
+    # copies live in chezmoi run scripts, not here.
     activation.chezmoiApply = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      old_pi="${config.home.homeDirectory}/.pi/agent"
-      new_pi="${piConfigDir}"
-      if [ -d "$old_pi" ] && [ ! -e "$new_pi/.migrated-from-dot-pi" ]; then
-        $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "$new_pi"
-        $DRY_RUN_CMD ${pkgs.coreutils}/bin/cp -a --no-clobber "$old_pi"/. "$new_pi"/ || true
-        $DRY_RUN_CMD ${pkgs.coreutils}/bin/touch "$new_pi/.migrated-from-dot-pi"
-      fi
       $DRY_RUN_CMD ${lib.getExe pkgs.chezmoi} apply \
         --source "${chezmoiSource}" \
         --destination "${config.home.homeDirectory}" \
@@ -72,6 +76,7 @@ in
     configFile = lib.mkMerge [
       {
         "atuin/TERMINAL.md" = immutable ../atuin/TERMINAL.md;
+        # Bootstrap only. Chezmoi owns every other agent-adjacent file.
         "chezmoi/chezmoi.toml" = {
           text = ''
             sourceDir = "${chezmoiSource}"

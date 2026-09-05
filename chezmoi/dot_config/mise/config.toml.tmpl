@@ -5,6 +5,8 @@ minimum_release_age = "0s"
 [settings.npm]
 package_manager = "npm"
 
+# Same value as HM sessionVariables.PI_CODING_AGENT_DIR. HM covers login
+# shells; this covers GUI/tool processes that do not source HM session env.
 [env]
 PI_CODING_AGENT_DIR = "{{ .chezmoi.homeDir }}/.config/pi"
 

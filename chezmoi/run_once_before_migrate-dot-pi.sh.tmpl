@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# One-shot: ~/.pi/agent -> ~/.config/pi. Marker is chezmoi-ignored state.
+set -euo pipefail
+
+home="{{ .chezmoi.homeDir }}"
+old="$home/.pi/agent"
+new="$home/.config/pi"
+marker="$new/.migrated-from-dot-pi"
+
+if [[ -d "$old" && ! -e "$marker" ]]; then
+  mkdir -p "$new"
+  cp -a -n "$old"/. "$new"/ || true
+  touch "$marker"
+fi

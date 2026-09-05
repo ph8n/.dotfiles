@@ -1,8 +1,11 @@
 # nix-config
 
-Nix owns the machine, packages, shell, and non-agent dotfiles.
-Chezmoi owns agent-tool configs under `~/.config` (`chezmoi/`).
-Home Manager activation runs `chezmoi apply` on both NixOS and macOS.
+One owner per path.
+
+- **Nix / Home Manager** owns the machine, packages, shell, user services, and non-agent dotfiles.
+- **Chezmoi** owns agent-tool files: configs, hooks, mise plugins, and Pi skill copies into other agents (`chezmoi/`).
+- Home Manager writes `~/.config/chezmoi/chezmoi.toml` and runs `chezmoi apply`. Nothing else in Nix may write a chezmoi destination.
+- Chezmoi reads the live tree at `chezmoi/`, not a Nix generation.
 
 ```sh
 hm
