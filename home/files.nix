@@ -9,7 +9,6 @@
 let
   configRoot = "${config.home.homeDirectory}/nix-config";
   chezmoiSource = "${configRoot}/chezmoi";
-  piConfigDir = "${config.xdg.configHome}/pi";
   alfredWorkflow = "Library/Application Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.63D398BB-A391-40E9-B356-24123A2B339E";
 
   immutable = source: {
@@ -27,20 +26,17 @@ in
   # Nix/HM: machine, packages, shell, user services, non-agent dots.
   # Chezmoi: agent-tool files. Do not also set these via home.file or
   # xdg.configFile:
-  #   ~/.codex ~/.copilot ~/.cursor ~/.grok
-  #   ~/.config/{herdr,mark,mise,opencode,pi,pi-extensions}
+  #   ~/.codex ~/.copilot ~/.cursor ~/.grok ~/.pi
+  #   ~/.config/{herdr,mark,mise,opencode}
   #   ~/.local/share/mise/plugins
   #
   # Chezmoi reads the live tree at ~/nix-config/chezmoi, not a Nix
   # generation. Roll back Nix and agent files stay as last applied.
   #
-  # PI_CODING_AGENT_DIR: HM injects it into login shells; mise [env]
-  # injects it into GUI/tool processes that do not source HM session vars.
   # MISE_IGNORED_CONFIG_PATHS must live in the environment (not mise
   # config) so mise never parses the chezmoi template as TOML.
   home = {
     sessionVariables = {
-      PI_CODING_AGENT_DIR = piConfigDir;
       MISE_IGNORED_CONFIG_PATHS = "${chezmoiSource}/dot_config/mise/config.toml.tmpl";
     };
 

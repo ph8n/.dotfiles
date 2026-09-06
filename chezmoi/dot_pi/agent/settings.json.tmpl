@@ -1,5 +1,5 @@
-{{- /* Pi reads PI_CODING_AGENT_DIR (~/.config/pi). The default package is the
-     XDG symlink ~/.config/pi-extensions -> ~/code/pi-extensions. */ -}}
+{{- /* Package code lives in ~/code/pi-extensions. This file is the only
+     Pi agent config chezmoi should manage. */ -}}
 {
   "lastChangelogVersion": "0.85.1",
   "defaultThinkingLevel": "xhigh",
@@ -10,7 +10,7 @@
   "theme": "origin",
   "packages": [
     "npm:@ff-labs/pi-fff",
-    "{{ .chezmoi.homeDir }}/.config/pi-extensions"
+    "{{ .chezmoi.homeDir }}/code/pi-extensions"
   ],
   "treeFilterMode": "default",
   "hideThinkingBlock": true,

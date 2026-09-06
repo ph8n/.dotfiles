@@ -1,6 +1,9 @@
 # Secrets, caches, and generated state are never managed by chezmoi.
 # These patterns are guardrails so a future `chezmoi add` of a live agent
 # directory cannot commit credentials or runtime state.
+#
+# Extension/skill/theme source lives in ~/code/pi-extensions. Do not
+# chezmoi add ~/.pi/agent/{extensions,skills,themes}.
 auth.json
 *.sqlite*
 *.sqlite-shm
