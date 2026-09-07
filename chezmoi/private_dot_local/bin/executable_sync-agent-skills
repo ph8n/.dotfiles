@@ -86,9 +86,6 @@ def load_source(source):
         result[name] = files
         if name != directory.name:
             raise ValueError(f"Name must match directory: {directory}")
-        for filename, data in files.items():
-            if Path(filename).suffix in {'.md', '.sh'} and b'/skill:' in data:
-                raise ValueError(f"Nonportable invocation: {directory / filename}")
     if not result:
         raise ValueError("Empty canonical skill inventory; refusing mass deletion")
     for name in ('THIRD_PARTY_NOTICES.md', 'LICENSE'):
@@ -104,7 +101,15 @@ def load_source(source):
 def render(files, adapter):
     if adapter not in {'standard', 'codex', 'explicit-guard'}:
         raise ValueError(f"Unknown adapter: {adapter}")
-    result = dict(files)
+    # Pi owns its source wording. Other agents invoke skills by semantic name,
+    # not Pi's /skill: command syntax; adapt Markdown and shell support copies.
+    result = {}
+    for filename, data in files.items():
+        if filename not in {'LICENSE', 'THIRD_PARTY_NOTICES.md'} and Path(filename).suffix in {'.md', '.sh'}:
+            data = re.sub(rb'/skill:([a-z0-9]+(?:-[a-z0-9]+)*)', rb'\1', data)
+            if b'/skill:' in data:
+                raise ValueError(f"Nonportable invocation syntax: {filename}")
+        result[filename] = data
     text = result['SKILL.md'].decode()
     header, body = text.split('\n---\n', 1)
     manual = '\ndisable-model-invocation: true' in header

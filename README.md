@@ -13,9 +13,11 @@ nix flake check --all-systems --no-build
 python3 -B -m unittest discover -s tests -v
 ```
 
-The Python suite includes read-only boundary checks for both hosts; it requires
-`nix` and `chezmoi`. It checks evaluated Home Manager destinations against chezmoi
-files and skill-sync roots, plus the activation ordering. `--no-build` evaluates
+The Python suite requires `nix`, `chezmoi`, and `git`. It checks evaluated Home
+Manager destinations against chezmoi files and skill-sync roots for both hosts,
+plus activation ordering. It also builds (without activating) the native home
+generation and tests its chezmoi handoff in a disposable HOME with the generated,
+restricted PATH, including repeated apply and dry-run behavior. `--no-build` evaluates
 flake checks but does not execute formatting/lint derivations; build those with
 `nix build .#checks.aarch64-darwin.{format,lint}` on the Mac.
 
@@ -55,7 +57,9 @@ not Pi extensions, commands, themes, or package configuration.
 Every `chezmoi apply` runs `~/.local/bin/sync-agent-skills`; using `run_after` (not
 `run_onchange`) makes edits in the other checkout sufficient to trigger reconciliation.
 The optional command also supports `--dry-run`, `--source`, `--home`, and `--config`.
-Python 3 is already supplied by Home Manager/mise.
+Home Manager explicitly supplies Nix Python 3 and Git on its restricted activation
+PATH, so skill sync works before mise installs any runtimes. Interactive use can
+use Home Manager's Python 3 and Git, or mise's Python.
 
 The single path/adapter table is `chezmoi/dot_config/agent-skills/targets.json`:
 Codex, Copilot, OpenCode, Grok, and DeepSeek Harness receive real directories;
@@ -66,6 +70,8 @@ All agents can be provisioned before their executables are installed.
 The sync reads working-tree contents of **Git-tracked** canonical skill files.
 Review and `git add` newly created skills/supporting files before distribution.
 Nested resources and license/attribution notices travel with each skill.
+Pi-specific `/skill:name` references in Markdown and shell support files become
+semantic `name` references only in distributed copies; the Pi checkout is unchanged.
 Codex receives manual-invocation policy sidecars; OpenCode gets a descriptive
 explicit-request guard because it ignores that frontmatter policy.
 

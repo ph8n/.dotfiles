@@ -14,6 +14,7 @@ HOSTS = {
 PROJECTION = '''c: {
   files = map (f: f.target) (builtins.attrValues c.home.file);
   activation = builtins.mapAttrs (_: v: v.after) c.home.activation;
+  activationTools = map (p: p.pname) c.home.extraActivationPath;
 }'''
 
 
@@ -62,6 +63,8 @@ class BoundaryTests(unittest.TestCase):
                 self.assertIn('.config/chezmoi/chezmoi.toml', config['files'])
                 self.assertIn('linkGeneration', config['activation']['chezmoiApply'])
                 self.assertIn('chezmoiApply', config['activation']['miseInstall'])
+                self.assertIn('python3', config['activationTools'])
+                self.assertIn('git', config['activationTools'])
 
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ Before: chezmoi blindly deleted each matching destination directory and copied t
 After:
 
 ```text
-pi-extensions/skills (canonical portable instructions + supporting files)
+pi-extensions/skills (canonical Pi instructions + supporting files)
   ├─ Pi package loader → /skill:<name>, with five thin direct aliases
   └─ chezmoi's sync-agent-skills + targets.json
        ├─ Codex copies + invocation-policy sidecars → also read by Cursor
@@ -76,7 +76,7 @@ Classification of the audited input, before portability edits:
 | 3 — genuinely Pi-only         | None                                                                                                                | No skill needs exclusion from other agents.                                                                                                                                                                                              |
 | 4 — tool/platform assumptions | `grilling`, `research`, `show-me`                                                                                   | Use available interactive questions/web tools/shell opener. Grilling preserves the frontier, up-to-four related questions, recommendation, fact/decision separation, and final human confirmation; respects smaller target batch limits. |
 
-After these edits, **bodies need no target-specific rewriting**. Canonical dependency instructions say to invoke named skills; Pi's ordinary skill-reading behavior understands this without baked-in slash strings. All supporting resources survive byte-for-byte copying.
+The original audit used portable canonical wording. Current distribution also accepts Pi-native `/skill:name` references: the shared adapter converts these to semantic `name` references in Markdown and shell supporting files before applying target-specific policy metadata. This conversion affects distributed copies only; Pi owns its canonical wording and its checkout stays untouched. Other supporting bytes and the license/attribution files are preserved. Unsupported `/skill:` syntax still fails before writes.
 
 Manual-only skills remain manual via Pi/Cursor/Grok/DSH metadata. Codex receives `agents/openai.yaml` with `policy.allow_implicit_invocation: false` for each manual skill. OpenCode does not implement `disable-model-invocation`: its adapter prefixes the description and body with an explicit-request guard. **That is a model instruction, not enforced access control.** Copilot receives the existing invocation metadata; its discovery command does not expose whether automatic-invocation suppression is enforced. Do not claim a tested runtime permission boundary there.
 
@@ -106,9 +106,9 @@ sync-agent-skills --dry-run
 sync-agent-skills
 ```
 
-The source checkout must exist; otherwise reconciliation prints a useful message and does not remove destinations. Agents need not yet be installed: distribution prepares their configured skill directories before mise installation. A missing Python interpreter is an actionable error, not silent success.
+The source checkout must exist; otherwise reconciliation prints a useful message and does not remove destinations. Agents need not yet be installed: distribution prepares their configured skill directories before mise installation. Home Manager explicitly adds Nix Python and Git to `home.extraActivationPath`; activation does not inherit interactive packages or mise runtimes. A missing Python interpreter during standalone use is an actionable error, not silent success.
 
-Only Git-tracked skill files are eligible, but current working-tree edits are used. Unknown/untracked files fail validation instead of being swept into distribution; secrets/runtime paths, symlinks, nested skill definitions, missing `SKILL.md`, duplicate names, and Pi-only invocation syntax fail before writes. Tracking is a boundary, not a secret scanner: review new files before `git add`.
+Only Git-tracked skill files are eligible, but current working-tree edits are used. Unknown/untracked files fail validation instead of being swept into distribution; secrets/runtime paths, symlinks, nested skill definitions, missing `SKILL.md`, duplicate names, and unsupported Pi invocation syntax fail before writes. Tracking is a boundary, not a secret scanner: review new files before `git add`.
 
 All destinations are preflighted before any are changed. Ownership is recorded per skill as file hashes in `.pi-extensions-skills.json`. Matching legacy hashes authorize adoption; a name alone never does. Modified managed copies, added supporting files, and unowned name collisions are preserved with errors. Stale managed files are individually unlinked and only empty directories removed. There is no recursive destination delete. A process lock serializes runs; files and manifests use atomic replacement. A crash mid-skill can leave a partial copy, which the next run refuses to overwrite: move that reported skill aside or restore it before retrying. This is fail-closed, not a transactional filesystem or security sandbox against concurrent hostile mutation.
 

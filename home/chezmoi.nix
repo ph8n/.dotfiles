@@ -18,6 +18,13 @@ in
       unstablePkgs.mise
     ];
 
+    # Activation starts with a restricted PATH, not home.packages or mise.
+    # The run_after skill-sync hook needs both Python and Git before miseInstall.
+    extraActivationPath = [
+      pkgs.python3
+      pkgs.git
+    ];
+
     # Set this before mise parses configuration, not inside its TOML template.
     sessionVariables.MISE_IGNORED_CONFIG_PATHS = "${source}/dot_config/mise/config.toml.tmpl";
 
