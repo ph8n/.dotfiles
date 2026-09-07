@@ -15,8 +15,14 @@ python3 -B -m unittest discover -s tests -p test_agent_skills.py -v
 
 ## Agent skills
 
-Canonical instructions and resources live only in `~/code/pi-extensions/skills`.
-Pi discovers the checkout through its package manifest, not a mirrored skill directory.
+Pi is the exception to skill distribution: `~/code/pi-extensions` owns its complete
+package, including extensions, commands, theme, and canonical skills. Pi loads the
+checkout directly through its package manifest. Chezmoi does not generate files in
+that checkout or install Pi's skills elsewhere.
+
+For the other agents, chezmoi reads `~/code/pi-extensions/skills` and installs only
+compatible skill bundles (including supporting resources, notices, and adapters),
+not Pi extensions, commands, themes, or package configuration.
 Every `chezmoi apply` runs `~/.local/bin/sync-agent-skills`; using `run_after` (not
 `run_onchange`) makes edits in the other checkout sufficient to trigger reconciliation.
 The optional command also supports `--dry-run`, `--source`, `--home`, and `--config`.
@@ -38,7 +44,9 @@ explicit-request guard because it ignores that frontmatter policy.
 (including their old formatting), not another content tree. It authorizes exact
 adoption/cleanup only. Subsequent ownership is recorded per destination in
 `.pi-extensions-skills.json`. Unowned collisions and locally modified managed skills
-stop reconciliation before writes; move the reported copy aside or restore it,
+stop reconciliation before writes. Install and cleanup destinations that overlap
+the source checkout are rejected, keeping Pi's package read-only to the sync.
+Move a reported modified copy aside or restore it,
 then rerun. A missing checkout leaves existing skills untouched with a message.
 Never refresh the legacy allowlist from arbitrary live directories to bypass a conflict.
 

@@ -218,7 +218,14 @@ def sync(home, source, config, legacy, dry_run=False):
     for relative, desired in roots.items():
         if Path(relative).is_absolute() or '..' in Path(relative).parts:
             raise ValueError(f"Target must be home-relative: {relative}")
-        plans.append(plan(home / relative, desired, legacy))
+        root = home / relative
+        no_links(root)
+        destination = root.resolve()
+        source_root = source.resolve()
+        if (destination == source_root or source_root in destination.parents
+                or destination in source_root.parents):
+            raise ValueError(f"Destination overlaps read-only source checkout: {root}")
+        plans.append(plan(root, desired, legacy))
     # Validate EVERY destination before changing ANY destination.
     for root, state, operations in plans:
         if operations:

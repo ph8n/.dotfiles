@@ -51,9 +51,49 @@ class SyncTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             sync.sync(self.home, self.source, CONFIG, self.legacy, dry)
 
-    def snapshot(self):
-        return {str(p.relative_to(self.home)): (p.read_bytes(), p.stat().st_mtime_ns)
-                for p in self.home.rglob('*') if p.is_file()}
+    def snapshot(self, root=None):
+        root = self.home if root is None else root
+        return {str(p.relative_to(root)): (p.read_bytes(), p.stat().st_mtime_ns)
+                for p in root.rglob('*') if p.is_file()}
+
+    def test_pi_checkout_is_read_only_and_not_a_distribution_target(self):
+        self.assertEqual(CONFIG['source'], 'code/pi-extensions')
+        self.assertEqual(set(CONFIG['targets']), {'codex', 'cursor', 'copilot', 'opencode', 'grok', 'dsh'})
+        # Model the real layout: Pi owns a full package inside HOME, not just skills.
+        source = self.home / CONFIG['source']
+        source.parent.mkdir(parents=True)
+        shutil.move(str(self.source), source)
+        self.source = source
+        for name in ['src/index.ts', 'themes/origin.json', 'package.json']:
+            path = source / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('Pi-owned content\n')
+        before = self.snapshot(source)
+        self.run_sync()
+        self.run_sync()
+        self.assertEqual(before, self.snapshot(source))
+        self.assertFalse((self.home / '.pi/agent/skills').exists())
+        self.assertTrue((self.home / '.codex/skills/one/SKILL.md').exists())
+
+    def test_source_overlap_rejected_for_install_and_cleanup_before_any_writes(self):
+        source = self.home / CONFIG['source']
+        source.parent.mkdir(parents=True)
+        shutil.move(str(self.source), source)
+        self.source = source
+        before = self.snapshot()
+        for path in ['code/pi-extensions', 'code/pi-extensions/skills', 'code', '.']:
+            for kind in ['install', 'via-cleanup', 'legacy-cleanup']:
+                with self.subTest(path=path, kind=kind):
+                    config = json.loads(json.dumps(CONFIG))
+                    if kind == 'install':
+                        config['targets']['invalid'] = {'path': path, 'adapter': 'standard'}
+                    elif kind == 'via-cleanup':
+                        config['targets']['cursor']['legacy_path'] = path
+                    else:
+                        config['legacy_cleanup'].append(path)
+                    with self.assertRaisesRegex(ValueError, 'overlaps read-only source checkout'):
+                        sync.sync(self.home, self.source, config, self.legacy)
+                    self.assertEqual(before, self.snapshot())
 
     def test_install_idempotent_render_and_support(self):
         self.run_sync()

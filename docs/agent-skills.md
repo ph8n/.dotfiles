@@ -2,8 +2,10 @@
 
 This document belongs to nix-config because chezmoi owns multi-agent installation,
 adapters, migration, and discovery validation. The upstream pi-extensions repository
-owns canonical skill content, attribution, and Pi integration/tests; it does not own
-other-agent setup. The installed-version findings below record the original audit,
+owns the complete Pi package, including its canonical skills, attribution, extensions,
+commands, theme, and tests; it does not own other-agent setup. Pi is not a distribution
+target. For other agents, chezmoi installs only skill bundles and their compatibility
+adapters, never the rest of the Pi package. The installed-version findings below record the original audit,
 not guarantees about newer tool versions.
 
 ## Architecture
@@ -84,7 +86,10 @@ Matt Pocock's plan-not-do, one-ticket-per-session (research exception), HITL/AFK
 
 ## Pi integration boundary
 
-Pi loads the canonical checkout directly; chezmoi must not generate a Pi skill mirror.
+Pi loads the canonical checkout directly; chezmoi must not generate a Pi skill mirror
+or write into `~/code/pi-extensions`. The sync rejects install and cleanup destinations
+that equal, contain, or sit inside its source checkout before changing any destination.
+The exact-hash cleanup of old `.pi/agent/skills` copies is migration only, not Pi installation.
 Pi command aliases and their SDK requirements are owned and tested in pi-extensions;
 see its [command reference](https://github.com/phongndo/pi-extensions#command-reference).
 They are not distribution adapters.
@@ -111,7 +116,7 @@ All destinations are preflighted before any are changed. Ownership is recorded p
 
 - In pi-extensions, `pnpm check`: passed (format, lint, typecheck, new canonical tests, existing extension checks/tests).
 - In pi-extensions, `pnpm test:pi-skills`: passed against installed **Pi 0.85.1** in a disposable HOME. All 17 commands appeared once; all five aliases produced byte-identical expanded prompts to native commands, including arguments and canonical base paths. A deliberately failing in-process test provider prevented all model execution/network requests. This proves dispatch, not model compliance with workflows.
-- Dotfiles: seven fixture tests pass, covering first install, idempotence including unchanged mtimes, updates, rename/deletion, nested files, notices, adapters, collisions, missing source, spaces, symlinks, and safe legacy cleanup. Run `python3 -B -m unittest discover -s tests -p test_agent_skills.py -v` from nix-config.
+- Dotfiles regression suite covers first install, idempotence including unchanged mtimes, updates, rename/deletion, nested files, notices, adapters, collisions, missing source, spaces, symlinks, and safe legacy cleanup. Boundary tests also check that the complete Pi checkout stays byte/mtime-identical and overlapping install/cleanup destinations fail before writes. Run `python3 -B -m unittest discover -s tests -p test_agent_skills.py -v` from nix-config.
 - Full canonical rendering to a temporary HOME: native Codex `app-server` `skills/list`, `copilot skill list --json`, `opencode debug skill`, and `grok inspect --json` each discovered **17 distinct managed skills**. OpenCode output was redirected to a regular file to avoid its truncated piped output. Codex's list response does not expose invocation policy; the rendered sidecar was inspected against the official schema.
 - Cursor: installed-code discovery/merge contract inspected; no native CLI list command. DSH: installed provider documentation/source and rendered layout inspected; no model session was run.
 - `nix flake check --all-systems --no-build`: passed. Both `git diff --check`: passed.
