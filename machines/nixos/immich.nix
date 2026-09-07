@@ -21,7 +21,6 @@ in
   systemd.tmpfiles.rules = [
     "d /var/lib/immich 0700 root root -"
     "d /srv/photos/immich 0750 root root -"
-    "d /srv/data/files 0750 z users -"
   ];
 
   systemd.services.immich-compose = {

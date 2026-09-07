@@ -1,6 +1,5 @@
 {
   pkgs,
-  unstablePkgs,
   lib,
   ...
 }:
@@ -10,7 +9,6 @@
     (with pkgs; [
       bat
       btop
-      chezmoi
       deadnix
       eza
       fd
@@ -27,7 +25,6 @@
       jq
       jujutsu
       lazygit
-      unstablePkgs.mise
       neovim
       nixd
       nixfmt

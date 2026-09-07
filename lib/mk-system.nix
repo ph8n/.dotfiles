@@ -10,7 +10,6 @@
   name,
   system,
   user,
-  enableHomeManager ? true,
   modules ? [ ],
 }:
 
@@ -35,16 +34,6 @@ in
 systemBuilder {
   inherit system;
 
-  specialArgs = {
-    inherit
-      name
-      system
-      user
-      isDarwin
-      unstablePkgs
-      ;
-  };
-
   modules = [
     machineConfig
     userSystemConfig
@@ -53,8 +42,6 @@ systemBuilder {
       nixpkgs.config.allowUnfree = true;
       system.configurationRevision = self.rev or self.dirtyRev or null;
     }
-  ]
-  ++ nixpkgs.lib.optionals enableHomeManager [
     homeManagerModule
     {
       home-manager = {

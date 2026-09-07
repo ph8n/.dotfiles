@@ -2,13 +2,11 @@
   config,
   lib,
   pkgs,
-  unstablePkgs,
   ...
 }:
 
 let
   configRoot = "${config.home.homeDirectory}/nix-config";
-  chezmoiSource = "${configRoot}/chezmoi";
   alfredWorkflow = "Library/Application Support/Alfred/Alfred.alfredpreferences/workflows/user.workflow.63D398BB-A391-40E9-B356-24123A2B339E";
 
   immutable = source: {
@@ -22,39 +20,8 @@ let
   };
 in
 {
-  # One owner per path (Hashimoto-style).
-  # Nix/HM: machine, packages, shell, user services, non-agent dots.
-  # Chezmoi: agent-tool files. Do not also set these via home.file or
-  # xdg.configFile:
-  #   ~/.codex ~/.copilot ~/.cursor ~/.grok ~/.pi
-  #   ~/.config/{herdr,mark,mise,opencode}
-  #   ~/.local/share/mise/plugins
-  #
-  # Chezmoi reads the live tree at ~/nix-config/chezmoi, not a Nix
-  # generation. Roll back Nix and agent files stay as last applied.
-  #
-  # MISE_IGNORED_CONFIG_PATHS must live in the environment (not mise
-  # config) so mise never parses the chezmoi template as TOML.
+  # Non-agent dotfiles only; home/chezmoi.nix owns the agent-tool handoff.
   home = {
-    sessionVariables = {
-      MISE_IGNORED_CONFIG_PATHS = "${chezmoiSource}/dot_config/mise/config.toml.tmpl";
-    };
-
-    # After writeBoundary has placed chezmoi.toml, apply the agent tree
-    # (plugins included), then install mise tools. Mac bootstrap already
-    # did this as two steps; Linux `hm` previously stopped after apply,
-    # so grok stayed on a leftover http backend with a dead shim.
-    activation.chezmoiApply = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD ${lib.getExe pkgs.chezmoi} apply \
-        --source "${chezmoiSource}" \
-        --destination "${config.home.homeDirectory}" \
-        --force \
-        --no-tty
-    '';
-    activation.miseInstall = lib.hm.dag.entryAfter [ "chezmoiApply" ] ''
-      $DRY_RUN_CMD ${lib.getExe unstablePkgs.mise} --yes -C "${config.home.homeDirectory}" install
-    '';
-
     file = lib.mkMerge [
       {
         ".bashrc".force = true;
@@ -77,13 +44,6 @@ in
     configFile = lib.mkMerge [
       {
         "atuin/TERMINAL.md" = immutable ../atuin/TERMINAL.md;
-        # Bootstrap only. Chezmoi owns every other agent-adjacent file.
-        "chezmoi/chezmoi.toml" = {
-          text = ''
-            sourceDir = "${chezmoiSource}"
-          '';
-          force = true;
-        };
         "nvim/init.lua" = immutable ../nvim/init.lua;
         "starship.toml" = immutable ../starship/starship.toml;
 

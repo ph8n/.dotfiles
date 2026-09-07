@@ -2,6 +2,7 @@ _:
 
 {
   imports = [
+    ./chezmoi.nix
     ./files.nix
     ./packages.nix
     ./shell.nix

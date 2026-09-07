@@ -4,14 +4,43 @@ One owner per path.
 
 - **Nix / Home Manager** owns the machine, packages, shell, user services, and non-agent dotfiles.
 - **Chezmoi** owns agent-tool files: configs, hooks, mise plugins, and ownership-tracked canonical skill distribution (`chezmoi/`).
-- Home Manager writes `~/.config/chezmoi/chezmoi.toml`, runs `chezmoi apply`, then `mise install` so plugins exist before tools are installed. Nothing else in Nix may write a chezmoi destination.
+- `home/chezmoi.nix` is the only handoff: Home Manager links `~/.config/chezmoi/chezmoi.toml`, runs `chezmoi apply`, then `mise install` so plugins exist before tools are installed. Nothing else in Nix may write a chezmoi destination.
 - Chezmoi reads the live tree at `chezmoi/`, not a Nix generation.
 
 ```sh
 hm
 nix flake check --all-systems --no-build
-python3 -B -m unittest discover -s tests -p test_agent_skills.py -v
+python3 -B -m unittest discover -s tests -v
 ```
+
+The Python suite includes read-only boundary checks for both hosts; it requires
+`nix` and `chezmoi`. It checks evaluated Home Manager destinations against chezmoi
+files and skill-sync roots, plus the activation ordering. `--no-build` evaluates
+flake checks but does not execute formatting/lint derivations; build those with
+`nix build .#checks.aarch64-darwin.{format,lint}` on the Mac.
+
+## Layout and boundaries
+
+- `flake.nix`: pinned inputs, host composition, and checks.
+- `lib/mk-system.nix`: shared system/Home Manager wiring; no host policy.
+- `machines/`: platform/host system configuration and system services. There is
+  currently one host per platform, not a reusable multi-host machine framework.
+- `users/`: account declarations, personal system preferences, and Home Manager entry points.
+- `home/`: shared user environment; `darwin.nix` adds Mac user services/preferences,
+  `files.nix` links non-agent dotfiles, and `chezmoi.nix` owns the agent handoff.
+- `chezmoi/`: agent configuration, mise tool versions/plugins, and skill distribution.
+- `bin/bootstrap`: initial Mac rebuild only; activation owns subsequent provisioning.
+
+Nix supplies native packages and mise itself; mise supplies tools/runtimes declared
+in its chezmoi template. Homebrew supplies the Mac applications declared in
+`users/dp/darwin.nix` (the existing Homebrew installation remains external).
+These are personal configurations, intentionally tied to `dp`, `z`, and a checkout
+at `~/nix-config`.
+
+For writable dotfiles, Home Manager owns the symlink and the application/user edits
+the repository-backed contents. Those files, like the live chezmoi tree, **do not
+roll back with Nix**. Immutable dotfiles do. Credentials and runtime state remain
+outside both managers.
 
 ## Agent skills
 

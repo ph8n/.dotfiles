@@ -105,6 +105,9 @@
     443
   ];
 
+  # Personal file storage is independent of the Immich deployment.
+  systemd.tmpfiles.rules = [ "d /srv/data/files 0750 z users -" ];
+
   # Preserve the version from the machine's original installation.
   system.stateVersion = "26.05";
 }
