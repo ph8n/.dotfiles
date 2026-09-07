@@ -13,6 +13,9 @@ auth.json
 history.jsonl
 session_index.jsonl
 node_modules/**
+**/__pycache__
+**/__pycache__/**
+**/*.pyc
 cache/**
 sessions/**
 session-state/**

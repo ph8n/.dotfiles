@@ -1,32 +1,9 @@
 #!/usr/bin/env bash
-# Canonical skills live in ~/code/pi-extensions/skills (Pi package).
-# Copy into other agents' user skill dirs. Do not install ~/.agents/skills:
-# Pi already loads the package tree and would list every skill twice.
-# Copies, not symlinks: Codex skips SKILL.md when it is a symlink.
+# Intentionally run_after, not run_onchange: edits in the canonical checkout
+# must reconcile on EVERY apply even when the chezmoi source is unchanged.
 set -euo pipefail
-
-src="{{ .chezmoi.homeDir }}/code/pi-extensions/skills"
-home="{{ .chezmoi.homeDir }}"
-
-if [[ ! -d "$src" ]]; then
-  exit 0
+if ! command -v python3 >/dev/null 2>&1; then
+  printf '%s\n' 'sync-agent-skills: python3 is required; install it and rerun chezmoi apply.' >&2
+  exit 1
 fi
-
-copy_skill() {
-  local dest_root="$1"
-  local skill_path="$2"
-  local name
-  name="$(basename "$skill_path")"
-  mkdir -p "$dest_root"
-  rm -rf "${dest_root:?}/${name}"
-  cp -a "$skill_path" "$dest_root/$name"
-}
-
-for skill in "$src"/*/; do
-  [[ -f "${skill}SKILL.md" ]] || continue
-  copy_skill "$home/.cursor/skills" "$skill"
-  copy_skill "$home/.copilot/skills" "$skill"
-  copy_skill "$home/.config/opencode/skills" "$skill"
-  copy_skill "$home/.grok/skills" "$skill"
-  copy_skill "$home/.codex/skills" "$skill"
-done
+exec python3 "$HOME/.local/bin/sync-agent-skills"
