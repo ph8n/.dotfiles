@@ -50,5 +50,6 @@ is an instruction rather than enforced access control. Nondefault agent homes/XD
 roots require updating the target table. Existing unrelated live config drift should
 be reviewed in `chezmoi diff` before a real apply.
 
-Full audit, per-skill classifications, primary sources, and native validation results:
-`~/code/pi-extensions/docs/agent-skills.md`.
+This repository owns all other-agent targets, adapters, reconciliation, and
+cross-agent discovery validation; pi-extensions owns skill content and Pi integration.
+See the [full audit, classifications, sources, and native validation results](docs/agent-skills.md).
