@@ -8,7 +8,37 @@ target. For other agents, chezmoi installs only skill bundles and their compatib
 adapters, never the rest of the Pi package. The installed-version findings below record the original audit,
 not guarantees about newer tool versions.
 
-## Architecture
+## Current selected inventory
+
+The managed library now contains only `grill-me`, `grilling`, `handoff`, `teach`,
+`wizard`, `diagnosing-bugs`, `research`, `resolving-merge-conflicts`,
+`writing-for-agents`, and `codebase-design`. The last two come from Matt Pocock's
+upstream skills; pi-extensions records their revision and license.
+
+The management boundary is unchanged: Pi loads its complete package directly,
+and chezmoi's existing target table and adapters distribute skill-only copies to
+the other agents. Pi exposes native `/skill:<name>` commands only; its former
+shorthand skill aliases have been removed. Extension commands such as `/fast`,
+`/context`, `/mcp`, and `/commit` are not skill aliases.
+
+Pruning the canonical source makes the existing reconciler remove stale owned
+copies. Keep removed names in `legacy.json`: those are hash-only cleanup records,
+not installed skills, and are needed to safely remove old pre-manifest copies.
+Unowned and modified files remain protected. Agent-vendor bundled skills (such as
+Codex `.system` or Cursor `skills-cursor`) are not chezmoi-managed and are left alone.
+
+Selection-change validation: the 11 skill-distribution regression tests pass;
+installed Pi 0.85.1 discovers and expands exactly ten native skill commands with
+no shorthand aliases. A targeted live reconciliation installed exactly these ten
+managed bundles for Codex, Copilot, OpenCode, Grok, and DSH. Cursor keeps its existing
+Codex compatibility discovery. The next dry run reported no pending changes.
+Pi skill source, the target table, sampled agent settings, and vendor skill files
+were verified unchanged by reconciliation. No whole-machine chezmoi apply ran.
+
+The sections below retain the original 17-skill audit as historical evidence;
+they do not describe the current selection or imply the old aliases remain.
+
+## Architecture (original audit)
 
 `~/code/pi-extensions/skills` is the only content source. Pi loads this checkout as **one package**; its explicit manifest registers five extension entry points, one skills root (17 skills), and one themes root (`origin`). The local Pi settings and chezmoi template already had the correct package entry and `enableSkillCommands: true`; neither needed changing. There were no package mirrors in `~/.pi/agent/skills` or `~/.agents/skills`. The separate global `herdr-agent-state.ts` extension is unrelated and is left alone.
 
@@ -90,9 +120,9 @@ Pi loads the canonical checkout directly; chezmoi must not generate a Pi skill m
 or write into `~/code/pi-extensions`. The sync rejects install and cleanup destinations
 that equal, contain, or sit inside its source checkout before changing any destination.
 The exact-hash cleanup of old `.pi/agent/skills` copies is migration only, not Pi installation.
-Pi command aliases and their SDK requirements are owned and tested in pi-extensions;
-see its [command reference](https://github.com/phongndo/pi-extensions#command-reference).
-They are not distribution adapters.
+Pi's native skill commands and SDK requirements are owned and tested in pi-extensions;
+see its [skills reference](https://github.com/phongndo/pi-extensions#skills).
+There are no shorthand skill aliases or Pi distribution adapters.
 
 ## Updates and safety
 
@@ -112,7 +142,7 @@ Only Git-tracked skill files are eligible, but current working-tree edits are us
 
 All destinations are preflighted before any are changed. Ownership is recorded per skill as file hashes in `.pi-extensions-skills.json`. Matching legacy hashes authorize adoption; a name alone never does. Modified managed copies, added supporting files, and unowned name collisions are preserved with errors. Stale managed files are individually unlinked and only empty directories removed. There is no recursive destination delete. A process lock serializes runs; files and manifests use atomic replacement. A crash mid-skill can leave a partial copy, which the next run refuses to overwrite: move that reported skill aside or restore it before retrying. This is fail-closed, not a transactional filesystem or security sandbox against concurrent hostile mutation.
 
-## Validation evidence
+## Validation evidence (original audit)
 
 - In pi-extensions, `pnpm check`: passed (format, lint, typecheck, new canonical tests, existing extension checks/tests).
 - In pi-extensions, `pnpm test:pi-skills`: passed against installed **Pi 0.85.1** in a disposable HOME. All 17 commands appeared once; all five aliases produced byte-identical expanded prompts to native commands, including arguments and canonical base paths. A deliberately failing in-process test provider prevented all model execution/network requests. This proves dispatch, not model compliance with workflows.

@@ -165,6 +165,35 @@ class SyncTests(unittest.TestCase):
         self.assertTrue((self.home / '.codex/skills/renamed/SKILL.md').exists())
         self.assertEqual((manual / 'SKILL.md').read_text(), 'mine')
 
+    def test_selected_inventory_prunes_all_targets_without_changing_agent_layout(self):
+        selected = {'grill-me', 'grilling', 'handoff', 'teach', 'wizard',
+                    'diagnosing-bugs', 'research', 'resolving-merge-conflicts',
+                    'writing-for-agents', 'codebase-design'}
+        for name in selected:
+            self.add_skill(name)
+        self.run_sync()
+        builtin = self.home / '.codex/skills/.system/vendor/SKILL.md'
+        builtin.parent.mkdir(parents=True)
+        builtin.write_text('vendor-owned')
+        for name in ['one', 'two']:
+            shutil.rmtree(self.source / 'skills' / name)
+        source_before = self.snapshot(self.source)
+        self.run_sync()
+        for target in CONFIG['targets'].values():
+            if 'path' not in target:
+                continue
+            root = self.home / target['path']
+            self.assertEqual({p.parent.name for p in root.glob('*/SKILL.md')}, selected)
+            state = json.loads((root / sync.STATE).read_text())
+            self.assertEqual(set(state), selected)
+        self.assertEqual(builtin.read_text(), 'vendor-owned')
+        self.assertFalse((self.home / '.cursor/skills').exists())
+        self.assertFalse((self.home / '.pi/agent/skills').exists())
+        self.assertEqual(source_before, self.snapshot(self.source))
+        installed = self.snapshot()
+        self.run_sync()
+        self.assertEqual(installed, self.snapshot())
+
     def test_missing_source_and_dry_run_never_delete(self):
         self.run_sync()
         before = self.snapshot()
