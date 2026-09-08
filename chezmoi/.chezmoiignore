@@ -24,7 +24,6 @@ servers/**
 .migrated-from-dot-pi
 models-store.json
 trust.json
-fast-mode.json
 web-telemetry.jsonl
 herdr-agent-state.*
 herdr-tui-session.js

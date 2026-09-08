@@ -48,8 +48,10 @@ outside both managers.
 
 Pi is the exception to skill distribution: `~/code/pi-extensions` owns its complete
 package, including extensions, commands, theme, and canonical skills. Pi loads the
-checkout directly through its package manifest. Chezmoi retains the single native
-`~/.pi/agent/settings.json` template and package pointer; it does not generate files
+checkout directly through its package manifest. Chezmoi manages native
+`~/.pi/agent/settings.json` and the selected extension preferences: `context.json`
+(`exp`), `fast-mode.json` (off), and `pi-fff.json` (`override`). Applying chezmoi
+restores these preferences after interactive changes. It does not generate files
 in the package checkout or install a Pi skill mirror.
 
 For the other agents, chezmoi reads `~/code/pi-extensions/skills` and installs only

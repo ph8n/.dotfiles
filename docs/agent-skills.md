@@ -4,16 +4,21 @@
 
 - **pi-extensions** owns Pi's complete package: extensions, commands, theme, and
   canonical shared skill bundles. Pi loads `~/code/pi-extensions` directly.
-- **nix-config / chezmoi** owns the single Pi native settings template at
-  `chezmoi/dot_pi/agent/settings.json.tmpl`, including its package pointer. It does
-  not mirror Pi resources or write into the package checkout.
+- **nix-config / chezmoi** owns Pi's native settings template at
+  `chezmoi/dot_pi/agent/settings.json.tmpl`, including its package pointer, and
+  selected preferences in the same directory: `private_context.json` (`exp`),
+  `private_fast-mode.json` (off), and `private_pi-fff.json` (`override`). The
+  `private_` prefix installs each native filename with mode 0600. Applying chezmoi restores
+  these values after interactive changes. It does not mirror Pi resources or
+  write into the package checkout.
 - **Other agents** use their own native configuration roots. Chezmoi installs
   adapted shared skills into each agent's own skills directory; no agent's
   installation is used as another agent's managed source.
 - **Nix / Home Manager** owns machine configuration and non-agent files. Its only
   agent handoff is chezmoi activation; it must not also own agent destinations.
-- Credentials, sessions, caches, vendor bundles, and extension runtime preferences
-  remain local to their owning agent. Skill distribution never copies them.
+- Credentials, sessions, caches, diagnostics, vendor bundles, and other unmanaged
+  runtime state remain local to their owning agent. Skill distribution never
+  copies them; only the selected Pi preferences above are managed by chezmoi.
 
 The authoritative installation/adapter table is
 [`targets.json`](../chezmoi/dot_config/agent-skills/targets.json):
