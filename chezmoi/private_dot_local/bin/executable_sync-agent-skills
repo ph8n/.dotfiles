@@ -209,14 +209,11 @@ def sync(home, source, config, legacy, dry_run=False):
         return
     roots = {}
     for target, entry in config['targets'].items():
-        if 'via' in entry:
-            if entry['via'] not in config['targets']:
-                raise ValueError(f"Unknown shared target: {target}")
-            roots[entry['legacy_path']] = {}
-        else:
-            if entry['path'] in roots:
-                raise ValueError(f"Duplicate target path: {entry['path']}")
-            roots[entry['path']] = {name: render(files, entry['adapter']) for name, files in canonical.items()}
+        if set(entry) != {'path', 'adapter'}:
+            raise ValueError(f"Each agent requires its own path and adapter: {target}")
+        if entry['path'] in roots:
+            raise ValueError(f"Duplicate target path: {entry['path']}")
+        roots[entry['path']] = {name: render(files, entry['adapter']) for name, files in canonical.items()}
     for path in config.get('legacy_cleanup', []):
         roots[path] = {}
     plans = []

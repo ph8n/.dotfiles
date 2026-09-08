@@ -58,7 +58,15 @@ class SyncTests(unittest.TestCase):
 
     def test_pi_checkout_is_read_only_and_not_a_distribution_target(self):
         self.assertEqual(CONFIG['source'], 'code/pi-extensions')
-        self.assertEqual(set(CONFIG['targets']), {'codex', 'cursor', 'copilot', 'opencode', 'grok', 'dsh'})
+        self.assertEqual(CONFIG['targets'], {
+            'claude': {'path': '.claude/skills', 'adapter': 'standard'},
+            'codex': {'path': '.codex/skills', 'adapter': 'codex'},
+            'cursor': {'path': '.cursor/skills', 'adapter': 'standard'},
+            'copilot': {'path': '.copilot/skills', 'adapter': 'standard'},
+            'opencode': {'path': '.config/opencode/skills', 'adapter': 'explicit-guard'},
+            'grok': {'path': '.grok/skills', 'adapter': 'standard'},
+            'dsh': {'path': '.dsh/skills', 'adapter': 'standard'},
+        })
         # Model the real layout: Pi owns a full package inside HOME, not just skills.
         source = self.home / CONFIG['source']
         source.parent.mkdir(parents=True)
@@ -75,6 +83,13 @@ class SyncTests(unittest.TestCase):
         self.assertFalse((self.home / '.pi/agent/skills').exists())
         self.assertTrue((self.home / '.codex/skills/one/SKILL.md').exists())
 
+    def test_compatibility_aliases_rejected_before_writes(self):
+        config = json.loads(json.dumps(CONFIG))
+        config['targets']['cursor'] = {'via': 'claude', 'legacy_path': '.cursor/skills'}
+        with self.assertRaisesRegex(ValueError, 'Each agent requires its own path and adapter'):
+            sync.sync(self.home, self.source, config, self.legacy)
+        self.assertFalse(self.home.exists())
+
     def test_source_overlap_rejected_for_install_and_cleanup_before_any_writes(self):
         source = self.home / CONFIG['source']
         source.parent.mkdir(parents=True)
@@ -82,13 +97,11 @@ class SyncTests(unittest.TestCase):
         self.source = source
         before = self.snapshot()
         for path in ['code/pi-extensions', 'code/pi-extensions/skills', 'code', '.']:
-            for kind in ['install', 'via-cleanup', 'legacy-cleanup']:
+            for kind in ['install', 'legacy-cleanup']:
                 with self.subTest(path=path, kind=kind):
                     config = json.loads(json.dumps(CONFIG))
                     if kind == 'install':
                         config['targets']['invalid'] = {'path': path, 'adapter': 'standard'}
-                    elif kind == 'via-cleanup':
-                        config['targets']['cursor']['legacy_path'] = path
                     else:
                         config['legacy_cleanup'].append(path)
                     with self.assertRaisesRegex(ValueError, 'overlaps read-only source checkout'):
@@ -120,7 +133,7 @@ class SyncTests(unittest.TestCase):
                 self.assertTrue(rendered['SKILL.md'].endswith(original_body))
         self.assertIn('allow_implicit_invocation: false', (self.home / '.codex/skills/two/agents/openai.yaml').read_text())
         self.assertIn(sync.GUARD, (self.home / '.config/opencode/skills/two/SKILL.md').read_text())
-        self.assertFalse((self.home / '.cursor/skills/one').exists())
+        self.assertTrue((self.home / '.cursor/skills/one').exists())
         self.assertFalse((self.home / '.agents/skills/one').exists())
 
     def test_pi_invocations_adapted_in_copies_without_changing_source(self):
@@ -168,9 +181,9 @@ class SyncTests(unittest.TestCase):
     def test_selected_inventory_prunes_all_targets_without_changing_agent_layout(self):
         selected = {'grill-me', 'grilling', 'handoff', 'teach', 'wizard',
                     'diagnosing-bugs', 'research', 'resolving-merge-conflicts',
-                    'writing-for-agents', 'codebase-design'}
+                    'writing-for-agents', 'codebase-design', 'yeet', 'autopilot'}
         for name in selected:
-            self.add_skill(name)
+            self.add_skill(name, manual=name in {'yeet', 'autopilot'})
         self.run_sync()
         builtin = self.home / '.codex/skills/.system/vendor/SKILL.md'
         builtin.parent.mkdir(parents=True)
@@ -187,12 +200,83 @@ class SyncTests(unittest.TestCase):
             state = json.loads((root / sync.STATE).read_text())
             self.assertEqual(set(state), selected)
         self.assertEqual(builtin.read_text(), 'vendor-owned')
-        self.assertFalse((self.home / '.cursor/skills').exists())
+        self.assertTrue((self.home / '.cursor/skills').exists())
         self.assertFalse((self.home / '.pi/agent/skills').exists())
         self.assertEqual(source_before, self.snapshot(self.source))
         installed = self.snapshot()
         self.run_sync()
         self.assertEqual(installed, self.snapshot())
+
+    def test_restore_manual_publishing_skills_across_all_targets(self):
+        self.assertEqual(CONFIG['targets']['claude'], {'path': '.claude/skills', 'adapter': 'standard'})
+        self.assertEqual(CONFIG['targets']['cursor'], {'path': '.cursor/skills', 'adapter': 'standard'})
+        for name in ['yeet', 'autopilot']:
+            self.add_skill(name, manual=True)
+        self.run_sync()
+        for name in ['yeet', 'autopilot']:
+            shutil.rmtree(self.source / 'skills' / name)
+        self.run_sync()
+        for target in CONFIG['targets'].values():
+            if 'path' in target:
+                for name in ['yeet', 'autopilot']:
+                    self.assertFalse((self.home / target['path'] / name).exists())
+        for name in ['yeet', 'autopilot']:
+            self.add_skill(name, manual=True)
+        self.run_sync()
+        for target in CONFIG['targets'].values():
+            if 'path' not in target:
+                continue
+            for name in ['yeet', 'autopilot']:
+                root = self.home / target['path'] / name
+                self.assertIn('disable-model-invocation: true', (root / 'SKILL.md').read_text())
+                self.assertIn('Keep every substantive instruction.', (root / 'SKILL.md').read_text())
+                if target['adapter'] == 'codex':
+                    self.assertIn('allow_implicit_invocation: false', (root / 'agents/openai.yaml').read_text())
+                elif target['adapter'] == 'explicit-guard':
+                    self.assertIn(sync.GUARD, (root / 'SKILL.md').read_text())
+                else:
+                    self.assertEqual((root / 'SKILL.md').read_bytes(),
+                                     (self.source / 'skills' / name / 'SKILL.md').read_bytes())
+        installed = self.snapshot()
+        self.run_sync()
+        self.assertEqual(installed, self.snapshot())
+        self.assertFalse((self.home / '.pi/agent/skills').exists())
+        self.assertTrue((self.home / '.cursor/skills').exists())
+
+    def test_sync_preserves_native_configs_runtime_and_unowned_skills(self):
+        protected = []
+        for target in CONFIG['targets'].values():
+            root = self.home / target['path']
+            for relative in ['settings.json', 'config.toml', 'auth.json', 'sessions/example.jsonl']:
+                file = root.parent / relative
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_text('Agent-owned fixture; must not be touched.\n')
+                protected.append(file)
+            manual = root / 'personal/SKILL.md'
+            manual.parent.mkdir(parents=True)
+            manual.write_text('Unowned personal skill\n')
+            protected.append(manual)
+        pi_settings = self.home / '.pi/agent/settings.json'
+        pi_settings.parent.mkdir(parents=True)
+        pi_settings.write_text('Pi bootstrap fixture\n')
+        protected.append(pi_settings)
+        before = {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in protected}
+        self.run_sync()
+        shutil.rmtree(self.source / 'skills/one')
+        self.run_sync()
+        self.assertEqual(before, {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in protected})
+        self.assertFalse((self.home / '.pi/agent/skills').exists())
+        self.assertFalse((self.home / '.agents/skills').exists())
+
+    def test_claude_unowned_collision_blocks_all_target_writes(self):
+        collision = self.home / '.claude/skills/one'
+        collision.mkdir(parents=True)
+        (collision / 'SKILL.md').write_text('user-owned Claude skill')
+        before = self.snapshot()
+        with self.assertRaisesRegex(ValueError, 'Unowned skill collision'):
+            self.run_sync()
+        self.assertEqual(before, self.snapshot())
+        self.assertFalse((self.home / '.codex').exists())
 
     def test_missing_source_and_dry_run_never_delete(self):
         self.run_sync()
@@ -229,8 +313,10 @@ class SyncTests(unittest.TestCase):
         unrelated.mkdir()
         (unrelated / 'SKILL.md').write_text('unrelated')
         self.run_sync()
-        self.assertTrue((self.home / '.codex/skills/one/SKILL.md').exists())
-        for root in ['.cursor/skills', '.pi/agent/skills', '.agents/skills']:
+        for root in ['.codex/skills', '.cursor/skills']:
+            self.assertTrue((self.home / root / 'one/SKILL.md').exists())
+            self.assertIn('one', json.loads((self.home / root / sync.STATE).read_text()))
+        for root in ['.pi/agent/skills', '.agents/skills']:
             self.assertFalse((self.home / root / 'one').exists())
         self.assertTrue((unrelated / 'SKILL.md').exists())
 

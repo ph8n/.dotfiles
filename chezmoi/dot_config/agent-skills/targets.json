@@ -1,8 +1,9 @@
 {
   "source": "code/pi-extensions",
   "targets": {
+    "claude": {"path": ".claude/skills", "adapter": "standard"},
     "codex": {"path": ".codex/skills", "adapter": "codex"},
-    "cursor": {"via": "codex", "legacy_path": ".cursor/skills"},
+    "cursor": {"path": ".cursor/skills", "adapter": "standard"},
     "copilot": {"path": ".copilot/skills", "adapter": "standard"},
     "opencode": {"path": ".config/opencode/skills", "adapter": "explicit-guard"},
     "grok": {"path": ".grok/skills", "adapter": "standard"},

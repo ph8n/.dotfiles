@@ -30,12 +30,19 @@ class BoundaryTests(unittest.TestCase):
         self.assertTrue(overlaps('.config/a/../mise/config.toml', '.config/mise/config.toml'))
         self.assertFalse(overlaps('.config/mise-other', '.config/mise'))
 
+    def test_pi_bootstrap_points_to_one_package_without_resource_mirrors(self):
+        template = (REPO / 'chezmoi/dot_pi/agent/settings.json.tmpl').read_text()
+        settings = json.loads(template[template.index('{\n'):].replace('{{ .chezmoi.homeDir }}', '/home/test'))
+        self.assertEqual(settings['packages'].count('/home/test/code/pi-extensions'), 1)
+        for resource in ['skills', 'extensions', 'themes']:
+            self.assertNotIn(resource, settings, 'Pi resources belong to the package, not chezmoi mirrors')
+        self.assertTrue(settings['enableSkillCommands'])
+
     def test_ownership_and_activation_for_both_hosts(self):
         skills = json.loads((REPO / 'chezmoi/dot_config/agent-skills/targets.json').read_text())
         # Include destinations managed by the sync script, not just chezmoi itself.
         skill_paths = [skills['source'], *skills['legacy_cleanup']]
-        for target in skills['targets'].values():
-            skill_paths.extend(target[key] for key in ('path', 'legacy_path') if key in target)
+        skill_paths.extend(target['path'] for target in skills['targets'].values())
 
         for os_name, (host, user) in HOSTS.items():
             with self.subTest(host=host), tempfile.TemporaryDirectory() as temporary:

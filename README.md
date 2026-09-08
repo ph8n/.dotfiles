@@ -48,8 +48,9 @@ outside both managers.
 
 Pi is the exception to skill distribution: `~/code/pi-extensions` owns its complete
 package, including extensions, commands, theme, and canonical skills. Pi loads the
-checkout directly through its package manifest. Chezmoi does not generate files in
-that checkout or install Pi's skills elsewhere.
+checkout directly through its package manifest. Chezmoi retains the single native
+`~/.pi/agent/settings.json` template and package pointer; it does not generate files
+in the package checkout or install a Pi skill mirror.
 
 For the other agents, chezmoi reads `~/code/pi-extensions/skills` and installs only
 compatible skill bundles (including supporting resources, notices, and adapters),
@@ -62,8 +63,9 @@ PATH, so skill sync works before mise installs any runtimes. Interactive use can
 use Home Manager's Python 3 and Git, or mise's Python.
 
 The single path/adapter table is `chezmoi/dot_config/agent-skills/targets.json`:
-Codex, Copilot, OpenCode, Grok, and DeepSeek Harness receive real directories;
-Cursor uses its native Codex compatibility discovery rather than another mirror.
+Claude Code, Codex, Cursor, Copilot, OpenCode, Grok, and DeepSeek Harness each
+receive real directories in their own native roots. No agent uses another agent's
+installation as its managed skill source; compatibility `via` targets are rejected.
 No output goes into `~/.agents/skills`, where Pi would discover duplicates.
 All agents can be provisioned before their executables are installed.
 
@@ -73,7 +75,10 @@ Nested resources and license/attribution notices travel with each skill.
 Pi-specific `/skill:name` references in Markdown and shell support files become
 semantic `name` references only in distributed copies; the Pi checkout is unchanged.
 Codex receives manual-invocation policy sidecars; OpenCode gets a descriptive
-explicit-request guard because it ignores that frontmatter policy.
+explicit-request guard because it ignores that frontmatter policy. Claude Code
+uses the canonical manual-only frontmatter natively. The restored `yeet` and
+`autopilot` skills are explicitly invoked as `/skill:yeet` and `/skill:autopilot`
+in Pi; Pi has no shorthand skill aliases.
 
 `legacy.json` is a fixed hash-only allowlist of the old sync's audited copies
 (including their old formatting), not another content tree. It authorizes exact
@@ -85,14 +90,15 @@ Move a reported modified copy aside or restore it,
 then rerun. A missing checkout leaves existing skills untouched with a message.
 Never refresh the legacy allowlist from arbitrary live directories to bypass a conflict.
 
-**Limits:** Cursor CLI cannot currently isolate compatibility skill roots via a
-supported config setting and also bundles its own `autopilot`. This remaining
-built-in/personal collision is documented, not fixed by deleting Cursor-owned files,
-renaming Codex's skill, or relocating credentials. OpenCode's manual-invocation guard
+**Limits:** Native installation ownership is not complete discovery isolation.
+Cursor prefers its native copy over matching compatibility copies, but cannot
+currently disable all compatibility scanning and also bundles its own `autopilot`.
+This built-in/personal catalog collision is documented, not fixed by deleting
+vendor files, renaming shared skills, or relocating credentials. OpenCode's manual-invocation guard
 is an instruction rather than enforced access control. Nondefault agent homes/XDG
 roots require updating the target table. Existing unrelated live config drift should
 be reviewed in `chezmoi diff` before a real apply.
 
 This repository owns all other-agent targets, adapters, reconciliation, and
 cross-agent discovery validation; pi-extensions owns skill content and Pi integration.
-See the [full audit, classifications, sources, and native validation results](docs/agent-skills.md).
+See the [ownership and skill-distribution guide](docs/agent-skills.md).
