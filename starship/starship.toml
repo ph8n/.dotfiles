@@ -1,7 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Do not let Git status scans in huge repos (notably llvm-project) block the prompt.
-command_timeout = 100
+command_timeout = 1000
 palette = "mfd-mono"
 
 format = """
