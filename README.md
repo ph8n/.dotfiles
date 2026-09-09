@@ -40,7 +40,7 @@ These are personal configurations, intentionally tied to `dp`, `z`, and a checko
 at `~/nix-config`.
 
 The local Browser Use path is an explicit exception to the fast-moving mise
-tool set: Home Manager owns `uv`, `browser-use-mcp`, `helium-cdp`, and `helium-personal`; chezmoi
+tool set: Home Manager owns `uv`, `browser-use-mcp`, and `chrome-agent`; chezmoi
 reconciles the local stdio integration into Executor. See
 [the Browser Use MCP guide](docs/browser-use-mcp.md).
 

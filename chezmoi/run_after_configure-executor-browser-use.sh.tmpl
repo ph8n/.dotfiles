@@ -14,7 +14,7 @@ from urllib.request import Request, urlopen
 
 command = "/etc/profiles/per-user/{{ .chezmoi.username }}/bin/browser-use-mcp"
 control = Path("{{ .chezmoi.homeDir }}/.executor/server-control")
-name = "Browser Use (local Helium)"
+name = "Browser Use (local Chrome)"
 desired = {"transport": "stdio", "command": command, "args": [], "versionNegotiation": "legacy"}
 
 def skip(reason):
@@ -60,9 +60,12 @@ for slug in ("browser_use_com", "browser_use"):
     if slug != "browser_use":
         continue
     if current:
+        managed = current.get("description") in (name, "Browser Use (local Helium)") and config.get("transport") == "stdio" and config.get("command", "").endswith("/bin/browser-use-mcp")
+        if managed and current.get("description") != name:
+            request("PATCH", "/integrations/browser_use", {"name": name, "description": name})
         if all(config.get(key) == value for key, value in desired.items()):
             sys.exit(0)
-        if current.get("description") != name or config.get("transport") != "stdio" or not config.get("command", "").endswith("/bin/browser-use-mcp"):
+        if not managed:
             sys.exit("Browser Use MCP: preserving unexpected existing 'browser_use' integration")
         request("POST", path + "/config", {"config": {**config, **desired}})
     else:
@@ -70,7 +73,7 @@ for slug in ("browser_use_com", "browser_use"):
             with urlopen("http://127.0.0.1:9222/json/version", timeout=2):
                 pass
         except (URLError, TimeoutError):
-            skip("start Helium with helium-cdp first")
+            skip("start Chrome with chrome-agent first")
         request("POST", "/mcp/servers", {**desired, "name": name, "slug": slug})
 PY
 {{- end }}
