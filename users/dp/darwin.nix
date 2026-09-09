@@ -33,7 +33,6 @@ _:
       "bartender"
       "betterdisplay"
       "ghostty"
-      "google-chrome"
       "karabiner-elements"
       "keymapp"
       "openlogi"
