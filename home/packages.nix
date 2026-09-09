@@ -36,13 +36,31 @@ let
       browser-use --mcp
   '';
 
-  heliumCdp = pkgs.writeShellScriptBin "helium-cdp" ''
-    agent_profile="$HOME/Library/Application Support/Helium-Agent"
+  heliumLauncher =
+    name: directory: flags:
+    pkgs.writeShellScriptBin name ''
+      profile="$HOME/Library/Application Support/${directory}"
+      for pid in $(/usr/bin/pgrep -x Helium); do
+        command=$(/bin/ps -p "$pid" -o command=)
+        case "$command" in
+          *"--user-data-dir=$profile"|*"--user-data-dir=$profile "*) ;;
+          *--user-data-dir=*) continue ;;
+          *) ${if directory == "net.imput.helium" then ":" else "continue"} ;;
+        esac
+        asn=$(/usr/bin/lsappinfo -q -nonames find "pid=$pid")
+        if [ -n "$asn" ]; then
+          exec /usr/bin/lsappinfo -q -nonames requestfront "$asn" --immediate
+        fi
+      done
+      exec /usr/bin/open -n -b net.imput.helium --args \
+        --user-data-dir="$profile" ${lib.escapeShellArgs flags}
+    '';
 
-    exec /usr/bin/open -n -b net.imput.helium --args \
-      --user-data-dir="$agent_profile" --remote-debugging-port=9222 \
-      --no-default-browser-check
-  '';
+  heliumPersonal = heliumLauncher "helium-personal" "net.imput.helium" [ ];
+  heliumCdp = heliumLauncher "helium-cdp" "Helium-Agent" [
+    "--remote-debugging-port=9222"
+    "--no-default-browser-check"
+  ];
 in
 {
   home.packages =
@@ -81,6 +99,7 @@ in
     ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
       browserUseMcp
       heliumCdp
+      heliumPersonal
     ]
     # Linux-only packages; macOS gets 1Password CLI through Homebrew.
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (

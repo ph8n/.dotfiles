@@ -1,6 +1,6 @@
 # Local Browser Use MCP
 
-Home Manager owns `uv`, `browser-use-mcp`, and `helium-cdp`. Chezmoi reconciles
+Home Manager owns `uv`, `browser-use-mcp`, `helium-cdp`, and `helium-personal`. Chezmoi reconciles
 Executor's `browser_use` integration through its local management API; credentials
 and browser data stay outside the repository.
 
@@ -16,7 +16,9 @@ The launcher uses the separate agent data directory
 `~/Library/Application Support/Helium-Agent`, whose current profile is named
 `false`. Cookies, history, extensions and tabs remain separate from your personal
 profile. Browser data and the display name are owned by Helium, outside this repo.
-The original `alt-f` focus shortcut is independent of the agent launcher.
+`alt-a` focuses the agent browser (`helium-cdp`); `alt-f` focuses the personal
+browser (`helium-personal`). Each launcher identifies the running process by its
+data directory and starts that browser only if it is not already running.
 Browser Use can control all windows and tabs in the connected browser instance.
 If another browser owns port 9222, Browser Use connects to that browser instead.
 The launcher does not close browsers or take over an occupied port.
