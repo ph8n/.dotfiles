@@ -37,11 +37,12 @@
       zellij
       zoxide
     ])
-    # Headless virtual GUI over SSH via Xpra (Linux-only);
-    # no desktop environment or display manager.
+    # Linux-only packages; macOS gets 1Password CLI through Homebrew.
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
       with pkgs;
       [
+        _1password-cli
+        # Headless virtual GUI over SSH; no desktop environment or display manager.
         xpra
         xterm
         xvfb

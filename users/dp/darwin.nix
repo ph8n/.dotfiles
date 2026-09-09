@@ -27,6 +27,7 @@ _:
   homebrew = {
     enable = true;
     casks = [
+      "1password-cli"
       "aldente"
       "alfred"
       "bartender"
