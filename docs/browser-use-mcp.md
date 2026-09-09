@@ -8,13 +8,16 @@ and browser data stay outside the repository.
 Pi -> Executor -> browser-use-mcp (stdio) -> CDP at 127.0.0.1:9222
 ```
 
-Run `hm` to install changes. Start Executor and run `helium-cdp` (also `alt-f`).
+Run `hm` to install changes. Start Executor and run `helium-cdp`.
 For initial registration, both must be running; rerun `chezmoi apply` if the hook
 reports that either is unavailable.
 
-The launcher uses your personal Helium profile, including existing logins and
-tabs. A separate window or profile is an explicit choice. If Helium is already
-running without CDP, quit and relaunch it: debugging flags only apply at startup.
+The launcher uses the separate agent data directory
+`~/Library/Application Support/Helium-Agent`, whose current profile is named
+`false`. Cookies, history, extensions and tabs remain separate from your personal
+profile. Browser data and the display name are owned by Helium, outside this repo.
+The original `alt-f` focus shortcut is independent of the agent launcher.
+Browser Use can control all windows and tabs in the connected browser instance.
 If another browser owns port 9222, Browser Use connects to that browser instead.
 The launcher does not close browsers or take over an occupied port.
 
