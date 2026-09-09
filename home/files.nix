@@ -59,7 +59,15 @@ in
         "launchd/skhd-runner" = immutable ../launchd/skhd-runner;
         "launchd/yabai-runner" = immutable ../launchd/yabai-runner;
         "skhd/focus-previous-app" = immutable ../skhd/focus-previous-app;
-        "skhd/skhdrc" = immutable ../skhd/skhdrc;
+        "skhd/skhdrc" = (immutable ../skhd/skhdrc) // {
+          # skhd's watcher can miss Home Manager replacing a Nix-store symlink.
+          # Reload after linking the new config; leave stopped daemons stopped.
+          onChange = ''
+            if /usr/bin/pgrep -u "$(/usr/bin/id -u)" -x skhd >/dev/null; then
+              ${lib.getExe pkgs.skhd} --reload
+            fi
+          '';
+        };
         "yabai/apps.tsv" = immutable ../yabai/apps.tsv;
         "yabai/focus-bundle" = immutable ../yabai/focus-bundle;
         "yabai/focus-or-open" = immutable ../yabai/focus-or-open;
