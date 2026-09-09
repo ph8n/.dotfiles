@@ -6,11 +6,13 @@
   canonical shared skill bundles. Pi loads `~/code/pi-extensions` directly.
 - **nix-config / chezmoi** owns Pi's native settings template at
   `chezmoi/dot_pi/agent/settings.json.tmpl`, including its package pointer, and
-  selected preferences in the same directory: `private_context.json` (`exp`),
-  `private_fast-mode.json` (off), and `private_pi-fff.json` (`override`). The
+  selected preferences in the same directory: `private_fast-mode.json` (off) and
+  `private_pi-fff.json` (`override`). The
   `private_` prefix installs each native filename with mode 0600. Applying chezmoi restores
   these values after interactive changes. It does not mirror Pi resources or
-  write into the package checkout.
+  write into the package checkout. Compaction settings are not overridden: Pi 0.85.1
+  defaults to auto-compaction enabled, approximately 20k retained recent tokens,
+  and a 16,384-token reserve. The removed context extension has no managed preference.
 - **Other agents** use their own native configuration roots. Chezmoi installs
   adapted shared skills into each agent's own skills directory; no agent's
   installation is used as another agent's managed source.

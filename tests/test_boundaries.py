@@ -40,7 +40,6 @@ class BoundaryTests(unittest.TestCase):
 
     def test_pi_preferences_for_both_hosts(self):
         expected = {
-            'context.json': {'version': 3, 'mode': 'exp'},
             'fast-mode.json': {'version': 1, 'enabled': False},
             'pi-fff.json': {'mode': 'override'},
         }
@@ -58,6 +57,13 @@ class BoundaryTests(unittest.TestCase):
                 managed = subprocess.check_output(command + [
                     'managed', '--include', 'files', '--path-style', 'relative',
                 ], text=True).splitlines()
+                settings_path = '.pi/agent/settings.json'
+                self.assertIn(settings_path, managed)
+                settings = json.loads(subprocess.check_output(
+                    command + ['cat', str(home / settings_path)], text=True,
+                ))
+                self.assertNotIn('compaction', settings, 'Use native Pi compaction defaults')
+                self.assertNotIn('.pi/agent/context.json', managed)
                 for name, value in expected.items():
                     relative = f'.pi/agent/{name}'
                     self.assertIn(relative, managed)
