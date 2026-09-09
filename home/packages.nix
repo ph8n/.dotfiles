@@ -39,7 +39,7 @@ let
   heliumCdp = pkgs.writeShellScriptBin "helium-cdp" ''
     personal_profile="$HOME/Library/Application Support/net.imput.helium"
 
-    exec /usr/bin/open -n -b net.imput.helium --args \
+    exec /usr/bin/open -b net.imput.helium --args \
       --user-data-dir="$personal_profile" --remote-debugging-port=9222
   '';
 in
