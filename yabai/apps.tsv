@@ -6,4 +6,4 @@ grok	Grok Bot	com.anysphere.sand
 spotify	Spotify	com.spotify.client
 messages	Messages	com.apple.MobileSMS
 finder	Finder	com.apple.finder
-mail	Mail	com.apple.mail
+mail	Fastmail	com.fastmail.mac.Fastmail

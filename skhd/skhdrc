@@ -60,7 +60,7 @@ alt - s         : app=com.tinyspeck.slackmacgap; set -- $(/usr/bin/lsappinfo -q 
 alt - p         : app=com.spotify.client; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - m         : app=com.apple.MobileSMS; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - e         : app=com.apple.finder; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
-alt - i         : app=com.apple.mail; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
+alt - i         : app=com.fastmail.mac.Fastmail; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 
 # Fast previous-app toggle.
 alt - q : set -- $(/usr/bin/lsappinfo -nonames visibleProcessList 2>/dev/null); [ $# -ge 2 ] && /usr/bin/lsappinfo requestfront "$2" --immediate >/dev/null 2>&1
