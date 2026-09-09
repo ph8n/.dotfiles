@@ -56,7 +56,7 @@ alt + shift - space : yabai -m window --toggle float >/dev/null 2>&1
 alt - 0x29      : app=com.mitchellh.ghostty; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - c         : app=com.openai.codex; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - f         : app=net.imput.helium; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
-alt - g         : app=com.anysphere.sand; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
+alt - s         : app=com.tinyspeck.slackmacgap; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - p         : app=com.spotify.client; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - m         : app=com.apple.MobileSMS; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
 alt - e         : app=com.apple.finder; set -- $(/usr/bin/lsappinfo -q -nonames requestfront "$app" --immediate 2>/dev/null); [ "$#" -gt 0 ] || exec /usr/bin/open -b "$app"
