@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-# asdf hook: resolve cursor-agent@latest to the installer head.
-set -euo pipefail
-
-PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-# shellcheck source=/dev/null
-source "${PLUGIN_DIR}/lib/utils.bash"
-
-cursor_agent_latest_version

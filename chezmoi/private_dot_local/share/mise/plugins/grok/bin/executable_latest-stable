@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-# asdf hook: resolve grok@latest to the published stable version.
-set -euo pipefail
-
-PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-# shellcheck source=/dev/null
-source "${PLUGIN_DIR}/lib/utils.bash"
-
-grok_latest_version
